@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org" th:with="tag = ${T(spoon.support.web.CustomTag)}">
+<head th:replace="fragments/adminFragment :: head">
+	<meta charset="UTF-8"/>
+	<title>Best of Stella</title>
+	<link rel="shortcut icon" th:href="@{/images/favicon.ico?v=${siteConfig.version}|}}"/>
+	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+	<link rel="stylesheet" th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.theme.min.css}"/>
+	<link rel="stylesheet" th:href="@{/css/style.admin.css}"/>
+	<script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
+	<script th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+</head>
+<body class="popup">
+<main layout:fragment="main">
+	여기에 내용이 들어 갑니다.
+</main>
+<div id="flashMessage"><div th:text="${message}"></div></div>
+<div th:replace="fragments/adminFragment :: javascript"></div>
+<script layout:fragment="script" th:if="false"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='bitcoin5'">
+<body>
+
+<section layout:fragment="section">
+    <h3>비트코인 5분 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/bitcoin5/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>사다리</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+			<th>라운드</th>
+			<th>고가</th>
+			<th>홀짝</th>
+			<th>언오버</th>
+			<th>저가</th>
+			<th>홀짝</th>
+			<th>언오버</th>
+			<th>시가</th>
+			<th>종가</th>
+			<th>매수/매도</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td th:text="${tag.odds(g.high)}">고가</td>
+			<td><img th:src="@{|/images/bitcoin/${g.hi_oe}.png|}" /></td>
+			<td><img th:src="@{|/images/bitcoin/${g.hi_ou}.png|}" /></td>
+			<td th:text="${tag.odds(g.low)}">저가</td>
+			<td><img th:src="@{|/images/bitcoin/${g.lo_oe}.png|}" /></td>
+			<td><img th:src="@{|/images/bitcoin/${g.lo_ou}.png|}" /></td>
+			<td th:text="${tag.odds(g.open)}">저가</td>
+			<td th:text="${tag.odds(g.close)}">저가</td>
+			<td><img th:src="@{|/images/bitcoin/${g.bs}.png|}" /></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

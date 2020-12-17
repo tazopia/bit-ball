@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${score}" onsubmit="return setScore();">
+        <input type="hidden" th:field="*{id}"/>
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-bars"></i> CROWN 홀짝 종료처리</h3>
+            </div>
+
+            <div class="panel-body line">
+                <div style="margin: 0 auto; width:920px; height: 589px; overflow: hidden;position: relative;">
+                    <iframe id="zoneBox" style="position: absolute; width: 100%; height: 589px; position: absolute; top: 0px; left: 0px;" scrolling="no" th:src="@{${sysConfig.zone.crownOddevenPlayer}}"></iframe>
+                </div>
+            </div>
+
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임일시</th>
+                    <td>
+                        <span th:text="${#dates.format(score.gameDate, 'MM/dd(E) HH:mm')}"></span>
+                        <span class="color03" th:text="${#numbers.formatInteger(score.round, 3, 'DEFAULT') + ' 회차'}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">결과</th>
+                    <td>
+						<label>
+							오픈카드
+							<select th:field="*{card2}">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+							</select>
+						</label>
+						<label>
+							히든카드
+							<select th:field="*{card1}">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+							</select>
+						</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">적특처리</th>
+                    <td class="color01">
+                        <label><input type="checkbox" th:field="*{cancel}"/> 현재회차 적특처리</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="결과입력"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function setScore() {
+        if (!$('input:checkbox[name=cancel]').is(':checked')) {
+            if ($('#card').val() === '') {
+                alert('결과를 입력 하세요.');
+                return false;
+            }
+        }
+    }
+</script>
+</body>
+</html>

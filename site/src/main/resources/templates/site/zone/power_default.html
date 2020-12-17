@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/siteLayout" th:with="main='zone', gnb='zone', lnb='power'" ng-app="app">
+<body ng-controller="gameCtrl">
+
+<section layout:fragment="section">
+	<h3>
+		<img ng-src="{{flag}}"/>
+		파워볼
+		<span class="color03" ng-cloak th:text="'[제 {{config.times | number : 0}}회차]'">256회차</span>
+	</h3>
+	<div class="box">
+		<div style="margin: 0 auto; width: 760px; height: 509px; overflow: hidden;position: relative;">
+			<iframe id="zoneBox" style="position: absolute; width: 760px; height: 509px;" scrolling="no" th:src="@{${sysConfig.zone.powerPlayer}}"></iframe>
+		</div>
+	</div>
+	<br/>
+	<div>
+		<table class="power score">
+			<colgroup>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>날짜</th>
+				<th>회차</th>
+				<th>당첨번호</th>
+				<th>파워볼</th>
+				<th>숫자합</th>
+				<th>홀짝</th>
+				<th>오버언더</th>
+				<th>대중소</th>
+				<th>파워볼<br/>홀짝</th>
+				<th>파워볼<br/>오버언더</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="s in score">
+				<td style="padding: 0;text-align: center; height: 40px;"><span class="date">{{::s.date}}</span></td>
+				<td style="padding: 0;text-align: center"><span class="round1">{{::s.times[0]}}</span><span class="round2">{{::s.times[1]}}</span>회</td>
+				<td style="padding: 0;text-align: center">
+					<img ng-repeat="b in s.balls" src="/images/powerball/p{{b}}.png" style="padding:0 2px;"/>
+				</td>
+				<td style="padding: 0;text-align: center"><img src="/images/powerball/pb{{s.pb}}.png"/></td>
+				<td style="padding: 0;text-align: center"><span class="sum">{{::s.sum}}</span></td>
+				<td style="padding: 0;text-align: center"><img src="/images/powerball/{{s.oe}}.png"/></td>
+				<td style="padding: 0;text-align: center"><img src="/images/powerball/{{s.ou}}.png"/></td>
+				<td style="padding: 0;text-align: center"><img src="/images/powerball/{{s.size}}.png"/></td>
+				<td style="padding: 0;text-align: center"><img src="/images/powerball/{{s.pbOe}}.png"/></td>
+				<td style="padding: 0;text-align: center"><img src="/images/powerball/{{s.pbOu}}.png"/></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<br/>
+	<div class="zone">
+		<div class="timer" ng-cloak ng-show="config.enabled">
+			<div class="timer-box">
+				<div id="timer"></div>
+			</div>
+		</div>
+		<div class="right">
+			<table class="list game ng-cloak" ng-cloak ng-if="config.enabled">
+				<caption>파워볼</caption>
+				<colgroup>
+					<col style="width: 180px;">
+					<col>
+					<col>
+					<col>
+					<col>
+				</colgroup>
+				<tbody>
+				<tr ng-if="config.oddeven" ng-class="bet">
+					<td class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 일반볼</td>
+					<td class="home bet">
+						{{config.round}}회차 일반볼 <span class="color01">[홀]</span>
+						<em class="odds">{{config.odds[0] | number: 2}}</em>
+						<a ng-click="add('oddeven', 'home', 0, '일반볼 홀', $event)"></a>
+					</td>
+					<td class="draw vs">VS</td>
+					<td class="away bet">
+						{{config.round}}회차 일반볼 <span class="color01">[짝]</span>
+						<em class="odds">{{config.odds[1] | number: 2}}</em>
+						<a ng-click="add('oddeven', 'away', 1, '일반볼 짝', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+				<tbody ng-if="config.pb_oddeven" class="group">
+				<tr ng-class="bet">
+					<td class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 파워볼</td>
+					<td class="home bet">
+						{{config.round}}회차 파워볼 <span class="color01">[홀]</span>
+						<em class="odds">{{config.odds[2] | number: 2}}</em>
+						<a ng-click="add('pb_oddeven', 'home', 2, '파워볼 홀', $event)"></a>
+					</td>
+					<td class="draw vs">VS</td>
+					<td class="away bet">
+						{{config.round}}회차 파워볼 <span class="color01">[짝]</span>
+						<em class="odds">{{config.odds[3] | number: 2}}</em>
+						<a ng-click="add('pb_oddeven', 'away', 3, '파워볼 짝', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+				<tbody ng-if="config.overunder" class="group">
+				<tr ng-class="bet">
+					<td class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 일반볼</td>
+					<td class="home bet">
+						{{config.round}}회차 일반볼 <span class="color01">[오버]</span>
+						<em class="odds">{{config.odds[4] | number: 2}}</em>
+						<a ng-click="add('overunder', 'home', 4, '일반볼 오버', $event)"></a>
+					</td>
+					<td class="draw vs">VS</td>
+					<td class="away bet">
+						{{config.round}}회차 일반볼 <span class="color01">[언더]</span>
+						<em class="odds">{{config.odds[5] | number: 2}}</em>
+						<a ng-click="add('overunder', 'away', 5, '일반볼 언더', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+				<tbody ng-if="config.pb_overunder" class="group">
+				<tr ng-class="bet">
+					<td class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 파워볼</td>
+					<td class="home bet">
+						{{config.round}}회차 파워볼 <span class="color01">[오버]</span>
+						<em class="odds">{{config.odds[6] | number: 2}}</em>
+						<a ng-click="add('pb_overunder', 'home', 6, '파워볼 오버', $event)"></a>
+					</td>
+					<td class="draw vs" rowspan="2">VS</td>
+					<td class="away bet">
+						{{config.round}}회차 파워볼 <span class="color01">[언더]</span>
+						<em class="odds">{{config.odds[7] | number: 2}}</em>
+						<a ng-click="add('pb_overunder', 'away', 7, '파워볼 언더', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+				<tbody ng-if="config.size" class="group">
+				<tr ng-class="bet">
+					<td class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 대중소</td>
+					<td class="home bet">
+						{{config.round}}회차 <span class="color01">[대]</span>
+						<em class="odds">{{config.odds[8] | number: 2}}</em>
+						<a ng-click="add('size', 'home', 8, '대', $event)"></a>
+					</td>
+					<td class="draw bet">
+						<span class="color01">[중]</span>
+						<em class="odds">{{config.odds[9] | number: 2}}</em>
+						<a ng-click="add('size', 'draw', 9, '중', $event)"></a>
+					</td>
+					<td class="away bet">
+						{{config.round}}회차 <span class="color01">[소]</span>
+						<em class="odds">{{config.odds[10] | number: 2}}</em>
+						<a ng-click="add('size', 'away', 10, '소', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+				<tbody ng-if="config.oe_ou" class="group">
+				<tr ng-class="bet">
+					<td rowspan="2" class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 일반볼</td>
+					<td class="home bet">
+						{{config.round}}회차 일반볼 <span class="color04">[홀]</span> <span class="color01">[오버]</span>
+						<em class="odds">{{config.odds[11] | number: 2}}</em>
+						<a ng-click="add('odd_ou', 'home', 11, '일반볼 홀/오버', $event)"></a>
+					</td>
+					<td rowspan="2" class="draw vs">VS</td>
+					<td class="away bet">
+						{{config.round}}회차 일반볼 <span class="color04">[홀]</span> <span class="color01">[언더]</span>
+						<em class="odds">{{config.odds[12] | number: 2}}</em>
+						<a ng-click="add('odd_ou', 'away', 12, '일반볼 홀/언더', $event)"></a>
+					</td>
+				</tr>
+				<tr ng-class="bet">
+					<td class="home bet">
+						{{config.round}}회차 일반볼 <span class="color04">[짝]</span> <span class="color01">[오버]</span>
+						<em class="odds">{{config.odds[13] | number: 2}}</em>
+						<a ng-click="add('even_ou', 'home', 13, '일반볼 짝/오버', $event)"></a>
+					</td>
+					<td class="away bet">
+						{{config.round}}회차 일반볼 <span class="color04">[짝]</span> <span class="color01">[언더]</span>
+						<em class="odds">{{config.odds[14] | number: 2}}</em>
+						<a ng-click="add('even_ou', 'away', 14, '일반볼 짝/언더', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+
+				<tbody ng-if="config.oe_size" class="group">
+				<tr ng-class="bet">
+					<td rowspan="2" class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 일반볼</td>
+					<td class="home bet">
+						{{config.round}}회차 <span class="color04">[홀]</span> <span class="color01">[대]</span>
+						<em class="odds">{{config.odds[15] | number: 2}}</em>
+						<a ng-click="add('odd_size', 'home', 15, '홀/대', $event)"></a>
+					</td>
+					<td class="draw bet">
+						<span class="color04">[홀]</span> <span class="color01">[중]</span>
+						<em class="odds">{{config.odds[16] | number: 2}}</em>
+						<a ng-click="add('odd_size', 'draw', 16, '홀/중', $event)"></a>
+					</td>
+					<td class="away bet">
+						{{config.round}}회차 <span class="color04">[홀]</span> <span class="color01">[소]</span>
+						<em class="odds">{{config.odds[17] | number: 2}}</em>
+						<a ng-click="add('odd_size', 'away', 17, '홀/소', $event)"></a>
+					</td>
+				</tr>
+				<tr ng-class="bet">
+					<td class="home bet">
+						{{config.round}}회차 <span class="color04">[짝]</span> <span class="color01">[대]</span>
+						<em class="odds">{{config.odds[18] | number: 2}}</em>
+						<a ng-click="add('even_size', 'home', 18, '짝/대', $event)"></a>
+					</td>
+					<td class="draw bet">
+						<span class="color04">[짝]</span> <span class="color01">[중]</span>
+						<em class="odds">{{config.odds[19] | number: 2}}</em>
+						<a ng-click="add('even_size', 'draw', 19, '짝/중', $event)"></a>
+					</td>
+					<td class="away bet">
+						{{config.round}}회차 <span class="color04">[짝]</span> <span class="color01">[소]</span>
+						<em class="odds">{{config.odds[20] | number: 2}}</em>
+						<a ng-click="add('even_size', 'away', 20, '짝/소', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+
+
+				<tbody ng-if="config.pb_oe_ou" class="group">
+				<tr ng-class="bet">
+					<td rowspan="2" class="date">{{config.gameDateName}} <span>{{config.gameTimeName}}</span> 파워볼</td>
+					<td class="home bet">
+						{{config.round}}회차 파워볼 <span class="color04">[홀]</span> <span class="color01">[오버]</span>
+						<em class="odds">{{config.odds[21] | number: 2}}</em>
+						<a ng-click="add('pb_odd_ou', 'home', 21, '파워볼 홀/오버', $event)"></a>
+					</td>
+					<td rowspan="2" class="draw vs">VS</td>
+					<td class="away bet">
+						{{config.round}}회차 파워볼 <span class="color04">[홀]</span> <span class="color01">[언더]</span>
+						<em class="odds">{{config.odds[22] | number: 2}}</em>
+						<a ng-click="add('pb_odd_ou', 'away', 22, '파워볼 홀/언더', $event)"></a>
+					</td>
+				</tr>
+				<tr ng-class="bet">
+					<td class="home bet">
+						{{config.round}}회차 파워볼 <span class="color04">[짝]</span> <span class="color01">[오버]</span>
+						<em class="odds">{{config.odds[23] | number: 2}}</em>
+						<a ng-click="add('pb_even_ou', 'home', 23, '파워볼 짝/오버', $event)"></a>
+					</td>
+					<td class="away bet">
+						{{config.round}}회차 파워볼 <span class="color04">[짝]</span> <span class="color01">[언더]</span>
+						<em class="odds">{{config.odds[24] | number: 2}}</em>
+						<a ng-click="add('pb_even_ou', 'away', 24, '파워볼 짝/언더', $event)"></a>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	</br>
+
+</section>
+
+<script layout:fragment="script" th:if="true">
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+        $scope.Math = window.Math;
+        $scope.zone = true;
+        $scope.cart = [];
+        $scope.odds = 0.00;
+        $scope.money = 0;
+        $scope.flag = '/images/zone/flag-power.png';
+        $scope.config = [(${config})];
+        $scope.milliseconds = [[${user.milliseconds}]];
+        $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+        $scope.name = $scope.config.round + '회 파워볼';
+        $scope.score = [(${score})];
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $interval(function () {
+            if ($scope.milliseconds <= $scope.config.gameDate) {
+                $scope.milliseconds += 1000;
+            } else {
+                $scope.setConfig();
+                $scope.setScore();
+            }
+        }, 1000);
+
+        $scope.timer = new FlipClock($('#timer'), $scope.config.betTime, {
+            countdown: true,
+            clockFace: 'MinuteCounter',
+            callbacks: {
+                stop: function () {
+                    $scope.$apply(function () {
+                        angular.element('.bet').removeClass('on');
+                        $scope.cart.length = 0;
+                        $scope.bet = 'off';
+                    });
+                }
+            }
+        });
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+                clock.setTime(new Date(response.data.milliseconds));
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.setConfig = function () {
+            $http({
+                url: path + '/zone/power/config',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.config = response.data;
+                $scope.timer.setTime(response.data.betTime + 1);
+                $scope.timer.start();
+                $scope.name = $scope.config.round + '회 파워볼';
+                $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+            });
+        };
+
+        $scope.setScore = function () {
+            $http({
+                url: path + '/zone/power/score',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.score = response.data;
+            });
+        };
+
+        $scope.add = function (gameCode, betTeam, betZone, pos, event) {
+            if ($scope.bet === 'off') {
+                alert('현재 베팅이 중지 되었습니다.\n\n다음 게임을 베팅하시기 바랍니다.');
+                return;
+            }
+
+            var ele = angular.element(event.target).parent();
+            $scope.cart.length = 0;
+            if (ele.hasClass('on')) {
+                ele.removeClass('on');
+                $scope.odds = 0.00;
+            } else {
+                angular.element('.bet').removeClass('on');
+                ele.addClass('on');
+                var odds = $scope.config.odds[betZone];
+                $scope.cart.push({sdate: $scope.config.sdate, gameCode: gameCode, betTeam: betTeam, betZone: betZone, odds: odds, pos: pos});
+                $scope.odds = odds;
+            }
+        };
+
+        $scope.remove = function () {
+            angular.element('.bet').removeClass('on');
+            $scope.cart.length = 0;
+            $scope.odds = 0.00;
+        };
+
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) {
+                $scope.money = 0;
+            } else {
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / $scope.odds), $scope.config.max), $scope.config.money);
+            }
+        };
+
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.odds * $scope.money > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            // 베팅
+            $http({
+                url: path + '/zone/power/betting',
+                method: 'POST',
+                data: {
+                    "betMoney": $scope.money,
+                    "sdate": $scope.cart[0].sdate,
+                    "gameCode": $scope.cart[0].gameCode,
+                    "betTeam": $scope.cart[0].betTeam,
+                    "betZone": $scope.cart[0].betZone,
+                    "odds": $scope.cart[0].odds
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('.bet').removeClass('on');
+                if (!response.data.success) {
+                    alert(response.data.message);
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+            }, function error(response) {
+                angular.element('.bet').removeClass('on');
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+            });
+        };
+    }]);
+</script>
+</body>
+</html>

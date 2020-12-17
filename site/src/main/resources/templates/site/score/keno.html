@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='keno'">
+<body>
+
+<section layout:fragment="section">
+    <h3>스피드키노 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/keno/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>사다리</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th>일자</th>
+            <th>회차</th>
+            <th>합계</th>
+            <th>홀짝</th>
+            <th>오버언더</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td class="color0" th:text="${tag.round(g.round, 3)} + ' 회'"></td>
+			<td class="color02" th:text="${g.sum}">124</td>
+            <td>
+                <span th:if="${g.oddeven eq 'ODD'}" class="color01">홀</span>
+                <span th:if="${g.oddeven eq 'EVEN'}" class="color02">짝</span>
+                <span th:if="${g.oddeven ne 'ODD' and g.oddeven ne 'EVEN'}">-</span>
+            </td>
+			<td>
+				<span th:if="${g.overunder eq 'OVER'}" class="color01">오버</span>
+				<span th:if="${g.overunder eq 'UNDER'}" class="color02">언더</span>
+				<span th:if="${g.overunder ne 'OVER' and g.overunder ne 'UNDER'}">-</span>
+			</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

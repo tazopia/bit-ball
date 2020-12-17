@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.MemberMapper">
+
+    <select id="getDummyList" resultType="spoon.member.domain.User">
+        SELECT userid, nickname, level FROM MEMBER WHERE role = 'DUMMY' ORDER BY nickname
+    </select>
+
+    <select id="getAgencyList" resultType="spoon.member.domain.Agency">
+        SELECT DISTINCT agency1, agency2, agency3, agency4 FROM Member
+        WHERE [role] IN ('AGENCY1', 'AGENCY2', 'AGENCY3', 'AGENCY4') AND enabled = 1 AND secession = 0
+        ORDER BY agency4, agency3, agency2, agency1
+    </select>
+
+    <select id="getAgency1List" resultType="String">
+        SELECT agency1 FROM Member WHERE [role] = 'AGENCY1' AND agency2 = #{value} ORDER BY agency1
+    </select>
+
+    <select id="getAgency4List" resultType="String">
+        SELECT agency4 FROM Member WHERE [role] = 'AGENCY4' ORDER BY agency4
+    </select>
+
+    <select id="getExchangeList" parameterType="spoon.member.domain.MemberDto$Seller" resultType="spoon.member.domain.MemberDto$Exchange">
+        SELECT userid, nickname FROM Member
+        WHERE enabled = 1 AND secession = 0
+        <if test="role == 'AGENCY4'">
+            AND agency4 = #{agency} AND role = 'AGENCY3'
+        </if>
+        <if test="role == 'AGENCY3'">
+            AND agency3 = #{agency} AND role = 'AGENCY2'
+        </if>
+        <if test="role == 'AGENCY2'">
+            AND agency2 = #{agency} AND role = 'AGENCY1'
+        </if>
+        <if test="role == 'AGENCY1'">
+            AND agency1 = #{agency} AND role = 'USER'
+        </if>
+        ORDER BY userid
+    </select>
+
+    <select id="getUserAndMemo" parameterType="String" resultType="spoon.member.domain.User">
+        SELECT
+            userid, nickname, role, [level], agency1, agency2, agency3, agency4, money, point, secession, enabled, block, black,
+             (SELECT count(*) FROM memo WHERE userid = #{value} AND checked = 0 AND enabled = 1 AND hidden = 0) as memo,
+             (SELECT count(*) FROM qna WHERE userid = #{value} AND checked = 0 AND enabled = 1 AND re = 1 AND hidden = 0 AND DATEADD(HOUR, 12, reDate) &gt; getDate()) as qna
+        FROM
+            member
+        WHERE
+            userid = #{value}
+    </select>
+
+    <select id="getUser" parameterType="String" resultType="spoon.member.domain.User">
+        SELECT
+            userid, nickname, role, [level], agency1, agency2, agency3, agency4, money, point, loginIp, block, black, enabled, secession
+        FROM
+            member
+        WHERE
+            userid = #{value}
+    </select>
+
+    <select id="getRecomm" parameterType="String" resultType="spoon.member.domain.User">
+        SELECT
+        userid, nickname, role, [level], agency1, agency2, agency3, agency4, money, point
+        FROM
+        member
+        WHERE
+        userid = (SELECT recommender FROM member WHERE userid = #{value})
+    </select>
+
+    <select id="getRandomUser" resultType="spoon.member.domain.User">
+        SELECT TOP 1
+            userid, nickname, role, [level], agency1, agency2, agency3, agency4, money, point
+        FROM
+            member
+        WHERE
+            role = 'DUMMY'
+        ORDER BY NEWID()
+    </select>
+
+</mapper>

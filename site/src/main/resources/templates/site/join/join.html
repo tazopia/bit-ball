@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/loginLayout" th:with="mode='login'">
+<body id="login">
+<div class="login-wrap login-join" layout:fragment="login">
+    <div class="login-box">
+		<h1 class="brand"><img src="/images/brand.png" /></h1>
+        <form id="frm-join" method="post" th:object="${member}" onsubmit="return login.goJoin();">
+            <input type="hidden" th:field="*{code}" th:value="${joinCode}" />
+            <input type="hidden" th:if="${!siteConfig.join.showRecommend}" th:field="*{recommender}" />
+            <label>
+                <input type="text" th:field="*{userid}" autofocus="autofocus" maxlength="12" placeholder="아이디"/>
+                <span id="bul-userid" class="bul bul-ready"></span>
+                <p id="txt-userid">영문/숫자 조합 4~12자 이내로 작성.</p>
+            </label>
+            <label>
+                <input type="text" th:field="*{nickname}" maxlength="12" placeholder="닉네임"/>
+                <span id="bul-nickname" class="bul bul-ready"></span>
+                <p id="txt-nickname">한글 2~7자, 영문 4~14자. 특수문자 불가.</p>
+            </label>
+            <label>
+                <input type="password" th:field="*{password}" maxlength="16" placeholder="비밀번호"/>
+            </label>
+            <label>
+                <input type="password" id="passwordConfirm" maxlength="16" placeholder="비밀번호 확인"/>
+                <p>영문 및 숫자 특수문자 조합 4자 이상으로 작성.</p>
+            </label>
+            <label>
+                <input type="text" th:field="*{phone}" autofocus="autofocus" maxlength="16" placeholder="휴대폰 번호"/>
+                <span th:if="${siteConfig.join.duplicatePhone}" id="bul-phone" class="bul bul-ready"></span>
+                <p id="txt-phone">문자와 통화가 가능하신 정확한 연락처를 기재.</p>
+            </label>
+            <label>
+                <select th:field="*{bank}">
+                    <option value="">은행선택</option>
+                    <option th:each="bank : ${banks}" th:text="${bank}" th:value="${bank}">은행</option>
+                </select>
+                <input type="text" th:field="*{depositor}" maxlength="12" placeholder="예금주">
+                <p>예금주명 변경 불가, 동일한 예금주만 계좌 변경 가능.</p>
+            </label>
+            <label>
+                <input type="text" th:field="*{account}" maxlength="24" placeholder="계좌번호"/>
+                <span th:if="${siteConfig.join.duplicateAccount}" id="bul-account" class="bul bul-ready"></span>
+                <p id="txt-accountNumber">빠른 충/환전을 위해 본인 명의와 동일한 계좌정보 입력</p>
+            </label>
+            <label>
+                <input type="password" th:field="*{bankPassword}" maxlength="16" placeholder="충환전 비밀번호"/>
+            </label>
+            <label>
+                <input type="password" id="bankPasswordConfirm" maxlength="16" placeholder="충환전 비밀번호 확인"/>
+                <p>영문 및 숫자 특수문자 조합 4자 이상으로 작성.</p>
+            </label>
+            <label th:if="${siteConfig.join.requiredRecommend}">
+                <input type="text" th:field="*{recommender}" maxlength="16" placeholder="추천인 (지인추천 아이디)"/>
+                <span id="bul-recommend" class="bul bul-enabled"></span>
+                <p>추천인이 없으면 비워 두시기 바랍니다.</p>
+            </label>
+            <div class="command">
+                <button id="join-submit" class="btn-login">확인</button>
+                <a class="btn-join" href="/">취소</a>
+            </div>
+        </form>
+        <div class="copyright">Copyright [[${siteConfig.since}]] <span th:text="'&copy; ' + ${siteConfig.companyName} + '.'">회사명</span> All Rights Reserved.</div>
+    </div>
+</div>
+<script layout:fragment="script" th:if="true">
+    var config = [(${config})];
+
+    // window.setInterval(function () {
+    //     $('#login-bg div').last().fadeOut(2000, function () {
+    //         $('#login-bg div').last().prependTo($('#login-bg')).show();
+    //     })
+    // }, 5000);
+</script>
+</body>
+</html>

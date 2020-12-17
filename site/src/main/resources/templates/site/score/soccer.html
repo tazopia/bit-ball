@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='soccer'">
+<body>
+
+<section layout:fragment="section">
+    <h3>가상축구 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/soccer/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>스포츠</caption>
+        <colgroup>
+            <col style="width: 120px;">
+            <col style="width: 100px;">
+            <col style="width: 50px;">
+            <col>
+            <col style="width: 60px;">
+            <col style="width: 80px;">
+            <col style="width: 60px;">
+            <col>
+            <col style="width: 50px;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>경기일시</th>
+            <th>구분</th>
+            <th colspan="3">홈팀</th>
+            <th>무</th>
+            <th colspan="3">원정팀</th>
+        </tr>
+        </thead>
+        <tbody th:each="g,num: ${page.content}">
+        <tr>
+            <td class="league" colspan="9">
+                <p>
+                    <img th:src="@{|/images/sports/축구.png|}"/>
+                    <span th:text="${g.league}">리그명</span>
+                </p>
+            </td>
+        </tr>
+        <tr class="item">
+            <td rowspan="3">
+                <p th:utext="${tag.dayWeekTime(g.gameDate)}"></p>
+            </td>
+            <td>
+                <span>승무패</span>
+            </td>
+            <td class="over">H</td>
+            <td th:class="${g.ma eq 'home'} ? 'home hit' : 'home'">
+                <p><span th:text="${g.teamHome}">홈팀</span><span class="odds" th:text="${tag.odds(g.maHome)}">1.58</span></p>
+            </td>
+            <td class="score" th:text="${g.scoreHome}"></td>
+            <td th:class="${g.ma eq 'draw'} ? 'draw hit' : 'draw'">
+                <p class="odds" th:text="${#numbers.formatDecimal(g.maDraw, 1, 2)}"></p>
+            </td>
+            <td class="score" th:text="${g.scoreAway}"></td>
+            <td th:class="${g.ma eq 'away'} ? 'away hit' : 'away'">
+                <p><span th:text="${g.teamAway}">원정팀</span><span class="odds" th:text="${#numbers.formatDecimal(g.maAway, 1, 2)}">1.58</span></p>
+            </td>
+            <td class="under">A</td>
+        </tr>
+        <tr class="item">
+            <td>
+                <span>핸디캡</span>
+            </td>
+            <td class="over">H</td>
+            <td th:class="${g.ah eq 'home'} ? 'home hit' : 'home'">
+                <p><span th:text="${g.teamHome}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.ahHome, 1, 2)}"></span></p>
+            </td>
+            <td class="score" th:text="${g.scoreHome}"></td>
+            <td th:class="${g.ah eq 'draw'} ? 'vs hit' : 'vs'">
+                <span th:text="${g.ahDraw}"></span>
+            </td>
+            <td class="score" th:text="${g.scoreAway}"></td>
+            <td th:class="${g.ah eq 'away'} ? 'away hit' : 'away'">
+                <p><span th:text="${g.teamAway}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.ahAway, 1, 2)}"></span></p>
+            </td>
+            <td class="under">A</td>
+        </tr>
+        <tr class="item">
+            <td>
+                <span>오버언더</span>
+            </td>
+            <td class="over">O</td>
+            <td th:class="${g.ou eq 'home'} ? 'home hit' : 'home'">
+                <p><span th:text="${g.teamHome}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.ouHome, 1, 2)}"></span></p>
+            </td>
+            <td class="score" th:text="${g.scoreHome}"></td>
+            <td th:class="${g.ou eq 'draw'} ? 'vs on' : 'vs'">
+                <span th:text="${g.ouDraw}"></span>
+            </td>
+            <td class="score" th:text="${g.scoreAway}"></td>
+            <td th:class="${g.ou eq 'away'} ? 'away hit' : 'away'">
+                <p><span th:text="${g.teamAway}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.ouAway, 1, 2)}"></span></p>
+            </td>
+            <td class="under">U</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    function changeSports(sports) {
+        $('#sports').val(sports);
+        $('#page').val(1);
+        $('#frm-search').submit();
+    }
+</script>
+</body>
+</html>

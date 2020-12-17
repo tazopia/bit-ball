@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page'">
+<body>
+
+<section layout:fragment="section">
+    <h3>회원정보</h3>
+    <table class="banking">
+        <caption>충전 신청</caption>
+        <colgroup>
+            <col style="width: 200px;">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th>아이디</th>
+            <td th:text="${member.userid}"></td>
+        </tr>
+        <tr>
+            <th>닉네임</th>
+            <td th:text="${member.nickname}"></td>
+        </tr>
+        <tr>
+            <th>Lv.</th>
+            <td th:text="${'Lv.' + member.level}"></td>
+        </tr>
+        <tr>
+            <th>은행명</th>
+            <td th:text="${member.bank}"></td>
+        </tr>
+        <tr>
+            <th>정보수정</th>
+            <td class="color02">비밀번호 변경 및 계좌변경은 고객상담을 이용하세요.</td>
+        </tr>
+        </tbody>
+    </table>
+    <br/><br/>
+    <h3>나의추천인</h3>
+    <table class="list">
+        <caption></caption>
+        <colgroup>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>닉네임</th>
+            <th>Lv.</th>
+            <th>가입일</th>
+            <th>상태</th>
+            <th>지급율</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m, i : ${recommList}">
+            <td th:text="${i.index + 1}"></td>
+            <td th:text="${m.nickname}"></td>
+            <td th:text="${'Lv.' + m.level}"></td>
+            <td th:utext="${tag.dateWeek(m.joinDate)}"></td>
+            <td>정상</td>
+            <td>
+                스포츠 : <span class="color01" th:text="${tag.recommOddsSports(m.level) + '%'}"></span>
+                /
+                게임존 : <span class="color03" th:text="${tag.recommOddsZone(m.level) + '%'}"></span>
+            </td>
+        </tr>
+        <tr th:if="${#lists.size(recommList) eq 0}">
+            <td style="height: 300px;" colspan="6">등록된 추천인이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

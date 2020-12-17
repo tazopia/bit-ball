@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <form id="frm" th:object="${member}" method="post" onsubmit="return addMember();">
+            <div class="panel-header">
+                <h3><i class="bul fa fa-user-plus"></i> 회원 기본정보</h3>
+            </div>
+            <table class="table-read">
+                <caption>회원 기본정보</caption>
+                <colgroup>
+                    <col style="width: 140px;">
+                    <col style="width: 350px;">
+                    <col style="width: 140px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">아이디</th>
+                    <td>
+                        <input type="text" th:field="*{userid}" autofocus="autofocus"/>
+                        <span id="enableUserid" class="bul fa fa-check color04" style="display: none;"></span>
+                        <span id="disableUserid" class="bul fa fa-ban color03"></span>
+                    </td>
+                    <th class="required">비밀번호</th>
+                    <td><input type="password" th:field="*{password}"/></td>
+                </tr>
+                <tr>
+                    <th class="required">닉네임</th>
+                    <td>
+                        <input type="text" th:field="*{nickname}"/>
+                        <span id="enableNickname" class="bul fa fa-check color04" style="display: none;"></span>
+                        <span id="disableNickname" class="bul fa fa-ban color03"></span>
+                    </td>
+                    <th class="required">회원등급</th>
+                    <td>
+                        <select th:field="*{role}">
+                            <option value="USER">일반회원</option>
+							<option value="AGENCY4">총본사</option>
+							<option value="AGENCY3">부본사</option>
+                            <option value="AGENCY2">총판</option>
+                            <option value="AGENCY1">매장</option>
+                            <option value="ADMIN">관리자</option>
+                            <option value="SUPER">슈퍼관리자</option>
+                            <option value="DUMMY">게시판유저</option>
+                        </select>
+                        <select th:field="*{level}">
+                            <option th:each="level : ${#numbers.sequence(1, 10)}" th:value="${level}" th:text="${level + '등급'}"></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>연락처</th>
+                    <td>
+                        <input type="text" th:field="*{phone}"/>
+                    </td>
+                    <th>추천인</th>
+                    <td>
+                        <input type="text" th:field="*{recommender}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>머니</th>
+                    <td><input type="text" th:field="*{money}" class="num sel" style="width: 80px;"/> 원</td>
+                    <th>포인트</th>
+                    <td><input type="text" th:field="*{point}" class="num sel" style="width: 80px;"/> P</td>
+                </tr>
+                <tr>
+                    <th>총판정보</th>
+                    <td colspan="3">
+						<label id="label4">
+							총본사 :
+							<select th:field="*{agency4}">
+								<option value="">선택하세요.</option>
+							</select>
+						</label>
+						<label id="label3">
+							부본사 :
+							<select th:field="*{agency3}">
+								<option value="">선택하세요.</option>
+							</select>
+						</label>
+                        <label id="label2">
+                            총판 :
+                            <select th:field="*{agency2}">
+                                <option value="">선택하세요.</option>
+                            </select>
+                        </label>
+                        <label id="label1">
+                            매장 :
+                            <select th:field="*{agency1}">
+                                <option value="">선택하세요.</option>
+                            </select>
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3><i class="bul fa fa-user-plus"></i> 계좌정보 / 기타정보</h3>
+            </div>
+            <table class="table-read">
+                <caption>계좌정보 / 기타정보</caption>
+                <colgroup>
+                    <col style="width: 140px;">
+                    <col style="width: 350px;">
+                    <col style="width: 140px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th>은행명</th>
+                    <td>
+                        <select th:field="*{bank}">
+                            <option value="">선택하세요.</option>
+                            <option th:each="bank : ${banks}" th:value="${bank}" th:text="${bank}">은행</option>
+                        </select>
+                    </td>
+                    <th>계좌번호</th>
+                    <td><input type="text" th:field="*{account}"></td>
+                </tr>
+                <tr>
+                    <th>예금주</th>
+                    <td><input type="text" th:field="*{depositor}"></td>
+                    <th>출금 비밀번호</th>
+                    <td><input type="password" th:field="*{bankPassword}"></td>
+                </tr>
+                <tr>
+                    <th>프로필</th>
+                    <td colspan="3">
+                        <textarea th:field="*{memo}" style="width: 760px;height: 100px;"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn03">등록</button>
+                <a onclick="popup.close();return false;" class="btn">창닫기</a>
+            </div>
+        </form>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    var agencies = [(${agencies})];
+    var agency2 = '', agency3 = '', agency4 = '', checkUserid = false, checkNickname = false;
+    agencies.forEach(function (agency) {
+        if (agency4 !== agency.agency4) {
+            $('#agency4').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            agency4 = agency.agency4;
+        }
+    });
+
+    $('#agency4').on('change', function () {
+        var agency4 = $('#agency4').val();
+        var agency3 = '';
+        $('#agency3').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency4 === agency.agency4 && agency.agency3 != null && agency.agency3 !== '' && agency3 !== agency.agency3) {
+                $('#agency3').append('<option value="' + agency.agency3 + '">' + agency.agency3 + '</option>');
+            }
+            agency3 = agency.agency3;
+        });
+        $('#agency3').change();
+    });
+
+    $('#agency3').on('change', function () {
+        var agency3 = $('#agency3').val();
+        var agency2 = '';
+        $('#agency2').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency3 === agency.agency3 && agency.agency2 != null && agency.agency2 !== '' && agency2 !== agency.agency2) {
+                $('#agency2').append('<option value="' + agency.agency2 + '">' + agency.agency2 + '</option>');
+            }
+            agency2 = agency.agency2;
+        });
+        $('#agency2').change();
+    });
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        var agency1 = '';
+        $('#agency1').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency2 === agency.agency2 && agency.agency1 != null && agency.agency1 !== '' && agency1 !== agency.agency1) {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+            agency1 = agency.agency1;
+        });
+        $('#agency1').change();
+    });
+
+    $('#role').on('change', function () {
+        switch ($(this).val()) {
+            case 'USER':
+                $('#agency1').val('').removeAttr('disabled');
+                $('#agency2').val('').removeAttr('disabled');
+                $('#agency3').val('').removeAttr('disabled');
+                $('#agency4').val('').change().removeAttr('disabled');
+                $('#level').show();
+                break;
+            case 'DUMMY':
+                $('#agency1').val('').attr('disabled', 'disabled');
+                $('#agency2').val('').attr('disabled', 'disabled');
+                $('#agency3').val('').attr('disabled', 'disabled');
+                $('#agency4').val('').attr('disabled', 'disabled');
+                $('#level').show();
+                break;
+            case 'AGENCY1':
+                $('#agency4').val('').removeAttr('disabled');
+                $('#agency3').val('').removeAttr('disabled');
+                $('#agency2').val('').removeAttr('disabled');
+                $('#agency1').val('').attr('disabled', 'disabled');
+                $('#level').hide();
+                break;
+            case 'AGENCY2':
+                $('#agency4').val('').removeAttr('disabled');
+                $('#agency3').val('').removeAttr('disabled');
+                $('#agency2').val('').attr('disabled', 'disabled');
+                $('#agency1').val('').attr('disabled', 'disabled');
+                $('#level').hide();
+                break;
+			case 'AGENCY3':
+                $('#agency4').val('').removeAttr('disabled');
+                $('#agency3').val('').attr('disabled', 'disabled');
+                $('#agency2').val('').attr('disabled', 'disabled');
+                $('#agency1').val('').attr('disabled', 'disabled');
+                $('#level').hide();
+                break;
+			case 'AGENCY4':
+            default:
+                $('#agency1').val('').attr('disabled', 'disabled');
+                $('#agency2').val('').attr('disabled', 'disabled');
+                $('#agency3').val('').attr('disabled', 'disabled');
+                $('#agency4').val('').attr('disabled', 'disabled');
+                $('#level').hide();
+                break;
+        }
+    });
+
+    $('#money, #point').onlyNum();
+
+    // 하위생성모드
+	var isSub = [[${member.role ne null}]];
+	var role = '[[${member.role eq null ? '' : member.role.name()}]]';
+	if (isSub) {
+	    $('#role').val(role).change();
+        $('#agency4').val('[[${member.agency4}]]').change();
+        $('#agency3').val('[[${member.agency3}]]').change();
+        $('#agency2').val('[[${member.agency2}]]').change();
+        $('#agency1').val('[[${member.agency1}]]').change();
+    }
+
+    $('#userid').on('blur', function () {
+        $.post('[[${pathJoin}]]/userid', {userid: $('#userid').val()}).done(function (data) {
+            if (data.success && $('#userid').val().length > 3) {
+                $('#enableUserid').show();
+                $('#disableUserid').hide();
+                checkUserid = true;
+            } else {
+                $('#enableUserid').hide();
+                $('#disableUserid').show();
+                checkUserid = false;
+            }
+        });
+    }).on('focus', function () {
+        checkUserid = false;
+    });
+
+    $('#nickname').on('blur', function () {
+        $.post('[[${pathJoin}]]/nickname', {nickname: $('#nickname').val()}).done(function (data) {
+            if (data.success && $('#nickname').val().length > 1) {
+                $('#enableNickname').show();
+                $('#disableNickname').hide();
+                checkNickname = true;
+            } else {
+                $('#enableNickname').hide();
+                $('#disableNickname').show();
+                checkNickname = false;
+            }
+        });
+    }).on('focus', function () {
+        checkNickname = false;
+    });
+
+    function addMember() {
+        if (!checkUserid) {
+            alert('사용가능한 아이디가 아닙니다.');
+            $('#userid').focus();
+            return false;
+        }
+        if ($('#password').val().length < 4) {
+            alert('비밀번호는 4자리 이상입니다.');
+            $('#password').focus();
+            return false;
+        }
+        if (!checkNickname) {
+            alert('사용가능한 닉네임이 아닙니다.');
+            $('#nickname').focus();
+            return false;
+        }
+
+        if ($('#role').val() === 'AGENCY3' && $('#agency4').val() === '') {
+            alert('총본사를 선택하여 주세요.');
+            return false;
+		}
+
+        if ($('#role').val() === 'AGENCY2' && ($('#agency4').val() === '' || $('#agency3').val() === '')) {
+            alert('총본사 부본사를 선택하여 주세요.');
+            return false;
+        }
+
+        if ($('#role').val() === 'AGENCY1' && ($('#agency4').val() === '' || $('#agency3').val() === '' || $('#agency2').val() === '')) {
+            alert('총본사 부본사 및 총판을 선택하여 주세요.');
+            return false;
+        }
+
+        $.post(path + '/member/add', $('#frm').serialize()).done(function (data) {
+            if (data.success) {
+                try {
+                    opener.location.reload();
+                } catch (e) {
+                }
+                setTimeout(function () {
+                    self.close();
+                }, 1000);
+            } else {
+                $('form')[0].reset();
+                $('#enableUserid').hide();
+                $('#disableUserid').show();
+                checkUserid = false;
+                $('#enableNickname').hide();
+                $('#disableNickname').show();
+                checkNickname = false;
+                $('#userid').focus();
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

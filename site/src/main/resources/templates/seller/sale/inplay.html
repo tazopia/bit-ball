@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='sale', lnb='inplay'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>베팅 :</small>
+    베팅내역
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathSeller}/sale/inplay|}" method="get">
+                <label>
+                    아이디/닉네임 :
+                    <input type="text" th:field="*{username}"/>
+                    (일치 <input type="checkbox" th:field="*{match}" />)
+                </label>
+
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathSeller}/sale/inplay|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-list"></i>
+                베팅내역
+                <span class="total">( 검색된 베팅내역 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+                <a class="btn btn03" onclick="toggleAll();" style="width: 180px;"><i class="fa fa-toggle-on" aria-hidden="true"></i> 전체 베팅내역 열고/닫기</a>
+            </h3>
+        </div>
+		<table class="table-list inplay-bet">
+			<caption>종목 설정</caption>
+			<colgroup>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>번호</th>
+				<th>아이디</th>
+				<th>닉네임</th>
+				<th>등급</th>
+				<th colspan="4">회원정보</th>
+				<th>베팅시간</th>
+				<th>IP</th>
+				<th>배당</th>
+				<th>베팅금액</th>
+				<th>예상금액</th>
+				<th>적중금액</th>
+				<th colspan="2">상태</th>
+			</tr>
+			</thead>
+			<tbody class="bet" th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+			<tr class="betting">
+				<td th:text="${total - num.count}">1</td>
+				<td th:onclick="|popup.member.info('${b.userid}');|" class="color03 popup" th:text="${b.userid}">아이디</td>
+				<td th:onclick="|popup.member.info('${b.userid}');|" class="color02 popup" th:text="${b.nickname}">닉네임</td>
+				<td th:text="${b.level}">레벨</td>
+				<td class="popup color04" th:onclick="|popup.payment.money('${b.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+				<td class="popup color04" th:onclick="|popup.payment.point('${b.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+				<td class="popup color04" th:onclick="|popup.betting.list('${b.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+				<td class="popup color04" th:onclick="|popup.customer.memo('${b.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+				<td th:utext="${tag.betDate(b.betDate)}">베팅시간</td>
+				<td th:onclick="|findIp('${b.ip}');|" class="cmd color02" th:text="${b.ip}">127.0.0.1</td>
+				<td class="num color04" th:text="${tag.odds(b.betOdds)}">배당</td>
+				<td class="num color03" th:text="${tag.num(b.betMoney)}">베팅금액</td>
+				<td class="num color02" th:text="${tag.num(b.expMoney)}">예상금액</td>
+				<td class="num color01" th:text="${tag.num(b.hitMoney)}">적중금액</td>
+				<td th:class="${b.css}" th:text="${b.status}" colspan="2">결과</td>
+			</tr>
+			<tr class="betting">
+				<td colspan="3">
+					<img th:src="|/images/inplay/sports/${tag.sportsFlag(b.sports)}|"/>
+					<span class="color01" th:text="${tag.sports(b.sports)}"></span>
+				</td>
+				<td colspan="5">
+					<img th:src="|/images/inplay/league/${tag.leagueFlag(b.league)}|"/>
+					<span class="color02" th:text="${tag.league(b.league)}"></span>
+				</td>
+				<td colspan="3">
+					<span th:text="${tag.team(b.teamHome)}"></span>
+					<span class="color0">VS</span>
+					<span th:text="${tag.team(b.teamAway)}"></span>
+				</td>
+				<td colspan="2">
+					<span th:text="${tag.market(b.marketId).korName}"></span>
+				</td>
+				<td>
+					<span th:text="'라인 - ' + ${b.line}"></span>
+				</td>
+				<td>
+					<span th:text="'베팅 - ' + ${b.name}"></span>
+				</td>
+				<td>
+					<span th:text="${tag.odds(b.betOdds)} + ' 배당'"></span>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="panel-footer">
+			<div class="paging">
+				<ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+			</div>
+		</div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var toggle = false;
+    function toggleAll() {
+        if (toggle) {
+            $('.betItem').hide();
+            $('.bet').removeClass('on');
+            toggle = false;
+        } else {
+            $('.betItem').show();
+            $('.bet').addClass('on');
+            toggle = true;
+        }
+    }
+
+    function toggleItem(id) {
+        var obj = $('#' + id);
+        obj.toggle();
+        if (obj.is(':visible')) {
+            obj.parent().addClass('on');
+        } else {
+            obj.parent().removeClass('on');
+        }
+    }
+</script>
+</body>
+</html>

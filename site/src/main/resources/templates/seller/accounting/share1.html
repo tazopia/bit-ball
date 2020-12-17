@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='accounting', lnb='share'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>매장 관리 :</small>
+    지급율 관리
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-shopping-bag"></i>
+                매장 지급율 관리
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>지급율 관리</caption>
+            <thead>
+            <tr>
+				<th>매장</th>
+				<th>가입회원</th>
+				<th>정상회원</th>
+				<th>총입금</th>
+				<th>총출금</th>
+				<th>총수익</th>
+				<th>베팅</th>
+				<th>↓ 파워볼 ↑</th>
+				<th>파다리</th>
+				<th>키노</th>
+				<th>키다리</th>
+				<th>↓ BTC3 ↑</th>
+				<th>↓ BTC5 ↑</th>
+<!--                <th style="width: 140px;">관리</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${list}" th:class="${m.role.name() eq 'AGENCY2'} ? 'on'">
+				<td th:text="${m.hq eq 1 ? m.agency1 : '-'}">매장</td>
+                <td class="color01 num" th:text="${tag.num(m.regMember)}">가입회원</td>
+                <td class="color01 num" th:text="${tag.num(m.joinMember)}">정상회원</td>
+                <td class="color04 num" th:text="${tag.num(m.inMoney) + '원'}">입금</td>
+                <td class="color03 num" th:text="${tag.num(m.outMoney) + '원'}">출금</td>
+                <td class="color02 num" th:text="${tag.num(m.inMoney - m.outMoney) + '원'}">수익</td>
+                <td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
+				<td th:class="${m.hq eq 1} ? 'color01'">
+					<span th:remove="tag" th:text="${m.powerMin + '% / ' + m.powerMax + '%'}"></span>
+				</td>
+				<td th:class="${m.hq eq 1} ? 'color01'">
+					<span th:remove="tag" th:text="${m.powerLadder + '%'}"></span>
+				</td>
+				<td th:class="${m.hq eq 1} ? 'color01'">
+					<span th:remove="tag" th:text="${m.keno + '%'}"></span>
+				</td>
+				<td th:class="${m.hq eq 1} ? 'color01'">
+					<span th:remove="tag" th:text="${m.kenoLadder + '%'}"></span>
+				</td>
+				<td th:class="${m.hq eq 1} ? 'color01'">
+					<span th:remove="tag" th:text="${m.btc3Min + '% / ' + m.btc3Max + '%'}"></span>
+				</td>
+				<td th:class="${m.hq eq 1} ? 'color01'">
+					<span th:remove="tag" th:text="${m.btc5Min + '% / ' + m.btc5Max + '%'}"></span>
+				</td>
+<!--                <td>-->
+<!--                    <a class="btn btn01" th:if="${m.hq eq 1}" th:onclick="|updateShare('${m.userid}', this);|" style="width: 100px;">지급율수정 >></a>-->
+<!--                </td>-->
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+    var _powerMax = '[[${hq.powerMax}]]';
+    var _powerMin = [[${hq.powerMin}]];
+    var _powerLadder = [[${hq.powerLadder}]];
+    var _keno = [[${hq.keno}]];
+    var _kenoLadder = [[${hq.kenoLadder}]];
+
+    function updateShare(userid, obj) {
+        var tr = $(obj).parent().parent();
+        var powerMax = tr.find('input[name=powerMax]').val();
+        var powerMin = tr.find('input[name=powerMin]').val();
+        var powerLadder = tr.find('input[name=powerLadder]').val();
+        var keno = tr.find('input[name=keno]').val();
+        var kenoLadder = tr.find('input[name=kenoLadder]').val();
+        var btc3Max = tr.find('input[name=btc3Max]').val();
+        var btc3Min = tr.find('input[name=btc3Min]').val();
+        var btc5Max = tr.find('input[name=btc5Max]').val();
+        var btc5Min = tr.find('input[name=btc5Min]').val();
+
+        if (_powerMax < powerMax) {
+            alert('파워볼 상위 최대 롤링은 ' + _powerMax + '% 입니다.');
+            return false;
+        }
+        if (_powerMin < powerMin) {
+            alert('파워볼 하위 최대 롤링은 ' + _powerMin + '% 입니다.');
+            return false;
+        }
+        if (_powerLadder < powerLadder) {
+            alert('파워사다리 최대 롤링은 ' + _powerLadder + '% 입니다.');
+            return false;
+        }
+        if (_keno < keno) {
+            alert('스피드키노 최대 롤링은 ' + _keno + '% 입니다.');
+            return false;
+        }
+        if (_kenoLadder < kenoLadder) {
+            alert('키노사다리 최대 롤링은 ' + _kenoLadder + '% 입니다.');
+            return false;
+        }
+
+
+        if (!confirm('지급율을 수정하시겠습니까?')) {
+            return;
+        }
+
+        $.post(path + '/accounting/share', {
+            userid: userid,
+            powerMin: powerMin,
+            powerMax: powerMax,
+            powerLadder: powerLadder,
+            keno: keno,
+            kenoLadder: kenoLadder,
+            btc3Max: btc3Max,
+            btc3Min: btc3Min,
+            btc5Max: btc5Max,
+            btc5Min: btc5Min
+        }).done(function () {
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+        });
+    }
+</script>
+</body>
+</html>

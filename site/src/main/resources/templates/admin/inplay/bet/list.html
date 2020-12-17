@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/adminLayout" th:with="gnb='inplay', lnb='bet'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+	<small>인플레이 :</small>
+	베팅내역
+</h2>
+<div layout:fragment="content">
+	<section>
+		<div class="panel-search">
+			<form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/inplay/bet|}" method="get">
+				<label>
+					<input type="text" class="cal" th:field="*{betDate}" placeholder="베팅일자"/>
+					<a href="#" id="sp-reset-date" class="btn btn-cal">지움</a>
+					<select th:field="*{role}">
+						<option value="">모든회원베팅</option>
+						<option value="USER">실제회원베팅</option>
+						<option value="DUMMY">작업용회원베팅</option>
+					</select>
+					<select th:field="*{result}">
+						<option value="all">전체베팅</option>
+						<option value="disabled">베팅접수</option>
+						<option value="enabled">베팅확정</option>
+						<option value="">적중예상</option>
+						<option value="closing">종료</option>
+						<option value="hit">적중</option>
+						<option value="noHit">미적중</option>
+						<option value="cancel">취소</option>
+					</select>
+					<input type="text" th:field="*{ip}" placeholder="아이피"/>
+					<input type="text" th:field="*{username}" placeholder="아이디/닉네임"/>
+					(일치 <input type="checkbox" th:field="*{match}"/>)
+				</label>
+				<label>
+					정렬 :
+					<select th:field="*{orderBy}">
+						<option value="">최근 베팅순</option>
+						<option value="betMoney.desc">베팅금액 높은순</option>
+						<option value="betMoney.asc">베팅금액 낮은순</option>
+						<option value="expMoney.desc">예상금액 높은순</option>
+						<option value="expMoney.asc">예상금액 낮은순</option>
+						<option value="hitMoney.desc">적중금액 높은순</option>
+						<option value="hitMoney.asc">적중금액 낮은순</option>
+					</select>
+				</label>
+
+				<input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+				<div class="command">
+					<a class="btn btn01" onclick="goSearch();">검색</a>
+					<a th:href="@{|${siteConfig.pathAdmin}/inplay/bet|}" class="btn">취소</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	<section>
+		<div class="panel-header">
+			<h3>
+				<i class="bul fa fa-list"></i>
+				베팅내역
+				<span class="total">( 검색된 베팅내역 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+			</h3>
+		</div>
+		<table class="table-list inplay-bet">
+			<caption>종목 설정</caption>
+			<colgroup>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>번호</th>
+				<th>아이디</th>
+				<th>닉네임</th>
+				<th>등급</th>
+				<th colspan="4">회원정보</th>
+				<th>베팅시간</th>
+				<th>IP</th>
+				<th>배당</th>
+				<th>베팅금액</th>
+				<th>예상금액</th>
+				<th>적중금액</th>
+				<th>상태</th>
+				<th>-</th>
+				<th>결과수정</th>
+			</tr>
+			</thead>
+			<tbody class="bet" th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+			<tr class="betting">
+				<td th:text="${total - num.count}">1</td>
+				<td th:onclick="|popup.member.info('${b.userid}');|" class="color03 popup" th:text="${b.userid}">아이디</td>
+				<td th:onclick="|popup.member.info('${b.userid}');|" class="color02 popup" th:text="${b.nickname}">닉네임</td>
+				<td th:text="${b.level}">레벨</td>
+				<td class="popup color04" th:onclick="|popup.payment.money('${b.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+				<td class="popup color04" th:onclick="|popup.payment.point('${b.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+				<td class="popup color04" th:onclick="|popup.betting.list('${b.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+				<td class="popup color04" th:onclick="|popup.customer.memo('${b.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+				<td th:utext="${tag.betDate(b.betDate)}">베팅시간</td>
+				<td th:onclick="|findIp('${b.ip}');|" class="cmd color02" th:text="${b.ip}">127.0.0.1</td>
+				<td class="num color04" th:text="${tag.odds(b.betOdds)}">배당</td>
+				<td class="num color03" th:text="${tag.num(b.betMoney)}">베팅금액</td>
+				<td class="num color02" th:text="${tag.num(b.expMoney)}">예상금액</td>
+				<td class="num color01" th:text="${tag.num(b.hitMoney)}">적중금액</td>
+				<td th:class="${b.css}" th:text="${b.status}">결과</td>
+				<td th:class="${b.black} ? 'color03 cmd'" th:onclick="${b.black} ? |removeBlack(${b.id});|">
+					<i th:class="${b.black} ? 'fa fa-volume-up' : 'fa fa-volume-up'"></i>
+				</td>
+				<td rowspan="2">
+					<div>
+						<span class="btn btn03" th:onclick="|goHit(${b.id});|">적중</span>
+						<span class="btn btn02" th:onclick="|goLose(${b.id});|">미적</span>
+					</div>
+					<div>
+						<span class="btn btn01" th:onclick="|goException(${b.id});|">적특</span>
+						<span class="btn btn01" th:onclick="|goCancel(${b.id});|">취소</span>
+					</div>
+				</td>
+			</tr>
+			<tr class="betting">
+				<td colspan="3">
+					<img th:src="|/images/inplay/sports/${tag.sportsFlag(b.sports)}|"/>
+					<span class="color01" th:text="${tag.sports(b.sports)}"></span>
+				</td>
+				<td colspan="5">
+					<img th:src="|/images/inplay/league/${tag.leagueFlag(b.league)}|"/>
+					<span class="color02" th:text="${tag.league(b.league)}"></span>
+				</td>
+				<td colspan="3">
+					<span th:text="${tag.team(b.teamHome)}"></span>
+					<span class="color0">VS</span>
+					<span th:text="${tag.team(b.teamAway)}"></span>
+				</td>
+				<td colspan="2">
+					<span th:text="${tag.market(b.marketId).korName}"></span>
+				</td>
+				<td>
+					<span th:text="${b.line}"></span>
+				</td>
+				<td>
+					<span th:text="${b.name}"></span>
+				</td>
+				<td>
+					<span th:text="${tag.odds(b.betOdds)}"></span>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="panel-footer">
+			<div class="paging">
+				<ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+			</div>
+		</div>
+	</section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function removeBlack(id) {
+        $.post(path + '/betting/black', {
+            betId: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        })
+    }
+
+    function findIp(ip) {
+        $('#ip').val(ip);
+        $('#frm-search').submit();
+    }
+
+    // 적중
+    function goHit(id) {
+        $.post(path + '/inplay/bet/hit', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        })
+    }
+
+    // 미적
+    function goLose(id) {
+        $.post(path + '/inplay/bet/lose', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        })
+    }
+
+    // 적특
+    function goException(id) {
+        $.post(path + '/inplay/bet/exception', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        })
+    }
+
+    // 취소
+    function goCancel(id) {
+        $.post(path + '/inplay/bet/cancel', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        })
+    }
+</script>
+</body>
+</html>

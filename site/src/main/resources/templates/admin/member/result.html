@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='change'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>회원 :</small>
+    회원 마이그레이션
+</h2>
+<div layout:fragment="content">
+    <section>
+        <form method="post" id="frm">
+            <div class="panel-header">
+                <h3>
+                    등록이 완료 되었습니다.
+                </h3>
+            </div>
+            <div class="panel-footer">
+                <a th:href="@{|${siteConfig.pathAdmin}/system/change|}" class="btn btn01">돌아가기</a>
+            </div>
+        </form>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

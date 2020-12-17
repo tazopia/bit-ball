@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='board', lnb=${code}, title=${title}">
+<body>
+
+<main class="page" layout:fragment="page">
+    <div class="board">
+        <h4>
+            <p th:if="${board.role.name() eq 'ADMIN'}" th:utext="${tag.color(board.title)}"></p>
+            <p th:if="${board.role.name() ne 'ADMIN'}" th:text="${board.title}"></p>
+        </h4>
+        <p class="info" th:if="${board.role.name() eq 'ADMIN'}">
+            <span th:class="'label ' + ${board.code}" th:text="${#strings.toUpperCase(board.code)}"></span>
+            <span class="user admin" th:utext="${tag.color(siteConfig.nickname)}"></span>
+            <span class="date" th:text="${#dates.format(board.regDate, 'yyyy.MM.dd')}"></span>
+            <span class="hit" th:text="${tag.num(board.comment)}"></span>
+        </p>
+        <p class="info" th:if="${board.role.name() ne 'ADMIN'}">
+            <span th:replace="fragments/mobile :: level(lv=${board.level})"></span>
+            <span class="user" th:text="${board.nickname}"></span>
+            <span class="date" th:utext="${#dates.format(board.regDate, 'yyyy.MM.dd')}"></span>
+            <span class="hit" th:text="${tag.num(board.comment)}"></span>
+        </p>
+        <h3>
+            <p class="btn-box">
+                <a th:if="${user.userid eq board.userid}" href="#" th:onclick="|goDelete(${board.id});return false;|" class="btn write">삭제하기</a>
+                <a th:href="|${siteConfig.pathSite}/board/free?page=${page}|" class="btn">돌아가기</a>
+            </p>
+        </h3>
+    </div>
+    <div class="contents">
+        <p th:if="${board.role.name() eq 'ADMIN'}" th:utext="${tag.colorBr(board.contents)}"></p>
+        <p th:if="${board.role.name() ne 'ADMIN'}" th:utext="${tag.onlyBr(board.contents)}"></p>
+    </div>
+
+    <table class="table-game table-bet">
+        <caption>스포츠</caption>
+        <colgroup>
+            <col>
+            <col style="width: 40px;">
+            <col style="width: 40px;">
+            <col>
+        </colgroup>
+        <tbody class="betBody" th:each="b : ${board.bets}">
+        <tr>
+            <th class="betTitle" colspan="4">
+                <span class="code" th:text="${b.menuCode.name}"></span>
+                <span class="time" th:utext="${tag.dayWeekTime(b.betDate)}"></span>
+            </th>
+        </tr>
+        <th:block th:each="item : ${b.betItems}">
+            <tr>
+                <th class="league" colspan="4">
+                    <img th:src="@{|${tag.sportsFlag(item)}|}"/>
+                    <img th:src="@{|${tag.leagueFlag(item)}|}"/>
+                    <span th:text="${item.league}"></span>
+                    <span class="date" th:utext="${tag.dayWeekTime(item.gameDate)}">06/21(금)</span>
+                </th>
+            </tr>
+            <tr class="item">
+                <td rowspan="2" th:class="${(item.betTeam eq 'home' ? 'bet home on' : 'bet home') + (item.gameResult.name() eq 'HOME' or item.gameResult.name() eq 'OVER' ? ' hit' : '')}">
+                    <p class="ellipses">
+                        <em th:text="${item.teamHome}" th:remove="tag"></em>
+                        <span class="color01" th:if="${item.menuCode.name() eq 'SPECIAL' and item.special eq '전반'}" th:text="${'[' + item.special + ']'}"></span>
+                    </p>
+                    <span class="odds">
+                    <span th:if="${item.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+                        <span th:if="${item.gameCode.name() eq 'OVER_UNDER'}" class="over">[오버]</span>
+                        <em th:text="${tag.odds(item.oddsHome)}" th:remove="tag"></em>
+                    </span>
+                </td>
+                <td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'MATCH' or item.gameCode.name() eq 'ZONE' and not (item.special eq '핸디캡' or item.special eq '오버언더')}"
+                    th:with="odds=${tag.odds(item.oddsDraw)}"
+                    th:class="${(item.betTeam eq 'draw' ? 'draw on' : 'draw') + (item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' or item.gameResult.name() eq 'DRAW_HIT' ? ' hit' : '') + (odds eq '0.00' ? '' : ' odds')}"
+                    th:text="${odds eq '0.00' ? 'VS' : odds}">
+                    무
+                </td>
+                <td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'HANDICAP' or item.gameCode.name() eq 'OVER_UNDER' or item.special eq '핸디캡' or item.special eq '오버언더'}" th:class="${item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' or item.gameResult.name() eq 'DRAW_HIT' ? 'draw hit' : 'draw'}" th:text="${tag.handicap(item.handicap)}">무</td>
+                <td rowspan="2" th:class="${(item.betTeam eq 'away' ? 'bet away on' : 'bet away') + (item.gameResult.name() eq 'AWAY' or item.gameResult.name() eq 'UNDER' ? ' hit' : '')}">
+                    <p class="ellipses">
+                        <span class="color01" th:if="${item.menuCode.name() eq 'SPECIAL' and item.special eq '전반'}" th:text="${'[' + item.special + ']'}"></span>
+                        <em th:text="${item.teamAway}" th:remove="tag"></em>
+                    </p>
+                    <span class="odds">
+                        <em th:text="${tag.odds(item.oddsAway)}" th:remove="tag"></em>
+                        <span th:if="${item.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+                        <span th:if="${item.gameCode.name() eq 'OVER_UNDER'}" class="under">[언더]</span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:0;height:33px" class="score" th:text="${item.scoreHome eq null ? '-' : item.scoreHome}"></td>
+                <td style="padding:0;height:33px" class="score" th:text="${item.scoreAway eq null ? '-' : item.scoreAway}"></td>
+            </tr>
+        </th:block>
+        <tr>
+            <td class="betInfo" colspan="4">
+                <em class="betMoney">
+                    베팅금액 : <span th:text="${tag.num(b.betMoney)}">1,000</span>원
+                </em>
+                <em class="rate">
+                    배당율 : <span th:text="${tag.odds(b.betOdds)}">1,000</span>배
+                </em>
+                <em class="expMoney">
+                    예상금액 : <span th:text="${tag.num(b.expMoney)}">1,000</span>원
+                </em>
+                <em class="hitMoney" th:if="${b.closing}">
+                    적중금액 : <span class="hit" th:text="${tag.num(b.hitMoney)}">1,000</span>원
+                </em>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="comment" th:if="${!user.block}">
+        <form id="cmd" method="post" th:object="${add}" th:action="@{|${siteConfig.pathSite}/comment/add|}" onsubmit="return addComment();">
+            <input type="hidden" id="boardId" name="boardId" th:value="${board.id}"/>
+            <input type="hidden" id="code" name="code" th:value="${board.code}"/>
+            <input type="hidden" id="page" name="page" th:value="${page}"/>
+            <div class="panel-header">
+                <div class="comment">
+                    <textarea th:field="*{contents}"></textarea>
+                    <button class="btn btn02">등록</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="comments" th:if="${board.comment > 0}">
+        <div th:each="b,num : ${board.comments}" th:with="total=${#arrays.length(board.comments) + 1}" th:id="'comment' + ${b.id}">
+            <div class="user">
+                <p>
+                    <span th:replace="fragments/mobile :: level(lv=${b.level})"></span>
+                    <span th:if="${b.role.name() eq 'ADMIN'}" th:utext="${tag.color(siteConfig.nickname)}" th:remove="tag"></span>
+                    <span th:if="${b.role.name() ne 'ADMIN'}" th:text="${b.nickname}" th:remove="tag"></span>
+                </p>
+                <p class="date" th:text="${#dates.format(b.regDate, 'yyyy.MM.dd')}"></p>
+            </div>
+            <div class="title">
+                <p th:if="${b.role.name() eq 'ADMIN'}" th:utext="${tag.colorBr(b.contents)}"></p>
+                <p th:if="${b.role.name() ne 'ADMIN'}" th:utext="${tag.onlyBr(b.contents)}"></p>
+                <a th:if="${user.userid eq b.userid}" href="#" th:onclick="|deleteComment(${b.id})|" class="icon_delete"></a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+
+    function deleteComment(id) {
+        if (!confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            return false;
+        }
+
+        $.post(path + '/comment/delete', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                $('#comment' + id).slideUp();
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

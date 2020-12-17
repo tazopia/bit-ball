@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='zone', gnb='zone', lnb='keno', title='스피드 키노'" ng-app="app">
+<body ng-controller="gameCtrl">
+
+<main class="page" layout:fragment="page">
+	<h3>
+		<img ng-src="{{flag}}"/>
+		스피드 키노
+		<span class="color03" th:text="'[제 {{config.round}}회차]'">256회차</span>
+	</h3>
+    <div class="zone">
+		<div id="zoneBox">
+			<div>
+				<iframe style="position: absolute; width: 830px; height: 646px;" scrolling="no" th:src="@{${sysConfig.zone.kenoPlayer}}"></iframe>
+			</div>
+		</div>
+		<div class="table-wrap">
+			<table class="table-game table-list">
+				<caption>사다리</caption>
+				<colgroup>
+
+				</colgroup>
+				<thead>
+				<tr>
+					<th>날짜</th>
+					<th>회차</th>
+					<th>합계</th>
+					<th>홀짝</th>
+					<th>오버언더</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="s in score">
+					<td><span class="date">{{::s.date}}</span></td>
+					<td><span class="round1">{{::s.round}}</span> 회</td>
+					<td><img src="/images/powerball/pb{{s.last}}.png"/></td>
+					<td><img src="/images/powerball/{{s.oe}}.png"/></td>
+					<td><img src="/images/powerball/{{s.ou}}.png"/></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<br/>
+
+        <div class="timer" ng-cloak ng-show="config.enabled">
+            <em>베팅남은시간</em>
+            <div class="timer-box">
+                <div id="timer">
+                    <div ng-bind="countdown[0]"></div>
+                    <div ng-bind="countdown[1]"></div>
+                    <span>:</span>
+                    <div ng-bind="countdown[2]"></div>
+                    <div ng-bind="countdown[3]"></div>
+                </div>
+            </div>
+        </div>
+
+		<div class="powerball" ng-class="bet">
+			<div class="title" style="line-height: 1.6">
+				<span class="name">마지막</span> 숫자 홀 / 짝</span><br/>
+				<span class="name">마지막</span> 숫자 0-4<span class="hd">(언더)</span>/5-9<span class="hd">(오버)</span>
+			</div>
+			<div class="bet-wrap" ng-if="config.oddeven">
+				<div class="bet-item bet">
+					<div class="bet-round">
+						<p>홀</p>
+						<em class="odds">{{config.odds[0] | number: 2}}</em>
+					</div>
+					<a ng-click="add('oddeven', 'home', 0, '홀', $event)"></a>
+				</div>
+				<div class="bet-item bet">
+					<div class="bet-round">
+						<p>짝</p>
+						<em class="odds">{{config.odds[1] | number: 2}}</em>
+					</div>
+					<a ng-click="add('oddeven', 'away', 1, '짝', $event)"></a>
+				</div>
+			</div>
+			<div class="bet-wrap" ng-if="config.overunder">
+				<div class="bet-item bet">
+					<div class="bet-round">
+						<p>오버</p>
+						<em class="odds">{{config.odds[2] | number: 2}}</em>
+					</div>
+					<a ng-click="add('overunder', 'home', 2, '오버', $event)"></a>
+				</div>
+				<div class="bet-item bet">
+					<div class="bet-round">
+						<p>언더</p>
+						<em class="odds">{{config.odds[3] | number: 2}}</em>
+					</div>
+					<a ng-click="add('overunder','away', 3, '언더', $event)"></a>
+				</div>
+			</div>
+		</div>
+
+    </div>
+
+</main>
+
+<script layout:fragment="script" th:if="true">
+
+    iframeScale(830, 646);
+
+    $(window).on('orientationchange resize', function () {
+        iframeScale(830, 646);
+    });
+
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+        $scope.parseFloat = window.parseFloat;
+        $scope.zone = true;
+        $scope.cart = [];
+        $scope.odds = 0.00;
+        $scope.money = 0;
+        $scope.flag = '/images/zone/flag-keno.png';
+        $scope.config = [(${config})];
+        $scope.milliseconds = [[${user.milliseconds}]];
+        $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+        $scope.name = $scope.config.round + '회 스피드키노';
+        $scope.countdown = ['0', '0', '0', '0'];
+        $scope.score = [(${score})];
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $interval(function () {
+            if ($scope.milliseconds <= $scope.config.gameDate) {
+                $scope.milliseconds += 1000;
+                if ($scope.config.betTime < 0) {
+                    $scope.countdowon = ['0', '0', '0', '0'];
+                    angular.element('.bet').removeClass('on');
+                    $scope.cart.length = 0;
+                    $scope.bet = 'off';
+                } else {
+                    var min = '0' + parseInt($scope.config.betTime / 60);
+                    min = min.substring(min.length - 2);
+                    var sec = '0' + $scope.config.betTime % 60;
+                    sec = sec.substring(sec.length - 2);
+                    $scope.countdown = [min.substring(0, 1), min.substring(1, 2), sec.substring(0, 1), sec.substring(1, 2)];
+                }
+                $scope.config.betTime--;
+            } else {
+                $scope.setConfig();
+                $scope.setScore();
+                $scope.countdowon = ['0', '0', '0', '0'];
+            }
+        }, 1000);
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.setConfig = function () {
+            $http({
+                url: path + '/zone/keno/config',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.config = response.data;
+                $scope.name = $scope.config.round + '회 스피드키노';
+                $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+            });
+        };
+
+        $scope.setScore = function () {
+            $http({
+                url: path + '/zone/keno/score',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.score = response.data;
+            });
+        };
+
+        $scope.add = function (gameCode, betTeam, betZone, pos, event) {
+            if ($scope.bet === 'off') {
+                alert('현재 베팅이 중지 되었습니다.\n\n다음 게임을 베팅하시기 바랍니다.');
+                return;
+            }
+
+            var ele = angular.element(event.target).parent();
+            $scope.cart.length = 0;
+            if (ele.hasClass('on')) {
+                ele.removeClass('on');
+                $scope.odds = 0.00;
+            } else {
+                angular.element('.bet').removeClass('on');
+                ele.addClass('on');
+                var odds = $scope.config.odds[betZone];
+                $scope.cart.push({sdate: $scope.config.sdate, gameCode: gameCode, betTeam: betTeam, betZone: betZone, odds: odds, pos: pos});
+                $scope.odds = odds;
+            }
+        };
+
+        $scope.remove = function () {
+            angular.element('.bet').removeClass('on');
+            $scope.cart.length = 0;
+            $scope.odds = 0.00;
+        };
+
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) {
+                $scope.money = 0;
+            } else {
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / $scope.odds), $scope.config.max), $scope.config.money);
+            }
+        };
+
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.odds * $scope.money > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            // 베팅
+            $http({
+                url: path + '/zone/keno/betting',
+                method: 'POST',
+                data: {
+                    "betMoney": $scope.money,
+                    "sdate": $scope.cart[0].sdate,
+                    "gameCode": $scope.cart[0].gameCode,
+                    "betTeam": $scope.cart[0].betTeam,
+                    "betZone": $scope.cart[0].betZone,
+                    "odds": $scope.cart[0].odds
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                angular.element('.bet').removeClass('on');
+                if (!response.data.success) {
+                    alert(response.data.message);
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+                location.href = path + '/betting';
+            }, function error(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                angular.element('.bet').removeClass('on');
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+            });
+        };
+    }]);
+</script>
+</body>
+</html>

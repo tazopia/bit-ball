@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" th:with="tag = ${T(spoon.support.web.CustomTag)}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta http-equiv="Access-Control-Allow-Credentials" content="true">
+</head>
+<script>
+    parent.parent.fn_height([[${height}]]);
+</script>
+</html>

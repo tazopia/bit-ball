@@ -1,0 +1,30 @@
+{
+	"name": "bos",
+	"version": "1.0.0",
+	"description": "Best Of Stella",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"@babel/cli": "^7.6.2",
+		"@babel/core": "^7.9.0",
+		"@babel/preset-env": "^7.9.0",
+		"@babel/register": "^7.9.0",
+		"babel-plugin-transform-react-jsx": "^6.24.1",
+		"gulp": "^4.0.2",
+		"gulp-babel": "^8.0.0",
+		"gulp-include": "^2.4.1",
+		"gulp-js-import": "^1.0.6",
+		"gulp-ngmin": "^0.3.0",
+		"gulp-react": "^4.0.0",
+		"gulp-stylus": "^2.7.0",
+		"gulp-uglify": "^3.0.2",
+		"gulp-uglifycss": "^1.1.0",
+		"react-dom": "^16.10.2",
+		"gulp-uglify-es": "^2.0.0"
+	},
+	"devDependencies": {}
+}

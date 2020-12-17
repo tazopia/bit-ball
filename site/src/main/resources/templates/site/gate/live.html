@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='main', gnb='gate', lnb='live'">
+<body>
+
+<section style="width:1260px;" layout:fragment="section">
+    <h3>게이트 라이브 게임</h3>
+
+    <div style="width:1280px; overflow:auto;">
+        <iframe id="frame" style="width: 1232px; height: 690px; margin: 20px 0 20px 16px; display: block" scrolling="no" frameborder="0" th:src="@{|${gameUrl}&url=${frameUrl}|}"></iframe>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    var height = 0;
+    function fn_height(h) {
+        if (height <= 0 || Math.abs(height - h) > 20) {
+            height = h;
+            $('#frame').height(h);
+        }
+    }
+</script>
+</body>
+</html>

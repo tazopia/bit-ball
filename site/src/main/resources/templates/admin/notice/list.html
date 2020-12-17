@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='board', lnb='game'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>게시판 :</small>
+    <em>게임 상단 공지</em>
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+                게임 상단 공지
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(#lists.size(list))}">100</span> 건 )</span>
+                <a th:onclick="|popup.notice.add('${code}');|" class="btn btn03">등록</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col style="width: 80px;">
+                <col>
+                <col style="width: 240px;">
+                <col style="width: 100px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>내용</th>
+                <th>등록일</th>
+                <th>비고</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b,num : ${list}" th:with="total = ${#lists.size(list) + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td class="title cursor" th:onclick="|popup.notice.update(${b.id});|"><a th:utext="${tag.color(b.title)}"></a></td>
+                <td th:utext="${tag.fullDate(b.regDate)}"></td>
+                <td th:class="${b.enabled} ? 'color02' : 'color03'" th:text="${b.enabled} ? '사용' : '미사용'"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

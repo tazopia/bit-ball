@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='gate', lnb='exchange'">
+<body>
+
+<section layout:fragment="section">
+    <h3>게이트 게임머니 전환</h3>
+    <div class="box">
+        <h4>머니 전환 안내</h4>
+        <p>보유하신 머니를 게임머니로 전환 할 수 있습니다.</p>
+        <p class="color02">보유머니와 게임머니는 1:1로 전환 됩니다.</p>
+    </div>
+    <br/><br/>
+
+    <h3>게임머니 전환</h3>
+    <table class="banking">
+        <caption>충전 신청</caption>
+        <colgroup>
+            <col style="width: 200px;">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th>보유머니</th>
+            <td th:text="${tag.num(user.money) + '원'}">입금자</td>
+        </tr>
+        <tr>
+            <th rowspan="2">신청금액</th>
+            <td>
+                <input type="text" class="num" id="amount1" autofocus="autofocus"/> 원
+                <span id="amountKor1" class="color02" style="margin-left: 40px;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a class="btn" onclick="setAmount1(10000);">만원</a>
+                <a class="btn" onclick="setAmount1(30000);">삼만원</a>
+                <a class="btn" onclick="setAmount1(50000);">오만원</a>
+                <a class="btn" onclick="setAmount1(70000);">칠만원</a>
+                <a class="btn" onclick="setAmount1(100000);">십만원</a>
+                <a class="btn" onclick="setAmount1(300000);">삼십만원</a>
+                <a class="btn" onclick="setAmount1(500000);">오십만원</a>
+                <a class="btn" onclick="setAmount1(700000);">칠십만원</a>
+                <a class="btn" onclick="setAmount1(1000000);">백만원</a>
+                <a class="btn btn02" onclick="resetAmount1();">정정</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="command">
+        <button class="btn btn01" onclick="exchange1();">게임머니전환</button>
+    </div>
+
+    <br/><br/>
+    <h3>보유머니 전환</h3>
+    <table class="banking">
+        <caption>충전 신청</caption>
+        <colgroup>
+            <col style="width: 200px;">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th>게임머니</th>
+            <td th:text="${tag.num(gameMoney) + '원'}">입금자</td>
+        </tr>
+        <tr>
+            <th rowspan="2">신청금액</th>
+            <td>
+                <input type="text" class="num" id="amount2" autofocus="autofocus"/> 원
+                <span id="amountKor2" class="color02" style="margin-left: 40px;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a class="btn" onclick="setAmount2(10000);">만원</a>
+                <a class="btn" onclick="setAmount2(30000);">삼만원</a>
+                <a class="btn" onclick="setAmount2(50000);">오만원</a>
+                <a class="btn" onclick="setAmount2(70000);">칠만원</a>
+                <a class="btn" onclick="setAmount2(100000);">십만원</a>
+                <a class="btn" onclick="setAmount2(300000);">삼십만원</a>
+                <a class="btn" onclick="setAmount2(500000);">오십만원</a>
+                <a class="btn" onclick="setAmount2(700000);">칠십만원</a>
+                <a class="btn" onclick="setAmount2(1000000);">백만원</a>
+                <a class="btn btn02" onclick="resetAmount2();">정정</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="command">
+        <button class="btn btn02" onclick="exchange2();">보유머니전환</button>
+    </div>
+
+</section>
+
+<script layout:fragment="script" th:if="true">
+    var amount1 = [[${user.money}]];
+    var amount2 = [[${gameMoney}]];
+
+    $('#amount1').on('change, keyup', function () {
+        var amount = $(this).val().num() || 0;
+        $(this).val(amount.toString().money());
+        $('#amountKor1').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    });
+
+    $('#amount2').on('change, keyup', function () {
+        var amount = $(this).val().num() || 0;
+        $(this).val(amount.toString().money());
+        $('#amountKor2').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    });
+
+    function setAmount1(amt) {
+        var amount = $('#amount1').val().num() || 0;
+        amount = parseInt(amount, 10) + parseInt(amt, 10);
+        $('#amount1').val(amount.toString().num().money());
+        $('#amountKor1').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    }
+
+    function resetAmount1() {
+        $('#amount1').val('');
+        $('#amountKor1').text('');
+    }
+
+    function setAmount2(amt) {
+        var amount = $('#amount2').val().num() || 0;
+        amount = parseInt(amount, 10) + parseInt(amt, 10);
+        $('#amount2').val(amount.toString().num().money());
+        $('#amountKor2').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    }
+
+    function resetAmount2() {
+        $('#amount2').val('');
+        $('#amountKor2').text('');
+    }
+
+    function exchange1() {
+        if (amount1 < parseInt($('#amount1').val().num(), 10)) {
+            alert('전환할수 있는 최대 보유머니는 ' + amount1.toString().money() + '원 입니다.');
+            return false;
+        }
+
+        if (!confirm('게임머니로 전환을 하시겠습니까?')) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/gate/exchange',
+            method: 'post',
+            data: {
+                money: parseInt($('#amount1').val().num(), 10),
+                code: 1
+            }
+        }).done(function(data) {
+            if (data.success) {
+                alert('게임머니로 전환을 완료 하였습니다.');
+                location.reload();
+            } else {
+                location.reload();
+            }
+        });
+    }
+
+    function exchange2() {
+        if (amount2 < parseInt($('#amount2').val().num(), 10)) {
+            alert('전환할수 있는 최대 게임머니는 ' + amount2.toString().money() + '원 입니다.');
+            return false;
+        }
+
+        if (!confirm('보유머니로 전환을 하시겠습니까?')) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/gate/exchange',
+            method: 'post',
+            data: {
+                money: parseInt($('#amount2').val().num(), 10),
+                code: 2
+            }
+        }).done(function(data) {
+            if (data.success) {
+                alert('보유머니로 전환을 완료 하였습니다.');
+                location.reload();
+            } else {
+                location.reload();
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

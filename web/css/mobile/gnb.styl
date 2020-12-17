@@ -1,0 +1,165 @@
+#gnb {
+	position fixed
+	z-index 9999
+	top 0
+	bottom 0
+	width 100%
+	left -100%
+	transition(all .4s ease-out)
+	overflow-y scroll
+	overflow-x hidden
+	-webkit-overflow-scrolling touch
+	//.gnb-bg {
+	//	display block
+	//	position absolute
+	//	width 100%
+	//	height 100%
+	//	background url(/images/m-background.jpg) center center no-repeat
+	//	background-size cover
+	//	z-index -2
+	//}
+
+
+	&.on {
+		left 0
+	}
+
+	header {
+		//position fixed
+		padding-left 16px
+		line-height 50px
+		color #004361
+		font-weight 600
+
+		.lv {
+			margin-top -2px
+		}
+
+		span {
+			font-weight normal
+			color #fff
+		}
+
+		#btn-close {
+			display inline-block
+			width 50px
+			height 50px
+			margin 0 10px
+			background url(/images/m/ico_close.png) center center no-repeat
+			float right
+		}
+	}
+
+	.clock {
+		font-size 18px
+		font-weight 900
+		span {
+			background #000
+		}
+	}
+
+	.gnb-menu {
+		background #EC1A41
+		padding 4px 6px
+
+		.menu {
+			margin-top 4px
+			display flex
+			grid-gap 4px
+			justify-content center
+			align-items center
+
+			a {
+				flex 1
+				padding 4px
+				background linear-gradient(to bottom, #4c575a, #11161a 100%)
+				height 40px
+				line-height 32px
+				text-align center
+				font-size 15px
+			}
+		}
+
+		.menu-1 {
+			grid-gap 0px
+
+			.title {
+				width 140px
+				height 40px
+				padding 0 20px
+				background #000
+			}
+			.home {
+				width 100%
+				height 100%
+				background url(/images/brand.png) center center no-repeat
+				background-size contain
+			}
+		}
+
+		.menu-4 {
+			.home {
+				width 100%
+				height 100%
+				background url(/images/brand.png) center center no-repeat
+				background-size contain
+			}
+		}
+
+		.menu-2 {
+			img {
+				flex 1
+				max-width calc(50% - 3px)
+			}
+		}
+	}
+}
+
+#rolling-wrap {
+	padding 10px 0
+	border-top solid 1px #e85202
+	border-bottom solid 1px #e85202
+}
+
+.gnb-box {
+	//backdrop-filter blur(10px)
+	background url(/images/mobile-bg.jpg) center center no-repeat #000
+	background-size cover
+	z-index -2
+
+
+
+	.box {
+		margin 0
+	}
+}
+
+.clock {
+	display flex
+	grid-gap 4px
+
+	span {
+		background #444
+		padding 10px
+		border-radius 4px
+		flex 1
+		text-align center
+	}
+	em {
+		padding 10px
+		color #aaa
+	}
+}
+
+h3 .clock {
+	float left
+	span {
+		padding 0 10px
+		background none
+		border solid 1px #444
+	}
+
+	em {
+		padding 0
+	}
+}

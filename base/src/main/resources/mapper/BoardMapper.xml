@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.BoardMapper">
+
+    <select id="mainNotice" resultType="spoon.board.domain.BoardDto$Main">
+        SELECT TOP 8 id, code, title
+        FROM board
+        WHERE code = 'notice' AND enabled = 1 AND hidden = 0
+        ORDER BY regDate DESC
+    </select>
+
+    <select id="mainEvent" resultType="spoon.board.domain.BoardDto$Main">
+        SELECT TOP 8 id, code, title
+        FROM board
+        WHERE code = 'event' AND enabled = 1 AND hidden = 0
+        ORDER BY regDate DESC
+    </select>
+
+</mapper>

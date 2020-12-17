@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org" th:with="tag = ${T(spoon.support.web.CustomTag)}">
+<head th:replace="fragments/siteFragment :: head">
+	<meta charset="UTF-8"/>
+	<title>Best of Stella</title>
+	<link rel="shortcut icon" th:href="@{/images/favicon.ico?v=${siteConfig.version}|}}"/>
+	<link rel="stylesheet" th:href="@{/css/style.css}"/>
+	<script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
+</head>
+<body>
+<div class="page-bg"></div>
+<div class="page-gradient"></div>
+<div class="page-wrap" layout:fragment="login">
+	<div class="login-wrap">
+		여기에 내용이 옵니다.
+	</div>
+</div>
+<script layout:fragment="script" th:if="false"></script>
+<div th:replace="fragments/siteFragment :: javascript"></div>
+</body>
+</html>

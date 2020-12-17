@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='site'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>환경설정 :</small>
+    기본환경 설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${siteConfig}" onsubmit="return saveConfig();">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-cog"></i>
+                    사이트 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>사이트 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">회사명</th>
+                    <td>
+                        <label>회사명 : <input type="text" th:field="*{companyName}"/></label>
+                        <label>Since : <input type="text" th:field="*{since}" /></label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">게시물 닉네임</th>
+                    <td>
+                        <input type="text" th:field="*{nickname}" style="width: 90%;" placeholder="html 태그 허용" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">관리자 IP 허용</th>
+                    <td>
+                        관리자 로그인 시
+                        <select th:field="*{ipAdmin}">
+                            <option th:value="true">등록된 아이피로만 접근 허용</option>
+                            <option th:value="false">모든 아이피로 접근 허용</option>
+                        </select>
+                        합니다.
+                        <span class="color02">관리자 IP 허용에 미리 등록하시고 사용하시기 바랍니다.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">사용자 IP 제한</th>
+                    <td>
+                        사용자 로그인 시
+                        <select th:field="*{ipUser}">
+                            <option th:value="true">등록된 아이피는 접근 금지</option>
+                            <option th:value="false">모든 아이피로 접근 허용</option>
+                        </select>
+                        합니다.
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required" rowspan="2">서버 점검</th>
+                    <td>
+                        사이트를
+                        <select th:field="*{block}">
+                            <option th:value="true">내립니다. (서버 점검 페이지가 나옵니다.)</option>
+                            <option th:value="false">올립니다. (정상적으로 운영 중입니다.)</option>
+                        </select>
+                        <span th:class="${siteConfig.block ? 'color05' : 'color04'}" th:text="${siteConfig.block ? '현재 서버 점검 중입니다.' : '사이트 정상 작동 합니다.'}"></span>
+                        <span><a href="/block" target="_blank">미리보기</a></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea th:field="*{blockMessage}" style="width: 90%; height: 120px;"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-user-plus" aria-hidden="true"></i>
+                    회원가입 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>회원가입 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">신규가입 버튼</th>
+                    <td>
+                        <label>
+                            <select th:field="*{join.joinButton}">
+                                <option value="true">가입버튼 보임</option>
+                                <option value="false">가입버튼 숨김</option>
+                            </select>
+                        </label>
+                        <label>
+                            가입버튼 클릭시
+                            <select th:field="*{join.joinCodePage}">
+                                <option value="true">코드입력 페이지로 이동</option>
+                                <option value="false">회원가입 페이지로 이동</option>
+                            </select>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">회원가입 페이지에서</th>
+                    <td>
+                        <label>
+                            <select th:field="*{join.showRecommend}">
+                                <option value="true">추천인 입력 필드 보임</option>
+                                <option value="false">추천인 입력 필드 숨김</option>
+                            </select>
+                        </label>
+                        <label>
+                            추천인 입력은
+                            <select th:field="*{join.requiredRecommend}">
+                                <option value="true">필수 입력 사항 입니다.</option>
+                                <option value="false">필수 입력 사항이 아닙니다.</option>
+                            </select>
+                        </label>
+                        <span>(추천인 필수 입력시 추천인을 입력하지 않으면 가입이 되지 않습니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">추천인 필수 입력시</th>
+                    <td>
+                        추천인을 찾을 수 없다면
+                        <label>
+                            <select th:field="*{join.checkRecommend}">
+                                <option value="true">회원가입 불가능</option>
+                                <option value="false">추천인 없이 본사 회원으로 가입 가능</option>
+                            </select>
+                        </label>
+                     </td>
+                </tr>
+                <tr>
+                    <th class="required">회원가입 중복확인</th>
+                    <td>
+                        <label class="color02">
+                            아이디(필수)
+                        </label>
+                        <label class="color02">
+                            닉네임(필수)
+                        </label>
+                        <label class="color03">
+                            전화번호 <input type="checkbox" th:field="*{join.duplicatePhone}">
+                        </label>
+                        <label class="color03">
+                            통장번호 <input type="checkbox" th:field="*{join.duplicateAccount}">
+                        </label>
+                        <span>(체크시 회원가입 때 중복확인을 합니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">회원 가입시</th>
+                    <td>
+                        <label>
+                            <input type="text" class="num" style="width: 100px;" th:field="*{join.joinPoint}">
+                            포인트 지급,
+                        </label>
+                        기본 회원 등급
+                        <label>
+                            <select th:field="*{join.joinLevel}">
+                                <option th:each="level : ${#numbers.sequence(1, 10)}" th:value="${level}" th:text="${level + '등급'}"></option>
+                            </select>
+                            으로 지정
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">가입 후 승인여부</th>
+                    <td>
+                        <label>
+                            <select th:field="*{join.joinAutoAdmin}">
+                                <option value="true">가입시 자동 승인</option>
+                                <option value="false">관리자 확인 후 승인</option>
+                            </select>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">가입 후 메시지 alert</th>
+                    <td>
+                        <textarea th:field="*{join.joinAutoMessage}" style="width: 90%; height: 100px;"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">중복가입 체크</th>
+                    <td>
+                        동일 IP로 <input type="text" th:field="*{join.sameIp}" class="num color03" style="width: 60px;"/> 분
+                        이내에 회원가입이 있으면 중복가입으로 처리
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-usd" aria-hidden="true"></i>
+                    충전 및 포인트 보너스 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>충전 보너스 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+				<tr>
+					<th class="required">충전 페이지</th>
+					<td>
+						<select th:field="*{point.blockDeposit}">
+							<option th:value="true">충전 페이지에 접근 금지 합니다.</option>
+							<option th:value="false">충전 페이지는 정상 작동 합니다.</option>
+						</select>
+						<span th:class="${siteConfig.point.blockDeposit ? 'color05' : 'color04'}" th:text="${siteConfig.point.blockDeposit ? '충전 페이지 접근 금지 입니다.' : '충전 페이지 정상 작동 합니다.'}"></span>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">환전 페이지</th>
+					<td>
+						<select th:field="*{point.blockWithdraw}">
+							<option th:value="true">환전 페이지에 접근 금지 합니다.</option>
+							<option th:value="false">환전 페이지는 정상 작동 합니다.</option>
+						</select>
+						<span th:class="${siteConfig.point.blockWithdraw ? 'color05' : 'color04'}" th:text="${siteConfig.point.blockWithdraw ? '환전 페이지 접근 금지 입니다.' : '환전 페이지 정상 작동 합니다.'}"></span>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required color03">충전은</th>
+                    <td>
+                        최소금액 <input type="text" class="num" style="width: 100px;" th:field="*{point.depositMin}" />원 부터
+                        <input type="text" class="num" style="width: 100px;" th:field="*{point.depositUnit}" />원 단위로 가능합니다.
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color03">환전은</th>
+                    <td>
+                        최소금액 <input type="text" class="num" style="width: 100px;" th:field="*{point.withdrawMin}" />원 부터
+                        <input type="text" class="num" style="width: 100px;" th:field="*{point.withdrawUnit}" />원 단위로 가능합니다.
+                        <span>충전이 없는 환전신청은</span>
+                        <select th:field="*{point.canWithdraw}">
+                            <option th:value="true">가능합니다.</option>
+                            <option th:value="false">불가능합니다.</option>
+                        </select>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required color01">환전완료 후</th>
+					<td>
+						환전완료 후 <input type="text" class="num" style="width: 100px;" th:field="*{point.withdrawTerm}" />분
+						이내에는 환전 신청이 불가능 합니다.
+					</td>
+				</tr>
+                <tr>
+                    <th rowspan="2" class="required">
+                        <span class="color02">충전 이벤트 보너스</span>
+                        <p style="margin:8px 0 0 16px;line-height:1.6;">이벤트 설정시 다른 설정보다 우선 합니다.</p>
+                    </th>
+                    <td>
+                        <ul class="col7">
+                            <li>
+                                <label class="color03">
+                                    일 <input type="checkbox" th:field="*{point.event[0]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[0]}"> %
+                            </li>
+                            <li>
+                                <label>
+                                    월 <input type="checkbox" th:field="*{point.event[1]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[1]}"> %
+                            </li>
+                            <li>
+                                <label>
+                                    화 <input type="checkbox" th:field="*{point.event[2]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[2]}"> %
+                            </li>
+                            <li>
+                                <label>
+                                    수 <input type="checkbox" th:field="*{point.event[3]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[3]}"> %
+                            </li>
+                            <li>
+                                <label>
+                                    목 <input type="checkbox" th:field="*{point.event[4]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[4]}"> %
+                            </li>
+                            <li>
+                                <label>
+                                    금 <input type="checkbox" th:field="*{point.event[5]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[5]}"> %
+                            </li>
+                            <li>
+                                <label class="color02">
+                                    토 <input type="checkbox" th:field="*{point.event[6]}">
+                                </label>
+                                <input type="text" th:field="*{point.eventRate[6]}"> %
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        선택한 요일에
+                        <select th:field="*{point.eventFirst}">
+                            <option th:value="true">첫충전만</option>
+                            <option th:value="false">모든충전</option>
+                        </select>
+                        <select th:field="*{point.eventPayment}">
+                            <option th:value="true">지급</option>
+                            <option th:value="false">미지급</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table-read col10" style="margin: -1px 0;">
+                <caption>충전보너스</caption>
+                <colgroup>
+                    <col style="width: 220px;">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+					<col>
+					<col>
+					<col>
+					<col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="required color01">충전시 추가 보너스</th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+					<td>매장</td>
+					<td>총판</td>
+					<td>부본사</td>
+					<td>총본사</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">최초 충전 보너스</th>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.joinRate[10]}"/><br/>%
+                    </td>
+					<td>
+						<input type="text" th:field="*{point.joinRate[11]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.joinRate[12]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.joinRate[13]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.joinRate[14]}"/><br/>%
+					</td>
+                </tr>
+                <tr>
+                    <th class="required">첫충전 보너스</th>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.firstRate[10]}"/><br/>%
+                    </td>
+					<td>
+						<input type="text" th:field="*{point.firstRate[11]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.firstRate[12]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.firstRate[13]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.firstRate[14]}"/><br/>%
+					</td>
+                </tr>
+                <tr>
+                    <th class="required">매충전 보너스</th>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{point.everyRate[10]}"/><br/>%
+                    </td>
+					<td>
+						<input type="text" th:field="*{point.everyRate[11]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.everyRate[12]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.everyRate[13]}"/><br/>%
+					</td>
+					<td>
+						<input type="text" th:field="*{point.everyRate[14]}"/><br/>%
+					</td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table-read">
+                <caption>보너스 포인트 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">로그인 포인트</th>
+                    <td>
+                        매일 첫 로그인 시
+                        <input type="text" class="num" th:field="*{point.login}" style="width: 100px;" />
+                        포인트 지급
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">글 작성 포인트</th>
+                    <td>
+                        하루 최대
+                        <input type="text" class="num" th:field="*{point.boardMax}" style="width: 60px;" />
+                        회
+                        <input type="text" class="num" th:field="*{point.board}" style="width: 100px;" />
+                        포인트 지급
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">댓글 작성 포인트</th>
+                    <td>
+                        하루 최대
+                        <input type="text" class="num" th:field="*{point.commentMax}" style="width: 60px;" />
+                        회
+                        <input type="text" class="num" th:field="*{point.comment}" style="width: 100px;" />
+                        포인트 지급
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">포인트 환전단위</th>
+                    <td>
+                        <input type="text" class="num" th:field="*{point.exchange}" style="width: 100px;" />
+                        포인트 이상일때 환전 가능
+                        <span class="color02">(포인트 관계 없이 무조건 환전시 0을 입력해 주세요.)</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    function saveConfig() {
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

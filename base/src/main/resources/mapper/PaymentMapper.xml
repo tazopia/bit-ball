@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.PaymentMapper">
+
+	<insert id="addMoney" parameterType="spoon.payment.entity.AddMoney">
+		<if test="codeString == 'BET_ZONE_ROLLBACK' or codeString == 'BET_SPORTS_ROLLBACK' or codeString == 'WITHDRAW_ROLLBACK' or codeString == 'DEPOSIT_ROLLBACK'">
+			UPDATE money SET cancel = 1 WHERE moneyCode = #{rollbackCode} AND userid = #{userid} AND actionId = #{actionId} AND cancel = 0;
+		</if>
+		INSERT INTO money (actionId, agency1, agency2, agency3, agency4, amount, cancel, ip, level, memo, moneyCode, nickname, orgMoney, regDate, role, userid, worker)
+		SELECT #{actionId}, agency1, agency2, agency3, agency4, #{amount}, 0, #{ip}, level, #{memo}, #{codeString}, nickname, money, getDate(), role, userid, #{worker}
+		FROM member WHERE userid = #{userid};
+		UPDATE member SET money = money + ${amount}
+		<if test="codeString == 'DEPOSIT' || codeString == 'DEPOSIT_ROLLBACK'">
+			, deposit = deposit + ${amount}
+		</if>
+		<if test="codeString == 'WITHDRAW' || codeString == 'WITHDRAW_ROLLBACK'">
+			, withdraw = withdraw - ${amount}
+		</if>
+		<if test="codeString == 'BET_SPORTS'">
+			, betSports = betSports - ${amount}, betSportsCnt = betSportsCnt + 1, betDate = getDate()
+		</if>
+		<if test="codeString == 'BET_ZONE'">
+			, betZone = betZone - ${amount}, betZoneCnt = betZoneCnt + 1, betDate = getDate()
+		</if>
+		<if test="codeString == 'BET_SPORTS_ROLLBACK'">
+			, betSports = betSports - ${amount}, betSportsCnt = betSportsCnt - 1
+		</if>
+		<if test="codeString == 'BET_ZONE_ROLLBACK'">
+			, betZone = betZone - ${amount}, betZoneCnt = betZoneCnt - 1
+		</if>
+		WHERE userid = #{userid};
+		DELETE FROM ADD_MONEY WHERE id = #{id};
+
+	</insert>
+
+	<insert id="addPoint" parameterType="spoon.payment.entity.AddPoint">
+		<if test="codeString == 'DEPOSIT_ROLLBACK' or codeString == 'LOSE_ROLLBACK' or codeString == 'RECOMM_ROLLBACK'">
+			UPDATE point SET cancel = 1 WHERE pointCode = #{rollbackCode} AND userid = #{userid} AND actionId = #{actionId} AND cancel = 0;
+		</if>
+		INSERT INTO point (actionId, agency1, agency2, agency3, agency4, amount, cancel, ip, level, memo, pointCode, nickname, orgPoint, regDate, role, userid, worker)
+		SELECT #{actionId}, agency1, agency2, agency3, agency4, #{amount}, 0, #{ip}, level, #{memo}, #{codeString}, nickname, point, getDate(), role, userid, #{worker}
+		FROM member WHERE userid = #{userid};
+		UPDATE member SET point = point + ${amount}
+		<if test="codeString == 'CHANGE'">
+			, deposit = deposit + ${amount}
+		</if>
+		WHERE userid = #{userid};
+		DELETE FROM ADD_POINT WHERE id = #{id};
+	</insert>
+
+</mapper>

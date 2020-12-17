@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='luck'">
+<body>
+
+<section layout:fragment="section">
+    <h3>세븐럭 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/luck/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>세븐럭</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th>일자</th>
+            <th>회차</th>
+            <th>DEALER</th>
+            <th>PLAYER1</th>
+            <th>PLAYER2</th>
+            <th>PLAYER3</th>
+            <th>딜러 칼라</th>
+            <th>딜러 무늬</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td class="color0" th:text="${tag.round(g.round, 3)} + ' 회'"></td>
+            <td><span th:class="'card_result card_' + ${g.dealerCard}"></span></td>
+            <td><span th:class="'card_result card_' + ${g.player1Card}"></span></td>
+            <td><span th:class="'card_result card_' + ${g.player2Card}"></span></td>
+            <td><span th:class="'card_result card_' + ${g.player3Card}"></span></td>
+            <td>
+                <span th:if="${g.card eq 'S' or g.card eq 'C'}" class="color0">블랙</span>
+                <span th:if="${g.card eq 'H' or g.card eq 'D'}" class="color02">레드</span>
+            </td>
+            <td>
+                <span th:if="${g.card eq 'S'}" class="color0">♠</span>
+                <span th:if="${g.card eq 'S'}">(스페이드)</span>
+                <span th:if="${g.card eq 'D'}" class="color02">◆</span>
+                <span th:if="${g.card eq 'D'}">(다이아)</span>
+                <span th:if="${g.card eq 'H'}" class="color02">♥</span>
+                <span th:if="${g.card eq 'H'}">(하트)</span>
+                <span th:if="${g.card eq 'C'}" class="color0">♣</span>
+                <span th:if="${g.card eq 'C'}">(크로바)</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

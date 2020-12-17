@@ -1,0 +1,155 @@
+.power.score {
+	th, td {
+		border none !important
+		text-align center
+		padding 0
+		border-bottom solid 1px #333 !important
+		background #333
+	}
+
+	td {
+		padding 10px 0
+	}
+
+	th {
+		color #fff
+		font-size 14px
+		line-height 1.4
+		padding 10px 0
+		background #2a2a2a
+
+	}
+
+	.round2 {
+		color #ff6600
+	}
+}
+
+
+main {
+	.main-wrap {
+		min-height 300px
+	}
+
+	.powerball {
+		width 46%
+
+		.date {
+			width 136px
+		}
+
+		.times {
+			padding-left 20px
+			width 120px
+		}
+
+		.round {
+			padding-left 20px
+			width 90px
+		}
+
+		.balls {
+			width 170px
+		}
+
+		.pb {
+			color #ffd424
+			font-weight 800
+		}
+
+	}
+
+}
+
+div.powerball {
+	width 100%
+
+	&.off {
+		.bet-round {
+			background #363537 !important
+		}
+	}
+
+	.title {
+
+		text-align center
+		padding 10px 0
+		color #ffb900
+
+		.name {
+			font-weight bold
+		}
+
+		.hd {
+			color #00aaff
+		}
+	}
+
+	.bet-wrap {
+		display flex
+		margin 0 -5px
+
+		.bet-item {
+			display flex
+			justify-content center
+			flex 1
+			background #363537
+			margin 5px
+			padding 10px 0
+			border-radius 10px
+			position relative
+			cursor pointer
+			transition(all 0.2s ease-out)
+
+			&.on {
+				background #ffb900 !important
+			}
+
+			&:hover {
+				background #282828
+				.bet-round {
+					transform scale(1.1)
+				}
+			}
+
+			a {
+				position absolute
+				left 0
+				right 0
+				top 0
+				bottom 0
+			}
+
+			&:first-child {
+				.bet-round {
+					background #005b96
+				}
+			}
+
+			&:last-child {
+				.bet-round {
+					background #ea1717
+				}
+			}
+		}
+
+		.bet-round {
+			display flex
+			flex-direction column
+			height 70px
+			width 70px
+			align-items center
+			justify-content center
+			border-radius 35px
+			background #325422
+			box-shadow(2px 2px 10px 0 rgba(0, 0, 0, 0.6))
+			transition(all 0.2s ease-out)
+
+			p {
+				font-size 16px
+				padding-bottom 10px
+				font-weight 600
+			}
+		}
+	}
+}

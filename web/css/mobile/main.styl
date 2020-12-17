@@ -1,0 +1,301 @@
+.main-menu {
+	text-align center
+
+	margin 0 auto
+	padding 20px 0
+
+	a {
+		display inline-block
+		position relative
+		margin 8px 2px
+		width 80px
+		height 80px
+
+		p {
+			position absolute
+			width 100%
+			top 50px
+			text-align center
+			text-shadow 1px 1px 1px #000
+		}
+	}
+}
+
+
+.gnb {
+	text-align center
+	max-width 600px
+	margin 0 auto
+	padding 20px 0
+
+	a {
+		position relative
+		display inline-block
+		width 80px
+		height 80px
+		margin 4px 2px
+		background url(/images/m/gnb.png) left top no-repeat
+		filter grayscale(100%)
+		border-radius 10px
+
+		p {
+			position absolute
+			width 100%
+			bottom 8px
+		}
+	}
+
+	.gnb-in { // 충전
+		background-position 0 0
+	}
+	.gnb-out { // 환전
+		background-position -80px 0
+	}
+	.gnb-cross { // 크로스
+		background-position -160px 0
+	}
+	.gnb-special { // 스페셜
+		background-position -240px 0
+	}
+	.gnb-live { // 라이브
+		background-position 0 -80px
+	}
+	.gnb-ladder { // 사다리
+		background-position -80px -80px
+	}
+	.gnb-dari { // 다리다리
+		background-position -160px -80px
+	}
+	.gnb-snail { // 달팽이
+		background-position -240px -80px
+	}
+	.gnb-power { // 파워볼
+		background-position 0 -160px
+	}
+	.gnb-aladdin { // 알라딘
+		background-position -80px -160px
+	}
+	.gnb-lowhi { // 로하이
+		background-position -160px -160px
+	}
+	.gnb-oddeven { // 홀짝
+		background-position -240px -160px
+	}
+	.gnb-baccarat { // 바카라
+		background-position 0 -240px
+	}
+	.gnb-soccer { // 가상축구
+		background-position -80px -240px
+	}
+	.gnb-dog { // 개경주
+		background-position -160px -240px
+	}
+	.gnb-result { // 경기결과
+		background-position -240px -240px
+	}
+	.gnb-board { // 게시판
+		background-position 0 -320px
+	}
+	.gnb-customer { // 고객센터
+		background-position -80px -320px
+	}
+	.gnb-daily { // 출석체크
+		background-position -160px -320px
+	}
+	.gnb-bet { // 베팅내역
+		background-position -240px -320px
+	}
+	.gnb-p-ladder { // 파워볼 사다리
+		background-position 0 -400px
+	}
+	.gnb-luck { // 세븐럭
+		background-position -80px -400px
+	}
+	.gnb-notice { // 공지사항
+		background-position -160px -400px
+	}
+	.gnb-k-ladder { // 키노사다리
+		background-position -240px -400px
+	}
+	.gnb-cw-oddeven { // 크라운 홀짝
+		background-position 0 -480px
+	}
+	.gnb-cw-baccarat { // 크라운 바카라
+		background-position -80px -480px
+	}
+	.gnb-cw-sutda { // 크라운 섰다
+		background-position -160px -480px
+	}
+	.gnb-event { // 이벤트
+		background-position -240px -480px
+	}
+}
+
+div.payment {
+	text-align center
+	.btn {
+		font-size 18px
+		line-height 38px
+		height 40px
+		width 220px
+		border-radius 4px
+		background #EC1A41
+		//background url(/images/gold_bg.jpg) center bottom no-repeat //#59a735
+
+	}
+
+}
+
+.box {
+	position relative
+	//margin 0 -6px
+	//background rgba(0,0,0,0.3)
+	padding 20px
+	//border-top solid 1px rgba(255,255,255,0.1)
+	//border-bottom solid 1px rgba(0,0,0,0.5)
+
+	p {
+		font-size 13px
+		line-height 1.4
+	}
+
+	div {
+		text-align center
+	}
+
+	.btn {
+		width 220px
+		display inline-block
+		height 40px
+		line-height 40px
+		padding 0 20px
+		background transparent
+		border solid 1px rgba(255,255,255,0.3)
+		margin 20px auto 0 auto
+
+		&.payment {
+			font-size 18px
+			line-height 38px
+			border-radius 4px
+			border none
+			background #EC1A41
+			//background url(/images/gold_bg.jpg) center bottom no-repeat //#59a735
+		}
+	}
+}
+
+.rule {
+	padding 20px 10px
+
+	h3 {
+		margin-bottom 10px
+		font-size 17px
+	}
+
+	li {
+		font-size 15px
+		color #ccc
+		line-height 1.6
+	}
+
+}
+
+main.page {
+	//background rgba(255,255,255,0.16)
+
+	h3 {
+		height 45px
+		line-height 45px
+		font-size 16px
+
+		img {
+			vertical-align middle
+		}
+
+		.btn-box {
+			float right
+			height 45px
+			line-height 45px
+
+			.btn {
+				vertical-align middle
+				width auto
+				padding 0 8px
+				line-height 29px
+				font-size 12px
+				border-radius 15px
+				background #EC1A41 !important
+				//border solid 1px color03
+				color #fff
+				text-shadow none
+
+				&.reload {
+
+				}
+
+				&.search, &.write {
+					//border-color #fff
+					background color03
+				}
+			}
+		}
+	}
+
+	.event {
+		margin 0 0 20px 0
+		padding 20px
+		background #262527
+		border-radius 4px
+	}
+
+	label {
+		color #ccc
+	}
+}
+
+.marquee {
+	margin-top 10px
+}
+
+figure {
+	text-align center
+	position relative
+	display block
+	overflow hidden
+	z-index -1
+
+
+	video {
+		object-fit contain
+		max-width 100%
+	}
+
+	.video-bg {
+		position absolute
+		top 0
+		width 100%
+		height 100%
+		background url(/images/patten_login_bg.png)
+	}
+
+	h1 {
+		padding 140px 0 0 60px
+		font-family 'Source Sans Pro', sans-serif
+		font-size 46px
+		font-weight 600
+		color #fff
+		line-height 1.05
+	}
+
+	p {
+		display table
+		padding 4px 20px
+		//background rgba(255, 255, 255, 0.3)
+		margin-bottom 4px
+		transition(all 0.2s ease-out)
+
+		&:hover {
+			letter-spacing 1px
+		}
+	}
+}

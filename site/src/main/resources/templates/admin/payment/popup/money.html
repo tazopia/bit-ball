@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <div class="panel-search">
+            <label>
+                머니요약 :
+                <input type="text" id="memo" style="width: 400px;"/>
+            </label>
+            <label>
+                <select id="plus" name="plus" style="color:#e07a59">
+                    <option style="color:#ffc414;" th:value="true">증액</option>
+                    <option style="color:#e07a59;" th:value="false" selected="selected">차감</option>
+                </select>
+                <input type="text" id="amount" class="num"/>
+            </label>
+            <div class="command">
+                <span class="btn btn03" onclick="addMoney();" style="width: 176px;" id="cancel">머니 증/차감</span>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/payment/money/${member.userid}|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    사용내역 :
+                    <select th:field="*{code}">
+                        <option value="">선택하세요</option>
+                        <option value="충환전">충환전</option>
+                        <option value="베팅">베팅 및 적중</option>
+                        <option value="포인트전환">포인트 전환</option>
+                        <option value="관리자">관리자 증차감</option>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/payment/money/${member.userid}|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-cog"></i>
+                <label>
+                    <em class="color03" th:text="${member.userid}">아이디</em>
+                    <em class="color02" th:text="' (' + ${member.nickname} + ')'">닉네임</em>
+                    <em th:text="' ' + ${member.role.name() eq 'USER' ? member.level + '레벨' : member.role.name}">닉네임</em>
+                    님의
+                </label>
+                <label>
+                    현재 머니 : <em class="color01" th:text="${tag.num(member.money)}"></em>
+                </label>
+                현재 포인트 : <em class="color02" th:text="${tag.num(member.point)}"></em>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>대상</th>
+                <th>사용내역</th>
+                <th>비고</th>
+                <th>기존머니</th>
+                <th>머니</th>
+                <th>최종머니</th>
+                <th>날짜</th>
+                <th>작업자</th>
+            </tr>
+            </thead>
+            <tbody id="money-body">
+            <tr th:each="m,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td class="color04" th:text="${m.actionId}">0</td>
+                <td th:class="${m.amount < 0} ? 'color03' : 'color01'" th:text="${m.moneyCode.name}">사용내역</td>
+                <td th:text="${#strings.defaultString(m.memo, '-')}">비고</td>
+                <td class="num o_money" th:text="${tag.num(m.orgMoney)}">기존머니</td>
+                <td th:class="${m.amount < 0} ? 'color03 num popup' : 'color01 num popup'" th:onclick="|popup.payment.money('${m.userid}');|" th:text="${tag.num(m.amount)}">머니</td>
+                <td class="num color0 n_money" th:text="${tag.num(m.orgMoney + m.amount)}">최종머니</td>
+                <td th:utext="${tag.dayWeekTimes(m.regDate)}"></td>
+                <td th:text="${m.worker}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="paging">
+            <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+        </div>
+        <div class="panel-footer">
+            <a onclick="popup.close();return false;" class="btn">창닫기</a>
+        </div>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    $('.num').onlyNum();
+    $('#plus').on('change', function() {
+        if ($(this).val() == 'false') {
+            $(this).css({color:'#e07a59'});
+        } else {
+            $(this).css({color:'#ffc414'});
+        }
+    });
+
+    function addMoney() {
+        var amount = $('#amount').val();
+        if (amount === '' || amount === '0') {
+            alert('머니를 입력 하세요.');
+            return false;
+        }
+        var msg = amount + ' 머니를 ' + ($('#plus').val() === 'true' ? '증액' : '차감') + ' 합니다.';
+        if (!confirm(msg)) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/payment/money/add',
+            method: 'post',
+            data: {
+                userid: '[[${member.userid}]]',
+                plus: $('#plus').val(),
+                amount: amount,
+                memo: $('#memo').val()
+            }
+        }).done(function (data) {
+            if (data.success) {
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+
+            } else {
+                alert(data.message);
+                $('#amount').val('');
+                $('#memo').val('');
+            }
+        });
+    }
+
+    if ('[[${command.code}]]' === '') {
+        var m = 0;
+        $($('#money-body tr').get().reverse()).each(function (i, o) {
+            var tr = $(o);
+            if (i > 0 && m != parseInt(tr.find('.o_money').text().num(), 10)) {
+                tr.find('.o_money').addClass('color05');
+            }
+            m = parseInt(tr.find('.n_money').text().num(), 10);
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='customer', lnb='join'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>고객응대 :</small>
+    회원가입 자동쪽지
+</h2>
+<div layout:fragment="content">
+
+    <section>
+        <form id="frm" th:object="${memo}">
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-cutlery"></i>
+                    회원가입 자동쪽지
+                    <span>
+                    아이디 : <em class="color01">#아이디#</em>, 닉네임 : <em class="color01">#닉네임#</em>, 회사명 : <em class="color01">#회사#</em> 로 개별 유저에 맞도록 자동 변환 됩니다.
+                </span>
+                </h3>
+            </div>
+            <table class="table-memo">
+                <caption>고객응대 환경설정</caption>
+                <colgroup>
+                    <col style="width:200px;">
+                    <col style="width:100px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td class="title color04" rowspan="2">
+                        회원가입 자동쪽지
+                        <br/><br/>
+                        <select th:field="*{enabled}">
+                            <option th:value="true">사용</option>
+                            <option th:value="false">미사용</option>
+                        </select>
+                    </td>
+                    <th>제목</th>
+                    <td>
+                        <input type="text" th:field="*{title}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td>
+                        <textarea th:field="*{contents}" th:text="${memo.contents}"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <a class="btn btn04" onclick="update();">수정</a>
+            </div>
+        </form>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function update() {
+        $.ajax({
+            url: path + '/customer/join',
+            method: 'post',
+            data: $('#frm').serialize()
+        }).done(function () {
+
+        });
+    }
+</script>
+</body>
+</html>

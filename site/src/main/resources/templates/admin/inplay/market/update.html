@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:action="|${siteConfig.pathAdmin}/inplay/market/update|" th:object="${market}" onsubmit="return update()">
+        <input type="hidden" th:field="*{id}" />
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-futbol-o"></i> 마켓 수정</h3>
+            </div>
+            <table class="table-read">
+                <caption>종목 수정</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">마켓</th>
+                    <td th:text="${market.name}">축구</td>
+                </tr>
+				<tr>
+					<th class="required">한글명</th>
+					<td><input type="text" th:field="*{korName}" /></td>
+				</tr>
+                <tr>
+                    <th class="required">메뉴</th>
+                    <td>
+						<label><input type="radio" th:field="*{menu}" th:value="매치"/> 매치</label>
+						<label><input type="radio" th:field="*{menu}" th:value="오버언더"/> 오버언더</label>
+						<label><input type="radio" th:field="*{menu}" th:value="핸디캡"/> 핸디캡</label>
+						<label><input type="radio" th:field="*{menu}" th:value="스페셜"/> 스페셜</label>
+						<label><input type="radio" th:field="*{menu}" th:value="기타"/> 기타</label>
+						<p style="margin-top:8px;" class="color01">핸디캡의 경우 상단에 팀명이 생성 됩니다.</p>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">순서</th>
+					<td>
+						<span th:text="${market.sort}" style="margin-right:50px;"></span>
+						<button class="btn btn02" th:onclick="|sortUp(${market.id});|">▲</button>
+						<button class="btn btn01" th:onclick="|sortDown(${market.id});|">▼</button>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">라인</th>
+					<td>
+						<label><input type="radio" th:field="*{line}" th:value="2"/> 두줄 배당</label>
+						<label><input type="radio" th:field="*{line}" th:value="3"/> 세줄 배당</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">사용유무</th>
+					<td>
+						<label><input type="radio" th:field="*{enabled}" th:value="true"/> 사용</label>
+						<label><input type="radio" th:field="*{enabled}" th:value="false"/> 사용안함</label>
+					</td>
+				</tr>
+                </tbody>
+            </table>
+			<div class="panel-body">
+				<h3><i class="bul fa fa-futbol-o"></i> 배당 최소/최대 설정</h3>
+			</div>
+			<table class="table-read">
+				<caption>종목 수정</caption>
+				<colgroup>
+					<col style="width: 180px;">
+					<col>
+				</colgroup>
+				<tbody>
+				<tr>
+					<th class="required">축구</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.football.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.football.max}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">야구</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.baseball.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.baseball.max}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">농구</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.basketball.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.basketball.max}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">배구</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.volleyball.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.volleyball.max}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">아이스하키</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.iceHockey.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.iceHockey.max}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">이스포츠</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.egames.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.egames.max}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">권투</th>
+					<td>
+						<label>
+							최소 <input type="text" style="width:100px;" th:field="*{minMax.boxing.min}" />
+						</label>
+						<label>
+							최대 <input type="text" style="width:100px;" th:field="*{minMax.boxing.max}" />
+						</label>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn04" value="수정" />
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        opener.loadMarket();
+        popup.close();
+    }
+
+    function updateSports() {
+        if ($('#korName').val() === '') {
+            alert('종목을 입력 하세요.');
+            $('#sportsName').focus();
+            return false;
+        }
+    }
+
+    function sortUp(id) {
+        $.post(path + '/inplay/market/up', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    function sortDown(id) {
+        $.post(path + '/inplay/market/down', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

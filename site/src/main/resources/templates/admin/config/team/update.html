@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:action="|${siteConfig.pathAdmin}/config/team/update|" th:object="${team}" onsubmit="return updateTeam()">
+        <input type="hidden" th:field="*{id}" />
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-trophy"></i> 팀명 수정</h3>
+            </div>
+            <table class="table-read">
+                <caption>팀명 수정</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">종목</th>
+                    <td th:text="${team.sports}">축구</td>
+                </tr>
+                <tr>
+                    <th class="required">기본팀명</th>
+                    <td th:text="${team.teamName}">기본팀명</td>
+                </tr>
+                <tr>
+                    <th class="required">노출팀명</th>
+                    <td>
+                        <input th:field="*{teamKor}" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn04" value="수정" />
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function updateTeam() {
+        if ($('#teamKor').val() == '') {
+            alert('팀명을 입력 하세요.');
+            $('#teamKor').focus();
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

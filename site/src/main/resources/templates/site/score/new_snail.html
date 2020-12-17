@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='new_snail'">
+<body>
+
+<section layout:fragment="section">
+    <h3>달팽이 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/new_snail/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>사다리</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th>일자</th>
+            <th>회차</th>
+			<th>홀짝</th>
+			<th>오버언더</th>
+            <th>결과</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td class="color0" th:text="${tag.round(g.round, 3)} + ' 회'"></td>
+            <td>
+                <span th:if="${g.oe eq 'odd'}" class="color01">홀</span>
+                <span th:if="${g.oe eq 'even'}" class="color02">짝</span>
+                <span th:if="${g.oe ne 'odd' and g.oe ne 'even'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.ou eq 'over'}" class="color01">오버</span>
+                <span th:if="${g.ou eq 'under'}" class="color02">언더</span>
+                <span th:if="${g.ou ne 'over' and g.ou ne 'under'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.ranking eq '1'}" class="color01">1</span>
+                <span th:if="${g.ranking eq '2'}" class="color02">2</span>
+                <span th:if="${g.ranking eq '3'}" class="color03">3</span>
+                <span th:if="${g.ranking eq '4'}" class="color04">4</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

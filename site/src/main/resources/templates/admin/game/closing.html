@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='game', lnb=${menu}, pnb='closing'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>스포츠 :</small>
+    [[${command.menuCode.name}]] 종료
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/game/${menu}/closing|}"
+                  method="get">
+                <input type="hidden" id="page" name="page" th:value="${page.number + 1}">
+                <label>
+                    종목 :
+                    <select th:field="*{sports}">
+                        <option value="">전체종목</option>
+                        <option th:each="sport: ${sportsList}" th:value="${sport.sportsName}" th:text="${sport.sportsName}">농구</option>
+                    </select>
+                </label>
+                <label>
+                    리그 :
+                    <select th:field="*{league}">
+                        <option value="">전체리그</option>
+                        <option th:each="league: ${leagueList}" th:value="${league.leagueName}" th:text="${league.leagueKor}">리그</option>
+                    </select>
+                </label>
+                <label>
+                    팀명 :
+                    <input type="text" th:field="*{team}" />
+                </label>
+                <label>
+                    정렬 :
+                    <select th:field="*{sort}">
+                        <option value="">처음 경기를 위로</option>
+                        <option value="date.desc">마지막 경기를 위로</option>
+                        <option value="amount.desc">베팅금액 많은 경기를 위로</option>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/game/${menu}/closing|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i th:class="${icon}"></i>
+                [[${command.menuCode.name}]] 종료
+                <span class="total">( 검색된 경기 : <span th:text="${#numbers.formatInteger(page.totalElements, 0, 'DEFAULT')}">100</span> 경기 )</span>
+                <span>- 리그및 팀명 수정은 더블클릭을 하세요.</span>
+            </h3>
+        </div>
+        <table class="table-list table-game">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col style="width: 30px;">
+                <col style="width: 166px;">
+                <col style="width: 206px;">
+                <col style="width: 64px;">
+                <col style="width: 130px;">
+                <col style="width: 64px;">
+                <col style="width: 206px;">
+                <col>
+                <col style="width: 70px;">
+                <col style="width: 70px;">
+                <col style="width: 64px;">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>종목</th>
+                <th>타입</th>
+                <th colspan="2">리그</th>
+                <th>홈팀</th>
+                <th>승</th>
+                <th>무(핸디)</th>
+                <th>패</th>
+                <th>원정팀</th>
+                <th>환수율</th>
+                <th colspan="2">재정산</th>
+                <th>결과</th>
+                <th>스코어</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="g:${page.content}" th:id="${g.id}">
+                <td data-sports th:class="${g.upCount gt 1 ? 'popup' : 'cursor'}" th:onclick="|popup.game.logger(${g.id});|">
+                    <img th:src="@{|/images/sports/${g.sportsBean.sportsFlag}|}" class="flag-sport"/>
+                    <p th:text="${g.sports}">축구</p>
+                </td>
+                <td>
+                    <span th:text="${g.gameCode.name}">핸디캡</span>
+					<p th:class="${g.special eq '1쿼터' ? 'color01' : (g.special eq '2쿼터' ? 'color02' : (g.special eq '3쿼터' ? 'color03' : (g.special eq '4쿼터' ? 'color04' : 'color0')))}" th:text="${!g.special.isEmpty()} ? |(${g.special})|">(첫 5득점)</p>
+                </td>
+                <td><img th:src="@{|/images/league/${g.leagueBean.leagueFlag}|}" class="flag-league"/></td>
+                <td>
+                    <input type="text" name="league" th:value="${g.leagueBean.leagueKor}" class="sel" style="width: 168px;" readonly="readonly" th:ondblclick="|popup.league.update(${g.leagueBean.id});|"/>
+                    <p>
+                        <input type="text" name="date" th:value="${#dates.format(g.gameDate, 'yyyy.MM.dd')}" class="cal" style="width: 76px;"/>
+                        <input type="text" name="hour" th:value="${#dates.format(g.gameDate, 'HH')}" maxlength="2" style="width: 26px;"/> 시
+                        <input type="text" name="minute" th:value="${#dates.format(g.gameDate, 'mm')}" maxlength="2" style="width: 26px;"/> 분
+                    </p>
+                </td>
+                <td th:class="${g.result.name() eq 'HOME' or g.result.name() eq 'OVER' ? 'hit' : ''}">
+                    <input type="text" name="teamHome" th:value="${g.teamHomeBean.teamKor}" readonly="readonly" th:ondblclick="|popup.team.update(${g.teamHomeBean.id});|"/>
+                    <a th:onclick="|popup.betting.game(${g.id}, 'home');|" th:class="${g.amountHome gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amountHome gt 0 ? #numbers.formatInteger(g.amountHome, 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td>
+                    <input type="text" name="oddsHome" th:value="${#numbers.formatDecimal(g.oddsHome, 1, 2)}" style="width: 56px;"/>
+                    <a data-bet="home" th:onclick="|game.betEnabled(${g.id}, 'home');|" th:class="${g.betHome ? 'btn btn01' : 'btn'}" th:text="${g.betHome ? '베팅가능' : '베팅불가'}">베팅불가</a>
+                </td>
+                <td th:class="${g.result.name() eq 'DRAW' or g.result.name() eq 'HIT' ? 'hit' : ''}">
+                    <div th:if="${g.gameCode.name() eq 'MATCH'}" th:remove="tag">
+                        <input type="hidden" name="handicap" th:value="${g.handicap}"/>
+                        <p th:if="${g.oddsDraw eq 0}" th:remove="tag">
+                            <input type="hidden" name="draw" th:value="${g.oddsDraw}"/>
+                            VS
+                        </p>
+                        <p th:if="${g.oddsDraw eq 0}" class="up-down">
+                            <a th:onclick="|game.oddsUp(${g.id});|" class="btn" style="width: 56px;">▲</a>
+                            <a th:onclick="|game.oddsDown(${g.id});|" class="btn" style="width: 56px;">▼</a>
+                        </p>
+                        <p th:if="${g.oddsDraw gt 0}" th:remove="tag">
+                            <input type="text" name="oddsDraw" th:value="${#numbers.formatDecimal(g.oddsDraw, 1, 2)}" style="width: 56px;"/>
+                            <a data-bet="draw" th:onclick="|game.betEnabled(${g.id}, 'draw');|" th:class="${g.betDraw ? 'btn btn01 inline' : 'btn inline'}" th:text="${g.betDraw ? '베팅가능' : '베팅불가'}">베팅가능</a>
+                            <a th:onclick="|popup.betting.game(${g.id}, 'draw');|" th:class="${g.amountDraw gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amountDraw gt 0 ? #numbers.formatInteger(g.amountDraw, 0, 'DEFAULT') : '베팅내역'}" style="width: 118px;">베팅내역</a>
+                        </p>
+                    </div>
+                    <div th:if="${g.gameCode.name() eq 'HANDICAP'}" th:remove="tag">
+                        <input type="hidden" name="oddsDraw" th:value="${g.oddsDraw}"/>
+                        <span class="color10 fa fa-header"></span>
+                        <input type="text" name="handicap" th:value="${#numbers.formatDecimal(g.handicap, 1, 2)}" style="width: 74px;"/>
+                        <span class="color10 fa fa-header"></span>
+                        <p class="up-down">
+                            <a th:onclick="|game.oddsUp(${g.id});|" class="btn" style="width: 56px;">▲</a>
+                            <a th:onclick="|game.oddsDown(${g.id});|" class="btn" style="width: 56px;">▼</a>
+                        </p>
+                    </div>
+                    <div th:if="${g.gameCode.name() eq 'OVER_UNDER'}" th:remove="tag">
+                        <input type="hidden" name="oddsDraw" th:value="${g.oddsDraw}"/>
+                        <span class="color03 fa fa-arrow-up"></span>
+                        <input type="text" name="handicap" th:value="${#numbers.formatDecimal(g.handicap, 1, 2)}" style="width: 74px;"/>
+                        <span class="color04 fa fa-arrow-down"></span>
+                        <p class="up-down">
+                            <a th:onclick="|game.oddsUp(${g.id});|" class="btn" style="width: 56px;">▲</a>
+                            <a th:onclick="|game.oddsDown(${g.id});|" class="btn" style="width: 56px;">▼</a>
+                        </p>
+                    </div>
+                </td>
+                <td>
+                    <input type="text" name="oddsAway" th:value="${#numbers.formatDecimal(g.oddsAway, 1, 2)}" style="width: 56px;"/>
+                    <a data-bet="away" th:onclick="|game.betEnabled(${g.id}, 'away');|" th:class="${g.betAway ? 'btn btn01' : 'btn'}" th:text="${g.betAway ? '베팅가능' : '베팅불가'}">베팅불가</a>
+                </td>
+                <td th:class="${g.result.name() eq 'AWAY' or g.result.name() eq 'UNDER' ? 'hit' : ''}">
+                    <input type="text" name="teamAway" th:value="${g.teamAwayBean.teamKor}" readonly="readonly" th:ondblclick="|popup.team.update(${g.teamAwayBean.id});|"/>
+                    <a th:onclick="|popup.betting.game(${g.id}, 'away');|" th:class="${g.amountAway gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amountAway gt 0 ? #numbers.formatInteger(g.amountAway, 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td class="color02" th:text="${#numbers.formatDecimal(g.oddsRate, 1, 2) + '%'}">환수율</td>
+                <td>
+                    <a th:onclick="|popup.game.score(${g.id});|" class="btn btn03 btn-btn">재정산</a>
+                </td>
+                <td>
+                    <a th:onclick="|game.reset(${g.id});|" class="btn btn02 btn-btn">정산취소</a>
+                </td>
+                <td>
+                    <span th:class="${g.stateCss}" th:text="${g.state}">경기전</span>
+                </td>
+                <td class="sp-score" th:text="${g.scoreHome eq null ? '-' : g.scoreHome + ' : ' + g.scoreAway}">0:1</td>
+            </tr>
+            <tr id="result-box">
+                <td colspan="4"></td>
+                <td>
+                    <input type="text" id="score-home" tabindex="1"/>
+                </td>
+                <td colspan="3">
+                    경기취소 <input type="checkbox" id="score-cancel" value="true">
+                </td>
+                <td>
+                    <input type="text" id="score-away" tabindex="2"/>
+                </td>
+                <td colspan="3">
+                    <input type="hidden" id="score-id"/>
+                    <a href="#" class="btn" onclick="game.score();">결과입력</a>
+                </td>
+                <td colspan="3"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var config = [(${config})];
+
+    $('input[name=hour], input[name=minute], #score-home, #score-away').onlyNum();
+
+    $('input[name=oddsHome], input[name=oddsDraw], input[name=oddsAway], input[name=handicap]').onlyFloat().on('blur', function () {
+        $(this).val((parseFloat($(this).val() || config.oddsDefault)).toFixed(2));
+    });
+</script>
+</body>
+</html>

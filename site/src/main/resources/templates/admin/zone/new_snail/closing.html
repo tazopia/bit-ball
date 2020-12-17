@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='zone', lnb='new_snail', pnb='closing'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>실시간 :</small>
+    NEW 달팽이 게임종료
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/zone/new_snail/closing|}" method="get">
+                <input type="hidden" id="page" name="page" th:value="${page.number + 1}">
+                <input type="text" class="cal" th:field="*{gameDate}" placeholder="게임일자"/>
+                <a href="#" id="sp-reset-date" class="btn btn-cal">지움</a>
+                <label style="margin-left: 20px;">
+                    회차:
+                    <input type="text" th:field="*{round}" placeholder="회차"/>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/zone/new_snail/closing|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-bars" aria-hidden="true"></i>
+                NEW 달팽이 게임종료
+                <span th:class="${config.enabled} ? 'color02' : 'color03'" th:text="${config.enabled} ? '(게임 실행 중)' : '(게임 중지 중)'">게임실행중</span>
+            </h3>
+        </div>
+        <table class="table-list table-game table-zone">
+            <caption>NEW 달팽이 등록완료</caption>
+            <colgroup>
+                <col style="width: 140px;">
+                <col style="width: 140px;">
+                <col style="width: 140px;">
+                <col>
+                <col style="width: 100px;">
+                <col>
+                <col style="width: 120px;">
+            </colgroup>
+            <tbody th:each="g,num: ${page.content}" th:class="${num.count > 1} ? 'box'" th:with="round = ${#numbers.formatInteger(g.round, 3, 'DEFAULT')} + '회차 달팽이 '">
+            <tr>
+                <td rowspan="5" th:utext="${tag.dayWeekTime(g.gameDate)}">27(월)</td>
+                <td rowspan="5" th:class="${not g.beforeGameDate} ? 'color03' : 'color01'" th:text="${#numbers.formatInteger(g.round, 3, 'DEFAULT')} + ' 회차'"></td>
+                <td class="color02">홀 / 짝</td>
+                <td th:class="${g.oe eq 'odd'} ? 'home hit' : 'home'">
+                    <p>
+                        <span th:text="${round} + '[홀]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[0], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[0] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[0] gt 0 ? #numbers.formatInteger(g.amount[0], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td class="vs">VS</td>
+                <td th:class="${g.oe eq 'even'} ? 'away hit' : 'away'">
+                    <p>
+                        <span th:text="${round} + '[짝]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[1], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[1] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[1] gt 0 ? #numbers.formatInteger(g.amount[1], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td rowspan="5">
+                    <a th:class="${g.beforeGameDate} ? 'btn btn03' : 'btn btn02'" th:onclick="'closingSnail(' + ${g.id} + ');'">결과</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="color02">오버 / 언더</td>
+                <td th:class="${g.ou eq 'over'} ? 'home hit' : 'home'">
+                    <p>
+                        <span th:text="${round} + '[오버]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[2], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[2] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[2] gt 0 ? #numbers.formatInteger(g.amount[2], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td class="vs">VS</td>
+                <td th:class="${g.ou eq 'under'} ? 'away hit' : 'away'">
+                    <p>
+                        <span th:text="${round} + '[언더]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[3], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[3] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[3] gt 0 ? #numbers.formatInteger(g.amount[3], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="2" class="color02">랭킹</td>
+                <td th:class="${g.ranking eq '1'} ? 'home hit' : 'home'">
+                    <p>
+                        <span th:text="${round} + '[1]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[4], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[4] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[4] gt 0 ? #numbers.formatInteger(g.amount[4], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td rowspan="2" class="vs">VS</td>
+                <td th:class="${g.ranking eq '2'} ? 'away hit' : 'away'">
+                    <p>
+                        <span th:text="${round} + '[2]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[5], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[5] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[5] gt 0 ? #numbers.formatInteger(g.amount[5], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+            </tr>
+            <tr>
+                <td th:class="${g.ranking eq '3'} ? 'home hit' : 'home'">
+                    <p>
+                        <span th:text="${round} + '[3]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[6], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[6] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[6] gt 0 ? #numbers.formatInteger(g.amount[6], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+                <td th:class="${g.ranking eq '4'} ? 'away hit' : 'away'">
+                    <p>
+                        <span th:text="${round} + '[4]'"></span>
+                        <span class="odds" th:text="${#numbers.formatDecimal(g.odds[7], 0, 2, 'DEFAULT')}"></span>
+                    </p>
+                    <a th:onclick="|popup.betting.zone('new_snail', ${g.sdate});|" th:class="${g.amount[7] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[7] gt 0 ? #numbers.formatInteger(g.amount[7], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+                </td>
+            </tr>
+            </tbody>
+            <tr th:if="${page.content.empty}">
+                <td colspan="7" class="empty">
+                    등록된 NEW 달팽이 경기가 없습니다.
+                </td>
+            </tr>
+        </table>
+
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function closingSnail(id) {
+        window.open(path + '/zone/new_snail/score?id=' + id, 'popup-new-snail', 'width=900, height=950');
+    }
+</script>
+</body>
+</html>

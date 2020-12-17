@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/siteLayout" th:with="main='inplay', gnb='inplay'" ng-app="app">
+<body ng-controller="gameCtrl">
+<div layout:fragment="popup" th:if="true">
+	<div id="layout-wrap"></div>
+	<div id="layout-load" class="loading"></div>
+</div>
+<section layout:fragment="section" class="inplay">
+	<h3>
+		인플레이
+		<a class="btn" ng-click="reloadGame();"><img src="/images/icon-reload.png"/></a>
+	</h3>
+
+	<div id="inplay">
+		<div class="column">
+			<div id="g-{{g.id}}" ng-cloak ng-class="gid === g.id ? 'in-game active' : 'in-game'" ng-repeat="g in games" ng-if="g.score.Scoreboard.CurrentPeriod != 80">
+				<div class="in-league">
+					<div>
+						<img class="sports-flag" ng-src="/images/inplay/sports/{{g.sportsFlag}}"/>
+						{{g.sportsName}}
+						<img class="league-flag" ng-src="/images/inplay/league/{{g.leagueFlag}}"/>
+						{{g.leagueName}}
+					</div>
+					<a class="btn btn03" ng-click="setOdds(g.id)">
+						<span>상세보기</span>
+						<em>+ {{g.odds}}</em>
+					</a>
+				</div>
+				<div class="in-team">
+					<div class="time" ng-switch on="g.sname">
+						<span class="period" ng-if="g.sts == 9">시작전</span>
+						<span class="period" ng-switch-when="Baseball" ng-if="g.sts != 9">
+							{{getPeriod(g.sname, g.score.Scoreboard.CurrentPeriod)}}
+						</span>
+						<span class="period" ng-switch-default ng-if="g.sts != 9">
+							{{getPeriod(g.sname, g.score.Scoreboard.CurrentPeriod)}}
+							<span class="minutes" ng-if="g.score.Scoreboard.Time > 0">{{minute(g.score.Scoreboard.Time)}}"</span>
+						</span>
+					</div>
+					<div class="in-score">
+						<div class="team team-home">{{::g.teamHome}}</div>
+						<div class="score">
+							{{g.score.Scoreboard.Results[0].Value}}
+							:
+							{{g.score.Scoreboard.Results[1].Value}}
+						</div>
+						<div class="team team-away">{{::g.teamAway}}</div>
+					</div>
+					<div class="date">{{g.gameDate}}</div>
+				</div>
+			</div>
+			<div ng-if="emptyGame()">
+				<div class="in-league">
+					진행중 경기 리스트
+				</div>
+				<div class="in-team">
+					현재 진행중인 경기가 없습니다.
+				</div>
+			</div>
+
+		</div>
+		<div class="column" ng-cloak>
+			<div class="score-wrap" ng-switch on="game.sname">
+				<div ng-switch-when="undefined">
+					경기를 선택하세요
+				</div>
+				<div ng-switch-when="Baseball">
+					<!-- 야구 -->
+					<table class="score-table baseball">
+						<caption>야구 스코어</caption>
+						<thead>
+						<tr>
+							<th ng-repeat="p in score.Periods | orderBy : 'Type'" ng-class="p.IsFinished ? '' : 'live'">{{getPeriod(game.sname, p.Type)}}</th>
+							<th style="width:60px;">스코어</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td ng-repeat="p in score.Periods | orderBy : 'Type'">{{p.Results[0].Value}}</td>
+							<td class="total">{{score.Scoreboard.Results[0].Value}}</td>
+						</tr>
+						<tr>
+							<td ng-repeat="p in score.Periods | orderBy : 'Type'">{{p.Results[1].Value}}</td>
+							<td class="total">{{score.Scoreboard.Results[1].Value}}</td>
+						</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div ng-switch-when="Football">
+					<table class="score-table">
+						<caption>축구 스코어</caption>
+						<thead>
+						<tr>
+							<th>
+								{{getPeriod(game.sname, score.Scoreboard.CurrentPeriod)}}
+								<span class="minutes" ng-if="score.Scoreboard.Time > 0">{{minute(score.Scoreboard.Time)}}"</span>
+								<span class="status">{{getCurrent(score.Scoreboard)}}</span>
+							</th>
+							<th class="info"><img src="/images/inplay/icon-corner.png"/></th>
+							<th class="info"><img src="/images/inplay/icon-yellow.png"/></th>
+							<th class="info"><img src="/images/inplay/icon-red.png"/></th>
+							<th class="info"><img src="/images/inplay/icon-pk.png"/></th>
+							<th ng-repeat="p in score.Periods | orderBy : 'Type'" ng-class="p.IsFinished ? '' : 'live'">{{getPeriod(game.sname, p.Type)}}</th>
+							<th>스코어</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td class="team"><img src="/images/inplay/team-home.png" /> {{game.teamHome}}</td>
+							<td>{{score.Statistics[0].Results[0].Value}}</td>
+							<td>{{score.Statistics[1].Results[0].Value}}</td>
+							<td>{{score.Statistics[2].Results[0].Value}}</td>
+							<td>{{score.Statistics[3].Results[0].Value}}</td>
+							<td ng-repeat="p in score.Periods | orderBy : 'Type'">{{p.Results[0].Value}}</td>
+							<td class="total">{{score.Scoreboard.Results[0].Value}}</td>
+						</tr>
+						<tr>
+							<td class="team"><img src="/images/inplay/team-away.png" /> {{game.teamAway}}</td>
+							<td>{{score.Statistics[0].Results[1].Value}}</td>
+							<td>{{score.Statistics[1].Results[1].Value}}</td>
+							<td>{{score.Statistics[2].Results[1].Value}}</td>
+							<td>{{score.Statistics[3].Results[1].Value}}</td>
+							<td ng-repeat="p in score.Periods | orderBy : 'Type'">{{p.Results[1].Value}}</td>
+							<td class="total">{{score.Scoreboard.Results[1].Value}}</td>
+						</tr>
+						</tbody>
+					</table>
+					<!--
+						축구 : Scoreboard.Statistics.Type -> 1, 6, 7, 8, 10
+						1. 코너킥
+						6. 옐로우카드
+						7. 레드카드
+						8. 패널터킥
+						등등인거 같은데 확인이 필요해요
+					-->
+				</div>
+				<div ng-switch-default>
+					<!-- 나머지 케이스가다르면 만들어야 한다. -->
+					<table class="score-table">
+						<caption>축구 스코어</caption>
+						<thead>
+						<tr>
+							<th>
+								{{getPeriod(game.sname, score.Scoreboard.CurrentPeriod)}}
+								<span class="minutes" ng-if="score.Scoreboard.Time > 0">{{minute(score.Scoreboard.Time)}}"</span>
+								<span class="status">{{getCurrent(score.Scoreboard)}}</span>
+							</th>
+							<th ng-repeat="p in score.Periods | orderBy : 'Type'" ng-class="p.IsFinished ? '' : 'live'">{{getPeriod(game.sname, p.Type)}}</th>
+							<th>스코어</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td class="team">{{game.teamHome}}</td>
+							<td ng-repeat="p in score.Periods | orderBy : 'Type'">{{p.Results[0].Value}}</td>
+							<td class="total">{{score.Scoreboard.Results[0].Value}}</td>
+						</tr>
+						<tr>
+							<td class="team">{{game.teamAway}}</td>
+							<td ng-repeat="p in score.Periods | orderBy : 'Type'">{{p.Results[1].Value}}</td>
+							<td class="total">{{score.Scoreboard.Results[1].Value}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="game-team" ng-if="gid != 0">
+				<span class="team">{{game.teamHome}}</span>
+				<span class="vs">VS</span>
+				<span class="team">{{game.teamAway}}</span>
+			</div>
+			<div class="tab-menu">
+				<div class="tab-menu-item active" ng-click="search('', $event)">전체</div>
+				<div class="tab-menu-item" ng-click="search('매치', $event)">매치</div>
+				<div class="tab-menu-item" ng-click="search('오버언더', $event)">오버언더</div>
+				<div class="tab-menu-item" ng-click="search('핸디캡', $event)">핸디캡</div>
+				<div class="tab-menu-item" ng-click="search('스페셜', $event)">스페셜</div>
+				<div class="tab-menu-item" ng-click="search('기타', $event)">기타</div>
+			</div>
+
+			<div class="market-wrap" ng-if="gid != 0">
+				<div class="market-group" ng-repeat="m in market | orderBy: 'sort'" ng-if="hasOdds(m.id, m.menu)">
+					<div class="market-head">
+						{{::m.korName}}
+					</div>
+					<div class="market-team line{{::m.line}}" ng-if="m.menu == '핸디캡'">
+						<div class="team">{{::game.teamHome}}</div>
+						<div ng-if="m.line == 3" class="team">X</div>
+						<div class="team">{{::game.teamAway}}</div>
+					</div>
+					<div class="market-odds id-{{::m.id}} line{{::m.line}}" ng-class="{team : m.team}"><!-- id: 마켓아이디, line: 마켓 2줄 3줄 -->
+						<div id="{{o.id}}" class="market-bet {{::o.css}} team-{{::o.name}} {{::o.minmax}}" ng-click="addCart(o.id, o.fixtureId, m.id, o.minmax)" ng-repeat="o in getOdds(m.id) | orderBy : 'sort'">
+							<div class="name">{{::makeMarket(o.marketId, o.name, o.line, o.oname)}}</div>
+							<div class="odds">{{::mathOdds(o.odds)}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script layout:fragment="script" th:if="true">
+
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', '$timeout', function ($scope, $http, $interval, $timeout) {
+        $scope.parseFloat = window.parseFloat;
+        $scope.gid = 0;
+        $scope.pv = 'Bet365';
+        $scope.config = [(${config})];
+
+        // inplay 정보
+        $scope.games = [];
+        $scope.odds = [];
+        $scope.score = {}; // 스코어 정보
+        // 스포츠 리그 팀 변환을 위한 map
+        // $scope.sports = [];
+        // $scope.league = [];
+        // $scope.team = [];
+        $scope.market = []; // 마켓정보
+
+
+        // 베팅카드
+        $scope.cart = [];
+        $scope.money = 0;
+        $scope.game = {};
+        $scope.menu = ''; // 마켓메뉴
+
+        // 보조선언
+        $scope.oldOdds = []; // 지난 배당
+        // $scope.home = '홈팀';
+        // $scope.away = '원정팀';
+        // $scope.sport = '';
+        // $scope.marketId = [];
+
+		// 배당변경 적용
+        $scope.force = false;
+
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) { // 선택이 없음
+                $scope.money = 0;
+            } else { // 1폴더
+                let odds = $scope.mathOdds($scope.cart[0].odds.odds);
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / odds), $scope.config.max), $scope.config.money);
+            }
+        };
+
+        $scope.minute = function(sec) {
+            if (sec === '') return '0';
+
+            var m = Math.ceil(parseInt(sec) / 60);
+            var s = parseInt(sec) % 60;
+
+            return (m !== 0 ? m + '.' : '') + s;
+		}
+
+        $scope.emptyGame = function () {
+            let cnt = 0;
+            $scope.games.some(function (g) {
+                if (g.score.Scoreboard.CurrentPeriod !== 80) {
+                    cnt++;
+                    return true;
+                }
+            });
+            return cnt === 0;
+        }
+
+        $scope.search = function (menu, event) {
+            let active = angular.element(event.target);
+            active.parent().find('div').removeClass('active');
+            active.addClass('active');
+            $scope.menu = menu;
+        }
+
+        $scope.getMarket = function (id) {
+            return market[id];
+        }
+
+        $scope.getPeriod = function (sports, id) {
+            try {
+                return period[sports][id];
+            } catch (e) {
+                return id;
+            }
+        }
+        //
+        // $scope.getSportsFlag = function (sports) {
+        //     try {
+        //         return '/images/inplay/sports/' + $scope.sports[sports.toLowerCase()].flag;
+        //     } catch (e) {
+        //         return '/images/inplay/sports/sports.png';
+        //     }
+        // }
+        //
+        // $scope.getSportsName = function (sports) {
+        //     try {
+        //         return $scope.sports[sports.toLowerCase()].korName;
+        //     } catch (e) {
+        //         return sports;
+        //     }
+        // }
+        //
+        // $scope.getLeagueFlag = function (league) {
+        //     try {
+        //         return '/images/inplay/league/' + $scope.league[league.toLowerCase()].flag;
+        //     } catch (e) {
+        //         return '/images/inplay/league/league.gif';
+        //     }
+        // }
+        //
+        // $scope.getLeagueName = function (league) {
+        //     try {
+        //         return $scope.league[league.toLowerCase()].korName;
+        //     } catch (e) {
+        //         //console.log($scope.league);
+        //         return league;
+        //     }
+        // }
+        //
+        // $scope.getTeamName = function (team) {
+        //     try {
+        //         return $scope.team[team.toLocaleString()].korName;
+        //     } catch (e) {
+        //         console.log(e);
+        //         return team;
+        //     }
+        // }
+
+        $scope.cartGame = function (id) {
+            $scope.games.some(function (s) {
+                //console.log(s);
+                if (s.id === id) {
+                    ss = s;
+                    return true;
+                }
+            })
+            return ss;
+        }
+
+        $scope.cartOdds = function (id) {
+            let ss = {};
+            $scope.odds.some(function (s) {
+                if (s.id === id) {
+                    ss = s;
+                    return true;
+                }
+            })
+            return ss;
+        }
+
+        $scope.existCart = function (id) {
+            let cnt = 0;
+            $scope.cart.some(function (c) {
+                if (c.id === id) {
+                    cnt++;
+                    return true;
+                }
+            });
+            return cnt > 0;
+        }
+
+        // 마켓아이디에 맞는 배열만 가져온다
+        $scope.getOdds = function (id) {
+            //console.log(id);
+            let odds = [];
+            let sort = 0;
+            let old = '';
+            let cnt = 0;
+            let minmax = {min: 0, max: 0}
+
+            // 마켓을 찾는다.
+            $scope.market.forEach(function (m) {
+                if (m.id === id) minmax = m.minMax[$scope.game.sname];
+            });
+
+            $scope.odds.forEach(function (o) {
+                if (o.marketId === id) {
+                    // 마켓 배당 설정
+                    if (minmax.min > 0 && o.odds < minmax.min) o.minmax = 'min';
+                    if (minmax.max > 0 && o.odds > minmax.max) o.minmax = 'max';
+
+                    if (old !== o.baseLine) {
+                        sort += 100;
+                        old = o.baseLine;
+                        cnt = 0;
+                    } else {
+                        cnt++;
+                    }
+                    switch (o.name) {
+                        case '1':
+                        case 'Yes':
+                        case 'Over':
+                        case 'Odd':
+                            o.sort = sort + 1;
+                            break;
+                        case 'No':
+                        case '2':
+                        case 'Under':
+                        case 'Even':
+                            o.sort = sort + 3;
+                            break;
+                        case '3 Or More':
+                        case 'No Goal':
+                        case 'Neither':
+                            o.sort = sort + 4;
+                            break;
+                        default:
+                            o.sort = sort + 2;
+                    }
+                    odds.push(o);
+                }
+            });
+
+            return odds;
+        }
+
+        // // 정렬 순서를 정한다.
+        // $scope.sortOdds = function (odds) {
+        //     return 1;
+        // }
+
+        // 소숫점 2자리에서 버림한다.
+        $scope.mathOdds = function (odd) {
+            if (angular.isNumber(odd)) {
+                return (Math.floor(odd * 100) / 100).toFixed(2);
+            } else {
+                return 0;
+            }
+        }
+
+        $scope.hasOdds = function (marketId, menu) {
+            let cnt = 0;
+            //console.log(menu);
+            // 메뉴가 전체이면 통과하고 아니면 메뉴가 맞는지 확인한다.
+            if ($scope.cart.length > 0) {
+                angular.element('#' + $scope.cart[0].id).addClass('active');
+            }
+            if ($scope.menu !== '' && $scope.menu !== menu) return false;
+            $scope.odds.some(function (o) {
+                if (o.marketId === marketId) {
+                    cnt++;
+                    return true;
+                }
+            });
+            return cnt > 0;
+        }
+
+        $scope.makeMarket = function (id, name, line, oname) {
+            if (oname.indexOf('Goals') === -1) {
+                if (name === '1') name = $scope.game.teamHome;;
+                if (name === '2') name = $scope.game.teamAway;;
+                if (name === 'X') name = '무';
+            }
+
+            if (name === 'Over') name = '오버';
+            if (name === 'Under') name = '언더';
+            if (name === 'Exactly') name = '정확';
+            if (name === 'Odd') name = '홀';
+            if (name === 'Even') name = '짝';
+
+            return name + (line === '' ? '' : ' (' + line + ')');
+
+            // switch (oname) {
+            //     case '12':
+            //     case '1X2':
+            //     case '1X2 Corners':
+            //     case '1st Period Winner':
+            //     case '2nd Period Winner':
+            //     case 'Next Goal':
+            //     case 'Last Goal':
+            //     case 'Last Corner':
+            //     case 'Next Corner':
+            //         if (name === '1') {
+            //             return $scope.game.teamHome;
+            //         } else if (name === '2') {
+            //             return $scope.game.teamAway;
+            //         } else if (name === 'X') {
+            //             return '무승';
+            //         }
+            //         return name;
+            //     case 'Match Time Result':
+            //         if (name === '1') {
+            //             return '홈승' + (line === '' ? '' : ' (' + line + ')');;
+            //         } else if (name === '2') {
+            //             return '원정승' + (line === '' ? '' : ' (' + line + ')');;
+            //         } else {
+            //             return '무승' + (line === '' ? '' : ' (' + line + ')');;
+            //         }
+            // }
+            //
+            // if (oname && oname.indexOf('Under') > -1) {
+            //     if (name === 'Over') name = '오버';
+            //     if (name === 'Under') name = '언더';
+            //     if (name === 'Exactly') name = '정확';
+            //     return name + (line === '' ? '' : ' (' + line + ')');
+            // }
+            //
+            // if (oname && oname.indexOf('Handicap') > -1) {
+            //     return line;
+            // }
+            //
+            // if (name === 'Over') name = '오버';
+            // if (name === 'Under') name = '언더';
+            // if (name === 'Exactly') name = '정확';
+            // if (name === 'Odd') name = '홀';
+            // if (name === 'Even') name = '짝';
+            //
+            // return name + (line === '' ? '' : ' (' + line + ')');
+        }
+
+        $scope.strMarket = function (id, name, line, oname) {
+            if (oname.indexOf('Goals') === -1) {
+                if (name === '1') name = '홈';
+                if (name === '2') name = '원정';
+                if (name === 'X') name = '무';
+			}
+
+            if (name === 'Over') name = '오버';
+            if (name === 'Under') name = '언더';
+            if (name === 'Exactly') name = '정확';
+            if (name === 'Odd') name = '홀';
+            if (name === 'Even') name = '짝';
+
+            return name + (line === '' ? '' : ' (' + line + ')');
+
+        }
+
+        // $scope.makeMarket = function (id, name, line) {
+        //     switch (id) {
+        //         case 1: // 1X2
+        //         case 41: // 1 Period Winner
+        //         case 42: // 2nd Period Winner
+        //         case 52: // 12
+        //         case 56: // Last Team To Score
+        //         case 59:
+        //         case 81: // Last corner
+        //             if (name === '1') {
+        //                 return $scope.game.teamHome;
+        //             } else if (name === '2') {
+        //                 return $scope.game.teamAway;
+        //             } else if (name === 'X') {
+        //                 return '무승부';
+        //             }
+        //             return name;
+        //         case 13: // 유럽 핸디캡
+        //         case 61: // European Handicap Halftime
+        //             //if (name === '1') name = $scope.home;
+        //             //if (name === 'Under') name = $scope.away;
+        //             //if (name === 'Exactly') name = 'X';
+        //             return line;
+        //         case 149:
+        //             return name + (line === '' ? '' : ' (' + line + ')');
+        //         default:
+        //             if (name === 'Over') name = '오버';
+        //             if (name === 'Under') name = '언더';
+        //             if (name === 'Exactly') name = 'X';
+        //             if (name === 'Odd') name = '홀';
+        //             if (name === 'Even') name = '짝';
+        //
+        //             return name + (line === '' ? '' : ' (' + line + ')');
+        //     }
+        // }
+
+        $scope.handicap = function (odds) {
+            return odds % 0.5 === 0.0;
+        }
+
+        $scope.$watch('$viewContentLoaded', function () {
+            // $scope.loadSports();
+            // $scope.loadLeague();
+            // $scope.loadTeam();
+            $scope.loadMarket();
+
+            $timeout(function () {
+                $scope.loadGame();
+                $('#layout-wrap, #layout-load').fadeOut(function () {
+                    $('#layout-wrap, #layout-load').hide();
+                });
+            });
+        });
+
+        $interval(function () {
+            $scope.loadGame();
+            $scope.loadMarket();
+        }, 10000);
+
+        $interval(function () {
+            $scope.loadScore();
+            $scope.loadOdds();
+        }, 3000);
+
+        $scope.setOdds = function (id) {
+            if ($scope.gid > 0) {
+                angular.element(document.querySelector('#g-' + $scope.gid)).removeClass('active');
+            }
+
+            if ($scope.gid === id) {
+                $scope.gid = 0;
+                $scope.game = {};
+                return;
+            }
+
+            $scope.games.some(function (g) {
+                if (g.id === id) {
+                    $scope.game = g;
+                    $scope.gid = g.id;
+                    return true;
+                }
+            });
+
+            $scope.loadScore();
+            $scope.loadOdds();
+            angular.element(document.querySelector('#g-' + id)).addClass('active');
+        }
+
+        $scope.loadScore = function () {
+            if ($scope.gid === 0) return;
+            $http({
+                url: path + '/inplay/score',
+                method: 'POST',
+                data: {
+                    id: $scope.gid
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                //onsole.log(response.data)
+                $scope.score = response.data;
+                //$scope.$apply();
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        }
+
+        $scope.loadGame = function () {
+            $http({
+                url: path + '/inplay/glist',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                let games = response.data;
+                games.forEach(function (g) {
+                    g.score = JSON.parse(g.score);
+                });
+                $scope.games = games;
+                //console.log($scope.games)
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.loadOdds = function () {
+            if ($scope.gid === 0) return;
+            $http({
+                url: path + '/inplay/olist',
+                method: 'POST',
+                data: {
+                    id: $scope.gid,
+                    pv: $scope.pv
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                //$scope.updateOdds(response.data);
+                let data = response.data;
+                let exists = false;
+                let id = $scope.cart.length === 0 ? 0 : $scope.cart[0].id;
+
+                if ($scope.gid > 0) { // 인플레이 경기가 선택되어진 사항
+                    $scope.games.some(function (g) {
+                        if (g.id === $scope.gid) {
+                            g.odds = data.length;
+                            return true;
+                        }
+                    });
+                }
+
+                data.forEach(function (o) {
+                    if (o.id === id) {
+                        exists = true;
+                        if (o.odds !== $scope.cart[0].odds.odds) {
+                            $scope.cart[0].odds = o;
+                        }
+                    }
+                    let old = $scope.oldOdds[o.id];
+                    let hasCart = $scope.existCart(o.id);
+                    //console.log('--------------------------');
+                    //console.log(old);
+                    if (old === undefined) {
+                        $scope.oldOdds[o.id] = o.odds;
+                    } else {
+                        if (old > o.odds) {
+                            o.css = hasCart ? 'active down' : 'down';
+                            $scope.oldOdds[o.id] = o.odds;
+                        } else if (old < o.odds) {
+                            o.css = hasCart ? 'active up' : 'up';
+                            $scope.oldOdds[o.id] = o.odds;
+                        } else {
+                            o.css = hasCart ? 'active' : '';
+                        }
+                    }
+                });
+
+                if (!exists) {
+                    $scope.cart.length = 0;
+                    $scope.money = 0;
+                }
+                $scope.odds = data;
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+                clock.setTime(new Date(response.data.milliseconds));
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+
+        // $scope.loadSports = function () {
+        //     $http({
+        //         url: path + '/inplay/sports',
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-type': 'application/json',
+        //             'Ajax': true
+        //         }
+        //     }).then(function success(response) {
+        //         $scope.sports = response.data;
+        //     });
+        // }
+        //
+        // $scope.loadLeague = function () {
+        //     $http({
+        //         url: path + '/inplay/league',
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-type': 'application/json',
+        //             'Ajax': true
+        //         }
+        //     }).then(function success(response) {
+        //         $scope.league = response.data;
+        //     });
+        // }
+        //
+        // $scope.loadTeam = function () {
+        //     $http({
+        //         url: path + '/inplay/team',
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-type': 'application/json',
+        //             'Ajax': true
+        //         }
+        //     }).then(function success(response) {
+        //         $scope.team = response.data;
+        //     });
+        // }
+
+        $scope.loadMarket = function () {
+            $http({
+                url: path + '/inplay/market',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.market = response.data;
+            });
+        }
+
+        $scope.addCart = function (id, fixtureId, marketId, minmax) {
+            if (minmax === 'min' || minmax === 'max') {
+                return;
+            }
+
+            //alert('id : ' + id + ', fixtureId : ' + fixtureId);
+            // 카트에 들어갈 구조체를 만든다.
+            let old = $scope.cart[0];
+            if ($scope.cart.length === 0) {
+                angular.element('#' + id).addClass('active');
+            } else if (id !== old.id) {
+                angular.element('#' + old.id).removeClass('active');
+                angular.element('#' + id).addClass('active');
+            } else {
+                angular.element('#' + id).removeClass('active');
+                $scope.cart = [];
+                return;
+            }
+            let mk = {};
+            console.log(marketId);
+            $scope.market.some(function (m) {
+                if (m.id === marketId) {
+                    mk = m;
+                    return true;
+                }
+            })
+            $scope.cart.length = 0;
+            $scope.cart.push({id: id, fixtureId: fixtureId, odds: $scope.cartOdds(id), game: $scope.cartGame(fixtureId), market: mk});
+            //console.log($scope.cart);
+        }
+
+        $scope.remove = function (id) {
+            angular.element('#' + id).removeClass('active');
+            $scope.cart = [];
+        }
+
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (Math.floor($scope.mathOdds($scope.cart[0].odds.odds) * $scope.money) > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (angular.element('#' + $scope.cart[0].odds.id).hasClass('min') || angular.element('#' + $scope.cart[0].odds.id).hasClass('max')) {
+                alert('배당 변경으로 베팅을 하실 수 없습니다.');
+                $scope.cart.length = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            // 베팅
+            $http({
+                url: path + '/inplay/betting',
+                method: 'POST',
+                data: {
+                    "money": $scope.money,
+                    "id": $scope.cart[0].odds.id,
+                    "fixtureId": $scope.cart[0].odds.fixtureId,
+                    "odds": $scope.cart[0].odds.odds,
+					"team": $scope.strMarket($scope.cart[0].odds.marketId, $scope.cart[0].odds.name, $scope.cart[0].odds.line, $scope.cart[0].odds.oname),
+					"score": $scope.score.Scoreboard.Results[0].Value + '-' + $scope.score.Scoreboard.Results[1].Value,
+					"period": $scope.score.Scoreboard.CurrentPeriod,
+					"corner": $scope.game.sname === 'Football' ? $scope.score.Statistics[0].Results[0].Value + '-' + $scope.score.Statistics[0].Results[1].Value : ''
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.gid = 0;
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                alert(response.data.message);
+                $scope.reloadGame();
+            }, function error(response) {
+                $scope.gid = 0;
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+                $scope.reloadGame();
+            });
+        }
+
+        $scope.reloadGame = function () {
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            $scope.gid = 0;
+            $scope.loadMarket();
+            $scope.loadGame();
+            $scope.odds = [];
+            $scope.score = {};
+            $scope.game = {};
+            $scope.cart = [];
+            $scope.money = 0;
+
+            $('#layout-wrap, #layout-load').fadeOut(function () {
+                $('#layout-wrap, #layout-load').hide();
+            });
+        }
+
+    }]);
+
+</script>
+</body>
+</html>

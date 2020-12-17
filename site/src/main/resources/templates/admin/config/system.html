@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='system'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>환경설정 :</small>
+    시스템환경 설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${sysConfig}" onsubmit="return saveConfig()">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-trophy" aria-hidden="true"></i>
+                    스포츠 환경 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>스포츠 환경 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">Bet365 API</th>
+                    <td>
+                        <label><input type="text" th:field="*{sports.bet365Api}" style="width: 300px;"/></label>
+						<label><input type="text" th:field="*{sports.bet365Pv}" style="width: 100px;"/></label>
+                        <label><input type="radio" th:field="*{sports.bet365}" value="none"> 사용안함</label>
+                        <label><input type="radio" th:field="*{sports.bet365}" value="all"> 전체사용</label>
+                        <label><input type="radio" th:field="*{sports.bet365}" value="cross"> 크로스사용</label>
+                        <label><input type="radio" th:field="*{sports.bet365}" value="crossSoccer"> 크로스 축구 스페셜 사용</label>
+                        <label><input type="radio" th:field="*{sports.bet365}" value="special"> 스페셜사용</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">Best API</th>
+                    <td>
+                        <label><input type="text" th:field="*{sports.bestApi}" style="width: 300px;"/></label>
+                        <label><input type="radio" th:field="*{sports.best}" value="none"> 사용안함</label>
+                        <label><input type="radio" th:field="*{sports.best}" value="all"> 전체사용</label>
+                        <label><input type="radio" th:field="*{sports.best}" value="cross"> 크로스사용</label>
+                        <label><input type="radio" th:field="*{sports.best}" value="special"> 스페셜사용</label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">스텔라 Sports API</th>
+					<td>
+						<label><input type="text" th:field="*{sports.sportsApi}" style="width: 300px;"/></label>
+						<label><input type="radio" th:field="*{sports.sports}" value="none"> 사용안함</label>
+						<label><input type="radio" th:field="*{sports.sports}" value="all"> 전체사용</label>
+						<label><input type="radio" th:field="*{sports.sports}" value="cross"> 크로스사용</label>
+						<label><input type="radio" th:field="*{sports.sports}" value="crossSoccer"> 크로스 축구 스페셜 사용</label>
+						<label><input type="radio" th:field="*{sports.sports}" value="special"> 스페셜사용</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">페라리 API</th>
+					<td>
+						<label><input type="text" th:field="*{sports.ferrariApi}" style="width: 300px;"/></label>
+						<label><input type="radio" th:field="*{sports.ferrari}" value="none"> 사용안함</label>
+						<label><input type="radio" th:field="*{sports.ferrari}" value="all"> 전체사용</label>
+						<label><input type="radio" th:field="*{sports.ferrari}" value="cross"> 크로스사용</label>
+						<label><input type="radio" th:field="*{sports.ferrari}" value="special"> 스페셜사용</label>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required">스프레드 갯수</th>
+                    <td>
+                        <select th:field="*{sports.spread}">
+                            <option th:each="s : ${#numbers.sequence(1, 50)}" th:value="${s}" th:text="${s + '개'}"></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">라이브 메뉴</th>
+                    <td>
+                        <label><input type="radio" th:field="*{sports.canLive}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{sports.canLive}" th:value="false"> 사용하지않음</label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required color03">인플레이 메뉴</th>
+					<td>
+						<label><input type="radio" th:field="*{sports.canInplay}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{sports.canInplay}" th:value="false"> 사용하지않음</label>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required">여러 스프레드 허용</th>
+                    <td>
+                        <label><input type="radio" th:field="*{sports.enableSpread}" th:value="true"> 허용</label>
+                        <label><input type="radio" th:field="*{sports.enableSpread}" th:value="false"> 허용하지 않음</label>
+                        <span class="color01">(사설일 경우는 허용을 해 줘야 합니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">양방 베팅 허용</th>
+                    <td>
+                        <label><input type="radio" th:field="*{sports.enableSure}" th:value="true"> 허용</label>
+                        <label><input type="radio" th:field="*{sports.enableSure}" th:value="false"> 허용하지 않음</label>
+                        <span class="color01">(동일경기 결과를 다르게 찍을 경우 허용 여부)</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-balance-scale" aria-hidden="true"></i>
+                    발란스 환경 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>발란스 환경 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">발란스</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.balance}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.balance}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            발란스 서버 :
+                            <select th:field="*{zone.balanceType}">
+                                <option value="">선택하세요.</option>
+                                <option value="polygon">폴리곤 발란스</option>
+                                <option value="gate">게이트 발란스</option>
+                            </select>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color01">폴리곤 URL</th>
+                    <td>
+                        <input type="text" th:field="*{zone.balanceUrl}" style="width: 600px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color02">게이트 다리다리 URL</th>
+                    <td>
+                        <input type="text" th:field="*{zone.balanceGateDariUrl}" style="width: 600px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color02">게이트 사다리 URL</th>
+                    <td>
+                        <input type="text" th:field="*{zone.balanceGateLadderUrl}" style="width: 600px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color02">게이트 파워볼 URL</th>
+                    <td>
+                        <input type="text" th:field="*{zone.balanceGatePowerUrl}" style="width: 600px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color02">게이트 섯따 URL</th>
+                    <td>
+                        <input type="text" th:field="*{zone.balanceGateSuttaUrl}" style="width: 600px;"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-camera" aria-hidden="true"></i>
+                    이벤트
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>이벤트 환경 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">출석체크 이벤트</th>
+                    <td>
+                        <label><input type="radio" th:field="*{event.daily}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{event.daily}" th:value="false"> 사용하지않음</label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">로또 이벤트</th>
+					<td>
+						<label><input type="radio" th:field="*{event.lotto}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{event.lotto}" th:value="false"> 사용하지않음</label>
+					</td>
+				</tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-gamepad" aria-hidden="true"></i>
+                    실시간 환경 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>실시간 환경 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required color01">실시간 파싱여부</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.enabled}" th:value="true"> 파싱</label>
+                        <label><input type="radio" th:field="*{zone.enabled}" th:value="false"> 파싱하지않음</label>
+                        <span class="color03">(데모페이지는 한군데서만 파싱하고 다른 곳에서는 파싱하지 않아야 한다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">네임드 사다리</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.ladder}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.ladder}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.ladderUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.ladderPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">네임드 다리다리</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.dari}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.dari}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.dariUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.dariPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">네임드 달팽이</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.snail}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.snail}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.snailUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.snailPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">네임드 NEW 달팽이</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.newSnail}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.newSnail}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.newSnailUrl}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.newSnailPlayer}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required color04">스피드 키노</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.keno}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.keno}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.kenoUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.kenoPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required color04">키노 사다리</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.kenoLadder}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.kenoLadder}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.kenoLadderUrl}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.kenoLadderPlayer}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required color04">파워 사다리</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.powerLadder}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.powerLadder}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.powerLadderUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.powerLadderPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color04" rowspan="2">로또 파워볼</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.power}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.power}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.powerUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.powerPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="color01">파워볼 기준 밀리시간 : <input type="text" class="num" style="width: 120px;" th:field="*{zone.powerBase}"/></label>
+                        <label class="color01">파워볼 기준 전체회차 : <input type="text" class="num" style="width: 80px;" th:field="*{zone.powerRound}"/></label>
+                        <label class="color01">파워볼 오늘회차 보정 : <input type="text" class="num" style="width: 80px;" th:field="*{zone.powerDay}"/></label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">하프라인 알라딘</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.aladdin}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.aladdin}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.aladdinUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.aladdinPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">하프라인 로하이</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.lowhi}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.lowhi}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.lowhiUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.lowhiPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color02">OZ 홀짝</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.oddeven}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.oddeven}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.oddevenUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.oddevenPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color02">OZ 바카라</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.baccarat}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.baccarat}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.baccaratUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.baccaratPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color03">Bet365 가상축구</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.soccer}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.soccer}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.soccerUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.soccerPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required color03">Bet365 개경주</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.dog}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.dog}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.dogUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.dogPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">세븐럭키</th>
+                    <td>
+                        <label><input type="radio" th:field="*{zone.luck}" th:value="true"> 사용</label>
+                        <label><input type="radio" th:field="*{zone.luck}" th:value="false"> 사용하지않음</label>
+                        <label>
+                            Api :
+                            <input type="text" th:field="*{zone.luckUrl}" style="width: 300px;"/>
+                        </label>
+                        <label>
+                            Player :
+                            <input type="text" th:field="*{zone.luckPlayer}" style="width: 300px;"/>
+                        </label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required color02">CROWN 홀짝</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.crownOddeven}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.crownOddeven}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.crownOddevenUrl}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.crownOddevenPlayer}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required color02">CROWN 바카라</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.crownBaccarat}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.crownBaccarat}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.crownBaccaratUrl}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.crownBaccaratPlayer}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required color02">CROWN 섯다</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.crownSutda}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.crownSutda}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.crownSutdaUrl}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.crownSutdaPlayer}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">비트코인 1분</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.bitcoin1}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.bitcoin1}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.bitcoin1Url}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.bitcoin1Player}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">비트코인 3분</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.bitcoin3}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.bitcoin3}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.bitcoin3Url}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.bitcoin3Player}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">비트코인 5분</th>
+					<td>
+						<label><input type="radio" th:field="*{zone.bitcoin5}" th:value="true"> 사용</label>
+						<label><input type="radio" th:field="*{zone.bitcoin5}" th:value="false"> 사용하지않음</label>
+						<label>
+							Api :
+							<input type="text" th:field="*{zone.bitcoin5Url}" style="width: 300px;"/>
+						</label>
+						<label>
+							Player :
+							<input type="text" th:field="*{zone.bitcoin5Player}" style="width: 300px;"/>
+						</label>
+					</td>
+				</tr>
+                </tbody>
+            </table>
+
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    function saveConfig() {
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

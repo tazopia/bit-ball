@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='league'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>환경설정 :</small>
+    종목 설정
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:action="@{|${siteConfig.pathAdmin}/config/league|}" th:object="${command}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    종목 :
+                    <select th:field="*{sports}">
+                        <option value="">선택하세요</option>
+                        <option th:each="sport: ${sports}" th:value="${sport.sportsName}" th:text="${sport.sportsName}">축구</option>
+                    </select>
+                </label>
+                <label>
+                    리그명 : <input type="text" th:field="*{league}" />
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/config/league|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-flag"></i>
+                리그 설정
+                <span class="total">( 검색된 리그 : <span th:text="${#numbers.formatInteger(page.totalElements, 0, 'DEFAULT')}">100</span> )</span>
+                <button class="btn btn03" onclick="popup.league.add();">등록</button>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col style="width: 100px;">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width: 220px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>종목</th>
+                <th>아이콘</th>
+                <th>리그명</th>
+                <th>출력리그명</th>
+				<th>사용여부</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="league,num: ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total -  num.count}">1</td>
+                <td th:text="${league.sports}">축구</td>
+                <td><img th:src="@{|/images/league/${league.leagueFlag}|}"/></td>
+                <td th:text="${league.leagueName}">리그명</td>
+                <td class="color0" th:text="${league.leagueKor}">출력 리그명</td>
+				<td th:class="${league.enabled} ? 'color02' : 'color03'" th:text="${league.enabled} ? '사용' : '미사용'">출력 리그명</td>
+                <td>
+                    <a class="btn btn04" th:onclick="'popup.league.update(' + ${league.id} + ');'">수정</a>
+                    <a class="btn btn02" th:onclick="'league.delete(' + ${league.id} + ');'">삭제</a>
+                </td>
+            </tr>
+            <tr th:if="${page.numberOfElements eq 0}">
+                <td colspan="6" class="empty">
+                    검색된 리그가 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+                <div class="command">
+                    <button class="btn btn03" onclick="popup.league.add();">등록</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

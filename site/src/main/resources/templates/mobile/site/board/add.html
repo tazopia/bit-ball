@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='board', lnb=${code}, title=${title}">
+<body>
+
+<main class="page" layout:fragment="page" style="padding-top:20px;">
+    <table class="table-game table-bet">
+        <caption>스포츠</caption>
+        <colgroup>
+            <col>
+            <col style="width: 40px;">
+            <col style="width: 40px;">
+            <col>
+        </colgroup>
+        <tbody class="betBody" th:each="b : ${board.bets}">
+        <tr>
+            <th class="betTitle" colspan="4">
+                <span class="code" th:text="${b.menuCode.name}"></span>
+                <span class="time" th:utext="${tag.dayWeekTime(b.betDate)}"></span>
+            </th>
+        </tr>
+        <th:block th:each="item : ${b.betItems}">
+            <tr>
+                <th class="league" colspan="4">
+                    <img th:src="@{|${tag.sportsFlag(item)}|}"/>
+                    <img th:src="@{|${tag.leagueFlag(item)}|}"/>
+                    <span th:text="${item.league}"></span>
+                    <span class="date" th:utext="${tag.dayWeekTime(item.gameDate)}">06/21(금)</span>
+                </th>
+            </tr>
+            <tr class="item">
+                <td rowspan="2" th:class="${(item.betTeam eq 'home' ? 'bet home on' : 'bet home') + (item.gameResult.name() eq 'HOME' or item.gameResult.name() eq 'OVER' ? ' hit' : '')}">
+                    <p class="ellipses">
+                        <em th:text="${item.teamHome}" th:remove="tag"></em>
+                        <span class="color01" th:if="${item.menuCode.name() eq 'SPECIAL' and item.special eq '전반'}" th:text="${'[' + item.special + ']'}"></span>
+                    </p>
+                    <span class="odds">
+                    <span th:if="${item.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+                        <span th:if="${item.gameCode.name() eq 'OVER_UNDER'}" class="over">[오버]</span>
+                        <em th:text="${tag.odds(item.oddsHome)}" th:remove="tag"></em>
+                    </span>
+                </td>
+                <td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'MATCH' or item.gameCode.name() eq 'ZONE'}"
+                    th:with="odds=${tag.odds(item.oddsDraw)}"
+                    th:class="${(item.betTeam eq 'draw' ? 'draw on' : 'draw') + (item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' ? ' hit' : '') + (odds eq '0.00' ? '' : ' odds')}"
+                    th:text="${odds eq '0.00' ? 'VS' : odds}">
+                    무
+                </td>
+                <td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'HANDICAP' or item.gameCode.name() eq 'OVER_UNDER'}" th:class="${item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' ? 'draw hit' : 'draw'}" th:text="${tag.handicap(item.handicap)}">무</td>
+                <td rowspan="2" th:class="${(item.betTeam eq 'away' ? 'bet away on' : 'bet away') + (item.gameResult.name() eq 'AWAY' or item.gameResult.name() eq 'UNDER' ? ' hit' : '')}">
+                    <p class="ellipses">
+                        <span class="color01" th:if="${item.menuCode.name() eq 'SPECIAL' and item.special eq '전반'}" th:text="${'[' + item.special + ']'}"></span>
+                        <em th:text="${item.teamAway}" th:remove="tag"></em>
+                    </p>
+                    <span class="odds">
+                        <em th:text="${tag.odds(item.oddsAway)}" th:remove="tag"></em>
+                        <span th:if="${item.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+                        <span th:if="${item.gameCode.name() eq 'OVER_UNDER'}" class="under">[언더]</span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:0;height:33px" class="score" th:text="${item.scoreHome eq null ? '-' : item.scoreHome}"></td>
+                <td style="padding:0;height:33px" class="score" th:text="${item.scoreAway eq null ? '-' : item.scoreAway}"></td>
+            </tr>
+        </th:block>
+        <tr>
+            <td class="betInfo" colspan="4">
+                <em class="betMoney">
+                    베팅금액 : <span th:text="${tag.num(b.betMoney)}">1,000</span>원
+                </em>
+                <em class="rate">
+                    배당율 : <span th:text="${tag.odds(b.betOdds)}">1,000</span>배
+                </em>
+                <em class="expMoney">
+                    예상금액 : <span th:text="${tag.num(b.expMoney)}">1,000</span>원
+                </em>
+                <em class="hitMoney" th:if="${b.closing}">
+                    적중금액 : <span class="hit" th:text="${tag.num(b.hitMoney)}">1,000</span>원
+                </em>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form method="post" th:object="${add}" th:action="@{|${siteConfig.pathSite}/board/${code}/add|}" onsubmit="return addBoard();">
+        <div class="add" th:style="${board.bets.empty ? '' : 'padding-top:20px;'}">
+            <input type="hidden" th:field="*{betId}"/>
+            <label>
+                <input type="text" th:field="*{title}" placeholder="제목"/>
+            </label>
+            <label>
+                <textarea th:field="*{contents}" placeholder="내용"></textarea>
+            </label>
+        </div>
+        <div class="command">
+            <button class="btn-big btn02">등록하기</button>
+            <a th:href="|${siteConfig.pathSite}/board/${code}|" class="btn-big">돌아가기</a>
+        </div>
+    </form>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    function addBoard() {
+        if ($('#title').val().trim() === '') {
+            alert('제목을 입력 하세요.');
+            $('#title').focus();
+            return false;
+        }
+
+        if ($('#contents').val().trim() === '') {
+            alert('내용을 입력 하세요.');
+            $('#contents').focus();
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

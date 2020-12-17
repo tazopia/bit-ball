@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.BetMapper">
+
+    <select id="zoneAmount" resultType="spoon.bet.domain.BetDto$ZoneAmount">
+        SELECT betZone, SUM(betMoney) as amount FROM BET_ITEM WHERE menuCode = #{menuCode} AND groupId = #{sdate} AND cancel = 0 AND role != 'DUMMY' GROUP BY betZone
+    </select>
+
+    <select id="userBetList" parameterType="String" resultType="spoon.bet.domain.BetDto$UserBet">
+        SELECT * FROM (
+            SELECT
+                menuCode, count(*) as cnt, sum(betMoney) as betMoney, sum(hitMoney) as hitMoney, MAX(betDate) as betDate
+            FROM bet
+            WHERE userid = #{value} AND cancel = 0 AND enabled = 1
+            GROUP BY menuCode
+        ) a
+        ORDER BY betDate
+    </select>
+
+    <update id="updateGameAmount">
+        UPDATE GAME SET
+	        amountHome = IsNull((SELECT SUM(betMoney) FROM BET_ITEM WHERE gameId = GAME.id AND cancel = 0 AND enabled = 1 AND role != 'DUMMY' AND betTeam = 'home' AND gameCode != 'ZONE'), 0),
+	        amountDraw = IsNull((SELECT SUM(betMoney) FROM BET_ITEM WHERE gameId = GAME.id AND cancel = 0 AND enabled = 1 AND role != 'DUMMY' AND betTeam = 'draw' AND gameCode != 'ZONE'), 0),
+	        amountAway = IsNull((SELECT SUM(betMoney) FROM BET_ITEM WHERE gameId = GAME.id AND cancel = 0 AND enabled = 1 AND role != 'DUMMY' AND betTeam = 'away' AND gameCode != 'ZONE'), 0)
+        WHERE id IN
+        <foreach collection="gameIds" item="gameId" open="(" close=")" separator=",">
+            #{gameId}
+        </foreach>
+    </update>
+
+    <update id="deleteBets" parameterType="spoon.bet.domain.BetDto$Delete">
+        UPDATE BET SET deleted = 1
+        WHERE userid = #{userid} AND closing = 1
+        AND id IN
+        <foreach collection="betIds" item="betId" open="(" close=")" separator=",">
+            #{betId}
+        </foreach>
+    </update>
+
+    <update id="deleteClosingBets" parameterType="String">
+        UPDATE BET SET deleted = 1
+        WHERE userid = #{value} AND closing = 1
+        AND deleted = 0
+    </update>
+
+    <select id="userRateList" parameterType="spoon.bet.domain.BetDto$BetRate" resultType="spoon.bet.domain.BetUserRate">
+        SELECT
+            userid, nickname, agency1, agency2, agency3, agency4, level, betSports, cntSports, hitSports, betZone, cntZone, hitZone,
+            betSports + betZone as betSum
+            FROM
+            (
+                SELECT
+                c.userid, c.nickname, c.agency1, c.agency2, c.agency3, c.agency4, c.level, isNull(c.betSports, 0) as betSports,
+                isNull(c.cntSports, 0) as cntSports, isNull(c.hitSports, 0) as hitSports,
+                isNull(d.betZone, 0) as betZone, isNull(d.cntZone, 0) as cntZone, isNull(d.hitZone, 0) as hitZone
+                FROM
+                (
+                    SELECT
+                    a.userid, a.nickname, a.agency1, a.agency2, a.agency3, a.agency4, a.level, b.betSports, b.cntSports, b.hitSports FROM
+                    member a LEFT OUTER JOIN
+                    (
+                        SELECT userid, isnull(SUM(betMoney), 0) as betSports, COUNT(betMoney) as cntSports, isnull(SUM(hitMoney), 0) as hitSports
+                        FROM bet WHERE closing = 1 and cancel = 0 and role != 'DUMMY' and menuCode IN ('MATCH', 'HANDICAP', 'SPECIAL', 'LIVE', 'CROSS')
+                        and betDate <include refid="whereDate"/> group by userid
+                    ) b
+                    ON a.userid = b.userid
+                    WHERE a.role = 'USER' AND a.enabled = 1 AND a.secession = 0
+                    <if test="username != null and username != ''">
+                        <if test="match">
+                            AND (a.userid = #{username} or a.nickname = #{username})
+                        </if>
+                        <if test="!match">
+                            AND (a.userid LIKE '%' + #{username} + '%' or a.nickname LIKE '%' + #{username} + '%')
+                        </if>
+                    </if>
+                ) c
+                LEFT OUTER JOIN
+                (
+                    SELECT userid, isnull(SUM(betMoney), 0) as betZone, COUNT(betMoney) as cntZone, isNull(SUM(hitMoney), 0) as hitZone
+                    FROM bet WHERE closing = 1 and cancel =0 and role != 'DUMMY' and menuCode NOT IN ('MATCH', 'HANDICAP', 'SPECIAL', 'LIVE', 'CROSS')
+                    and betDate <include refid="whereDate"/> group by userid
+                ) d
+                ON c.userid = d.userid
+            ) e
+        ORDER BY
+        <choose>
+            <when test="orderBy == 'sports'">
+                betSports DESC, betZone DESC
+            </when>
+            <when test="orderBy == 'zone'">
+                betZone DESC, betSports DESC
+            </when>
+            <otherwise>
+                betSum DESC
+            </otherwise>
+        </choose>
+        OFFSET (#{page} - 1) * #{size} ROWS FETCH NEXT #{size} ROWS ONLY
+    </select>
+
+    <sql id="whereDate">
+        BETWEEN #{start} + ' 00:00:00.000' AND #{end} + ' 23:59:59.999'
+    </sql>
+</mapper>

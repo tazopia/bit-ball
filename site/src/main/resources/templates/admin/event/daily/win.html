@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='event', lnb='win'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>이벤트 :</small>
+    출석체크 회원
+</h2>
+<div layout:fragment="content">
+
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" method="get" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/event/daily/win|}">
+                <label>
+                    검색일 : <input type="text" class="cal" th:field="*{sdate}" placeholder="검색일자" />
+                    <a href="#" id="sp-reset-date" class="btn btn-cal">지움</a>
+                </label>
+                <label>
+                    아이디 : <input type="text" th:field="*{userid}" placeholder="아이디"/>
+                </label>
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/event/daily/win|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-cog"></i>
+                출석체크 회원
+                <span th:text="${page.totalElements}"></span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>사이트 설정</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width:260px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>일자</th>
+                <th>내용</th>
+                <th>이벤트머니</th>
+                <th>확인</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td th:onclick="|popup.member.info('${b.userid}');|" class="color03 popup" th:text="${b.userid}">아이디</td>
+                <td th:onclick="|popup.member.info('${b.userid}');|" class="color02 popup" th:text="${b.nickname}">닉네임</td>
+                <td th:text="${b.sdate}"></td>
+                <td th:text="${b.memo}"></td>
+                <td class="color01 num" th:text="${tag.num(b.amount)}"></td>
+                <td class="command">
+                    <span th:if="${b.closing and not b.cancel}">지급완료</span>
+                    <span class="color05" th:if="${b.closing and b.cancel}">지급취소</span>
+                    <span th:if="${not b.closing}">
+                        <a th:onclick="|goPayment('${b.id}');return false;|" class="btn btn01">내용확인-지급 <i class="fa fa-angle-double-right"></i></a>
+                        <a th:onclick="|goCancel('${b.id}');return false;|" class="btn btn02">취소 <i class="fa fa-angle-double-right"></i></a>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function goPayment(id) {
+        if (!confirm('내용을 확인하였습니다.\n\n지급 처리를 완료 합니다.')) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/event/daily/payment',
+            method: 'post',
+            data: { id: id }
+        }).done(function(data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    function goCancel(id) {
+        if (!confirm('이벤트 지급 신청을 취소 합니다.\n\n취소 하시면 되살릴 수 없습니다.')) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/event/daily/cancel',
+            method: 'post',
+            data: { id: id }
+        }).done(function(data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

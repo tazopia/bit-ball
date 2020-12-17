@@ -1,0 +1,64 @@
+server:
+    context-path: /
+    port: 18080
+spring:
+    application:
+        name: bit-ball
+
+    mobile:
+        devicedelegatingviewresolver:
+            enabled: true
+            enable-fallback: true
+        sitepreference:
+            enabled: true
+
+    thymeleaf:
+        cache: false
+        check-template-location: false
+        encoding: UTF-8
+        mode: HTML
+
+    datasource:
+        sql-script-encoding: UTF-8
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        url: jdbc:sqlserver://localhost:1433;DatabaseName=powerball;useUnicode=true;characterEncoding=UTF-8
+        username: sa
+        password: thssla1
+        hikari:
+            maximum-pool-size: 200
+
+    jpa:
+        database-platform: org.hibernate.dialect.SQLServer2012Dialect
+        show-sql: false
+        hibernate:
+            ddl-auto: update
+            naming:
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+    http:
+        multipart:
+            max-file-size: 10Mb
+            max-request-size: 20Mb
+
+    output:
+        ansi:
+          enabled: detect
+
+logging:
+    level: ERROR
+    level.spoon: WARN
+    level.spoon.bot: INFO
+    level.jdbc.sqlonly: INFO
+    level.org.springframework: ERROR
+    level.org.hibernate: ERROR
+
+# 사이트 설정
+config:
+    edition: BASIC
+    version: 1.0
+    god: routine
+    pathJoin: /join
+    pathSite: /site
+    pathAdmin: /admin
+    pathSeller: /seller
+    banks: 국민은행, 우리은행, 농협, 신한은행, 기업은행, KEB하나은행, SC제일, 씨티은행, HSBC은행, 우체국, 신협, 수협, 새마을금고, 부산은행, 광주은행, 대구은행, 전북은행, 제주은행, 경남은행, 케이뱅크, 카카오뱅크, 미래에셋대우증권, 신한투자증권, 유안타증권, 동부증권, 상호저축은행, 산림조합중앙회

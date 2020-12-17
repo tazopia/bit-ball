@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8"/>
+    <title th:text="${siteConfig.companyName}">Best of Stella</title>
+    <link rel="shortcut icon" th:href="@{|/images/favicon.ico?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/font-awesome.min.css?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/flipclock.css?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/style.css?v=${siteConfig.version}|}"/>
+    <script th:src="@{|/js/jquery-3.1.1.min.js?v=${siteConfig.version}|}"></script>
+    <script th:src="@{|/js/flipclock.min.js?v=${siteConfig.version}|}"></script>
+    <script th:src="@{|/js/angular.min.js?v=${siteConfig.version}|}"></script>
+</head>
+<body>
+<div th:fragment="gnb" th:remove="tag">
+    <ul>
+		<li th:class="${gnb eq 'zone' and lnb eq 'power'} ? 'on'" th:if="${sysConfig.zone.power}">
+			<a th:href="@{|${siteConfig.pathSite}/zone/power|}">파워볼</a>
+		</li>
+		<li th:class="${gnb eq 'zone' and lnb eq 'power_ladder'} ? 'on'" th:if="${sysConfig.zone.powerLadder}">
+			<a th:href="@{|${siteConfig.pathSite}/zone/power_ladder|}">파워사다리</a>
+		</li>
+		<li th:class="${gnb eq 'zone' and lnb eq 'keno'} ? 'on'" th:if="${sysConfig.zone.keno}">
+			<a th:href="@{|${siteConfig.pathSite}/zone/keno|}">스피드키노</a>
+		</li>
+		<li th:class="${gnb eq 'zone' and lnb eq 'keno_ladder'} ? 'on'" th:if="${sysConfig.zone.kenoLadder}">
+			<a th:href="@{|${siteConfig.pathSite}/zone/keno_ladder|}">키노사다리</a>
+		</li>
+
+		<li th:class="${gnb eq 'bitcoin'} ? 'on'" th:if="${sysConfig.zone.bitcoin3 or sysConfig.zone.bitcoin5}">
+			<a th:href="@{|${siteConfig.pathSite}/zone/bitcoin3|}"><span>비트코인</span></a>
+			<ul class="sub">
+				<li th:class="${lnb eq 'bitcoin3'} ? 'on'" th:if="${sysConfig.zone.bitcoin3}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/bitcoin3|}"><span>비트코인 3분</span></a>
+				</li>
+				<li th:class="${lnb eq 'bitcoin5'} ? 'on'" th:if="${sysConfig.zone.bitcoin5}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/bitcoin5|}"><span>비트코인 5분</span></a>
+				</li>
+			</ul>
+		</li>
+
+		<li th:class="${gnb eq 'score'} ? 'on'">
+            <a th:href="@{|${siteConfig.pathSite}/zone/power/score||}">경기결과</a>
+            <ul class="sub">
+				<li th:class="${gnb eq 'score' and lnb eq 'cw_oddeven'} ? 'on'" th:if="${sysConfig.zone.crownOddeven}"><a th:href="@{|${siteConfig.pathSite}/zone/cw_oddeven/score|}"><span>홀짝</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'cw_baccarat'} ? 'on'" th:if="${sysConfig.zone.crownBaccarat}"><a th:href="@{|${siteConfig.pathSite}/zone/cw_baccarat/score|}"><span>바카라</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'cw_sutda'} ? 'on'" th:if="${sysConfig.zone.crownSutda}"><a th:href="@{|${siteConfig.pathSite}/zone/cw_sutda/score|}"><span>섯다</span></a></li>
+
+				<li th:class="${gnb eq 'score' and lnb eq 'ladder'} ? 'on'" th:if="${sysConfig.zone.ladder}"><a th:href="@{|${siteConfig.pathSite}/zone/ladder/score|}"><span>사다리</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'dari'} ? 'on'" th:if="${sysConfig.zone.dari}"><a th:href="@{|${siteConfig.pathSite}/zone/dari/score|}"><span>다리다리</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'new_snail'} ? 'on'" th:if="${sysConfig.zone.newSnail}"><a th:href="@{|${siteConfig.pathSite}/zone/new_snail/score|}"><span>달팽이</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'power'} ? 'on'" th:if="${sysConfig.zone.power}"><a th:href="@{|${siteConfig.pathSite}/zone/power/score|}"><span>파워볼</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'power_ladder'} ? 'on'" th:if="${sysConfig.zone.powerLadder}"><a th:href="@{|${siteConfig.pathSite}/zone/power_ladder/score|}"><span>파워사다리</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'keno_ladder'} ? 'on'" th:if="${sysConfig.zone.kenoLadder}"><a th:href="@{|${siteConfig.pathSite}/zone/keno_ladder/score|}"><span>키노사다리</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'keno'} ? 'on'" th:if="${sysConfig.zone.keno}"><a th:href="@{|${siteConfig.pathSite}/zone/keno/score|}"><span>스피드키노</span></a></li>
+
+				<li th:class="${gnb eq 'score' and lnb eq 'bitcoin1'} ? 'on'" th:if="${sysConfig.zone.bitcoin1}"><a th:href="@{|${siteConfig.pathSite}/zone/bitcoin1/score|}"><span>비트코인 1분</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'bitcoin3'} ? 'on'" th:if="${sysConfig.zone.bitcoin3}"><a th:href="@{|${siteConfig.pathSite}/zone/bitcoin3/score|}"><span>비트코인 3분</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'bitcoin5'} ? 'on'" th:if="${sysConfig.zone.bitcoin5}"><a th:href="@{|${siteConfig.pathSite}/zone/bitcoin5/score|}"><span>비트코인 5분</span></a></li>
+
+				<li th:class="${gnb eq 'score' and lnb eq 'oddeven'} ? 'on'" th:if="${sysConfig.zone.oddeven}"><a th:href="@{|${siteConfig.pathSite}/zone/oddeven/score|}"><span>홀짝</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'baccarat'} ? 'on'" th:if="${sysConfig.zone.baccarat}"><a th:href="@{|${siteConfig.pathSite}/zone/baccarat/score|}"><span>바카라</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'soccer'} ? 'on'" th:if="${sysConfig.zone.soccer}"><a th:href="@{|${siteConfig.pathSite}/zone/soccer/score|}"><span>가상축구</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'dog'} ? 'on'" th:if="${sysConfig.zone.dog}"><a th:href="@{|${siteConfig.pathSite}/zone/dog/score|}"><span>개경주</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'luck'} ? 'on'" th:if="${sysConfig.zone.luck}"><a th:href="@{|${siteConfig.pathSite}/zone/luck/score|}"><span>세븐럭</span></a></li>
+            </ul>
+        </li>
+        <li th:class="${gnb eq 'betting'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/betting|}">베팅내역</a></li>
+        <li th:class="${gnb eq 'board'} ? 'on'">
+            <a th:href="@{|${siteConfig.pathSite}/board/free|}">게시판</a>
+            <ul class="sub">
+				<li th:class="${lnb eq 'free'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/board/free|}"><span>자유게시판</span></a></li>
+				<li th:class="${lnb eq 'notice'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/board/notice|}"><span>공지사항</span></a></li>
+				<li th:class="${lnb eq 'event'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/board/event|}"><span>이벤트</span></a></li>
+            </ul>
+        </li>
+        <li th:class="${gnb eq 'customer' ? 'on' : ''}">
+            <a th:href="@{|${siteConfig.pathSite}/customer/qna|}">고객센터</a>
+            <ul class="sub">
+				<li th:class="${lnb eq 'qna'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/customer/qna|}"><span>고객상담</span></a></li>
+				<li th:class="${lnb eq 'memo'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/customer/memo|}"><span>메시지함</span></a></li>
+            </ul>
+        </li>
+        <li th:if="${sysConfig.event.daily}" th:class="${gnb eq 'event'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/event/daily|}">출석체크</a></li>
+		<li th:if="${user.role.group.name() eq 'AGENCY'}"><a th:href="@{|${siteConfig.pathSeller}//sale/daily|}" style="color:#d8af3a;">관리자페이지</a></li>
+		<li class="gnb-btn"><a class="gnb-deposit" th:href="@{|${siteConfig.pathSite}/payment/deposit|}">충전</a></li>
+		<li class="gnb-btn"><a class="gnb-withdraw" th:href="@{|${siteConfig.pathSite}/payment/withdraw|}">환전</a></li>
+    </ul>
+</div>
+
+
+
+<div th:fragment="javascript" th:remove="tag">
+    <script th:src="@{|/js/common.js?v=${siteConfig.version}|}"></script>
+    <script th:if="${mode ne 'login'}" th:src="@{|/js/common.web.js?v=${siteConfig.version}|}"></script>
+    <script th:if="${mode eq 'login'}" th:src="@{|/js/common.join.js?v=${siteConfig.version}|}"></script>
+    <script th:if="${mode ne 'login'}" th:src="@{|/js/angular.web.js?v=${siteConfig.version}|}"></script>
+	<script th:if="${main eq 'inplay'}" th:src="@{|/js/market.js?v=${siteConfig.version}|}"></script>
+</div>
+</body>
+</html>

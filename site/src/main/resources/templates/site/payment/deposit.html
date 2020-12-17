@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page',gnb='page'">
+<body>
+<section layout:fragment="section">
+    <h3>충전신청</h3>
+
+    <div class="box">
+        <h4>입금안내</h4>
+        <p class="color04">반드시 계좌로 선입금 후 충전신청 하시기 바랍니다.</p>
+        <p>
+            입금시 ATM, 폰뱅킹, 인터넷뱅킹, 무통장입금 등의 방법을 이용하여 입금하실 수 있습니다.<br/>
+            입금계좌는 수시로 변경될 수 있으니 반드시 입금전 고객센터로 계좌번호를 확인하시기 바랍니다.<br/>
+            최소금액은 <span class="color02" th:text="${#numbers.formatInteger(siteConfig.point.depositMin, 0, 'DEFAULT') + '원'}">10,000원</span> 부터
+            <span class="color01" th:text="${#numbers.formatInteger(siteConfig.point.depositUnit, 0, 'DEFAULT') + '원'}">10,000원</span> 단위로 가능합니다.<br/>
+            수표 입금은 절대 불가 합니다.
+        </p>
+        <p class="color03">환전계좌 성명과 입금자명이 일치하지 않으면 충전처리가 되지 않습니다.</p>
+		<p th:if="${siteConfig.point.blockDeposit}" class="color02" style="font-size:16px; text-align:center; padding: 20px 0;">현재 충전을 하실 수 없습니다. 잠시 후 이용하시기 바랍니다.</p>
+    </div>
+    <br/><br/>
+
+
+	<div class="banking">
+		<div class="bank-list">
+			<div>
+				<div class="bank">신한은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">하나은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">경남은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">전북은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">제주은행</div>
+				<div class="time">23:50 ~ 00:20</div>
+			</div>
+			<div>
+				<div class="bank">광주은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">부산은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">대구은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">SC제일은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">우리은행</div>
+				<div class="time">23:50 ~ 00:15</div>
+			</div>
+			<div>
+				<div class="bank">농협은행</div>
+				<div class="time">23:50 ~ 00:30</div>
+			</div>
+			<div>
+				<div class="bank">수협은행</div>
+				<div class="time">23:30 ~ 00:30</div>
+			</div>
+			<div>
+				<div class="bank">국민은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">IBK기업은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">산업은행</div>
+				<div class="time">23:50 ~ 00:30</div>
+			</div>
+		</div>
+	</div>
+
+    <table class="banking">
+        <caption>충전 신청</caption>
+        <colgroup>
+            <col style="width: 200px;">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr th:if="${!bonus.isEmpty()}">
+            <th>진행중 이벤트</th>
+            <td class="color01" th:text="${bonus}">보너스</td>
+        </tr>
+        <tr>
+            <th>입금자명</th>
+            <td th:text="${member.depositor}">입금자</td>
+        </tr>
+        <tr>
+            <th rowspan="2">충전금액</th>
+            <td>
+                <input type="text" class="num" id="amount" autofocus="autofocus"/> 원
+                <span id="amountKor" class="color02" style="margin-left: 40px;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+				<a class="btn" onclick="setAmount(10000);">10,000</a>
+				<a class="btn" onclick="setAmount(30000);">30,000</a>
+				<a class="btn" onclick="setAmount(50000);">50,000</a>
+				<a class="btn" onclick="setAmount(100000);">100,000</a>
+				<a class="btn" onclick="setAmount(300000);">300,000</a>
+				<a class="btn" onclick="setAmount(500000);">500,000</a>
+				<a class="btn" onclick="setAmount(1000000);">1,000,000</a>
+                <a class="btn btn02" onclick="resetAmount();">정정</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="command">
+        <button class="btn btn01" th:if="${!siteConfig.point.blockDeposit}" onclick="deposit();">충전신청</button>
+    </div>
+    <table class="list" th:if="${not #lists.isEmpty(list)}">
+        <caption>충전신청</caption>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col style="width: 100px;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>입금인</th>
+            <th>신청금액</th>
+            <th>이벤트</th>
+            <th>추가포인트</th>
+            <th>신청시간</th>
+            <th>처리상태</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b, num : ${list}" th:with="total=${#lists.size(list)}">
+            <td th:text="${total - num.count + 1}">번호</td>
+            <td th:text="${b.depositor}">입금인</td>
+            <td class="num color02" th:text="${#numbers.formatInteger(b.amount, 0, 'DEFAULT')}">신청금액</td>
+            <td th:text="${b.bonusPoint gt 0 ? b.bonus : '-'}"></td>
+            <td class="num color01" th:text="${#numbers.formatInteger(b.bonusPoint, 0, 'DEFAULT')}">충전금액</td>
+            <td th:utext="${tag.fullDate(b.regDate)}">신청시간</td>
+            <td th:class="${b.cancel ? 'color03' : (b.closing ? 'color01' : '')}" th:text="${b.cancel ? '취소' : (b.closing ? '완료' : '대기')}">진행상태</td>
+            <td th:if="${b.closing}"><a class="btn btn02" th:onclick="|goDelete('${b.id}')|">삭제</a></td>
+            <td th:if="${!b.closing}"><a class="btn btn03" th:onclick="|goCancel('${b.id}')|">취소</a></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    var depositor = '[[${member.depositor}]]';
+    var config = [(${zoneAmount})];
+
+    $('#amount').on('change, keyup', function () {
+        var amount = $(this).val().num() || 0;
+        $(this).val(amount.toString().money());
+        $('#amountKor').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    });
+
+    function setAmount(amt) {
+        var amount = $('#amount').val().num() || 0;
+        amount = parseInt(amount, 10) + parseInt(amt, 10);
+        $('#amount').val(amount.toString().num().money());
+        $('#amountKor').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    }
+
+    function resetAmount() {
+        $('#amount').val('');
+        $('#amountKor').text('');
+    }
+
+    function deposit() {
+        var amount = parseInt($('#amount').val().num() || 0, 10);
+
+        if (depositor === '') {
+            alert('입금자를 기입하지 않으셔서 충전 신청이 불가능 합니다.');
+            return false;
+        }
+
+        if (config.min > amount) {
+            alert(String.format('최소 충전 금액은 {0}원 이상 입니다.', config.min.toString().money()));
+            return false;
+        }
+
+        if (config.unit > 0) {
+            var mod = amount % config.unit;
+            if (mod !== 0) {
+                if (!confirm(String.format('충전 금액은 {0}원 단위로 가능합니다.\n\n{1}원으로 신청 금액을 맞추겠습니까?', config.unit.toString().money(), (amount - mod).toString().money()))) {
+                    return false
+                }
+                amount = amount - mod;
+            }
+        }
+
+        if (!confirm(String.format('필히 선입금 후 충전신청 하시기 바랍니다.\n\n    - 충전금액 : {0}원\n\n    - 입금자명 : {1}\n\n충전신청을 진행하시겠습니까?', amount.toString().money(), depositor))) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/payment/deposit',
+            method: 'post',
+            data: {
+                depositor: depositor,
+                amount: amount
+            }
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            } else {
+                $('#amount').val('');
+                $('#bankPassword').val('');
+            }
+        });
+    }
+
+    function goDelete(id) {
+        if (confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/payment/deposit/delete',
+                method: 'post',
+                data: {
+                    id: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function goCancel(id) {
+        if (confirm('취소를 하시면 되살릴 수 없습니다.\n\n취소를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/payment/deposit/cancel',
+                method: 'post',
+                data: {
+                    id: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,696 @@
+table.game {
+	box-shadow none
+	border-spacing 2px !important
+	border-collapse separate
+
+	img, span {
+		vertical-align middle
+	}
+
+	tbody.group:before {
+		content ''
+		display block
+		height 15px
+		//background #565658
+	}
+
+	.btn {
+		border-radius 4px
+		em {
+			border-radius 3px
+		}
+	}
+
+	tr.off {
+		td {
+			background #464547 !important
+			cursor auto !important
+		}
+	}
+
+	th, td {
+		//border solid 1px #EC1A41
+		background #333
+		height 38px
+	}
+
+	th {
+		color #d8af3a
+		font-weight 600
+		height 42px
+		font-size 14px
+	}
+
+	td {
+		transition(all 0.2s ease-out)
+		padding 0 10px
+
+		&.league {
+			padding 14px 0 6px 0
+			background transparent // #262527
+			color #d8af3a
+			text-align left
+			font-weight 600
+			border-right none
+			border-left none
+			text-shadow 0 0 3px #000
+
+			img {
+				margin-right 8px
+
+				&.flag {
+					margin-left 20px
+				}
+			}
+
+			p {
+				display inline-block
+				min-width 176px
+			}
+
+			.cnt {
+				height 20px
+				line-height 20px
+				display inline-block
+				margin-left 20px
+				vertical-align middle
+				background-color #e85202
+				padding 0 1px
+				border-radius 12px
+			}
+
+			.btn {
+				float right
+				position relative
+				padding 0 40px 0 0
+				width 116px
+				text-align center
+				background #444 !important
+
+				em {
+					background rgba(0, 0, 0, 0.5)
+					position absolute
+					right 1px
+					top 1px
+					height 22px
+					line-height 22px
+					width 48px
+					padding-right 6px
+					text-align right
+				}
+			}
+
+			.btn03 {
+				background #e85202 !important
+			}
+		}
+
+		&.date {
+			background #e85202
+			* {
+				color #fff !important
+			}
+			//span {
+			//	color #5bc0de
+			//}
+		}
+
+		&.major {
+			background #e85202
+		}
+
+		&.time {
+			background none
+		}
+
+		&.home {
+			color #fff
+			text-align left
+			.odds {
+				display inline-block
+				float right
+				font-weight 600
+				color #d8af3a
+			}
+		}
+
+		&.draw {
+			&.bet {
+				color #d8af3a
+			}
+		}
+
+		&.away {
+			color #fff
+			text-align right
+			.odds {
+				display inline-block
+				float left
+				font-weight 600
+				color #d8af3a
+			}
+		}
+
+		&.bet {
+			//border solid 1px #EC1A41
+			position relative
+			background #333
+			cursor pointer
+			&:hover {
+				background #e85202
+			}
+
+			&.on {
+				background #e85202
+				color #fff
+
+				* {
+					color #fff
+				}
+			}
+
+			a {
+				position absolute
+				top 0
+				right 0
+				bottom 0
+				left 0
+			}
+		}
+
+		&.over {
+			background #262527
+			color #ee5f5b
+			margin 0 6px
+		}
+
+		&.under {
+			background #262527
+			color #5bc0de
+			margin 0 6px
+		}
+
+		&.score {
+			color #fff
+			box-shadow(inset 0 0 40px 1px #000)
+		}
+	}
+
+	tr.item {
+		td.home, td.draw, td.away {
+			background #333
+			&.bet {
+				background #e85202
+				color #fff
+				* {
+					color #fff
+				}
+			}
+			&.on {
+				//box-shadow(inset 0 0 0 1px #fff)
+				box-shadow(inset 0 0 0 1px #e85202)
+			}
+
+			&.hit {
+				background #e85202
+				color #fff
+
+				&.odds {
+
+				}
+
+				* {
+					color #fff
+				}
+			}
+		}
+
+		td.vs {
+			&.hit {
+				background #e85202
+				color #fff
+
+				&.odds {
+
+				}
+
+				* {
+					color #fff
+				}
+			}
+		}
+
+		td.info {
+			img {
+				margin-right 8px
+			}
+		}
+
+		td.odds {
+			color #d8af3a
+			font-weight 600
+		}
+
+		td.result {
+			&.ing, &.closing {
+				color #fff
+			}
+
+			&.win {
+				color #63a001
+			}
+
+			&.lose {
+				color #ff6600
+			}
+
+			&.hit {
+				color #5bc0de
+			}
+
+			&.cancel {
+				color #ee5f5b
+			}
+		}
+	}
+
+	td.betInfo {
+		background transparent
+		border none
+		text-align left
+		padding 6px 0 20px 0
+		font-size 14px
+		text-shadow 0 0 3px #000
+
+		span {
+			display inline-block
+			color #fff
+
+			.money {
+				color #62c462
+				font-weight 600
+				vertical-align baseline
+			}
+
+			.hit {
+				color #ff5f5b
+				font-weight 600
+				vertical-align baseline
+			}
+
+			&.dateDay {
+				margin-left 20px
+			}
+
+			&.dateTime {
+				color #f89406
+			}
+
+			&.betMoney, &.rate, &.expMoney, &.hitMoney {
+				margin-left 20px
+			}
+
+			&.btn-box {
+				display inline-block
+				float right
+				font-size 13px
+				margin-top 2px
+			}
+		}
+
+		input {
+			width 20px
+			height 20px
+			padding 0
+		}
+	}
+}
+
+ul.sports {
+	float right
+	height 30px
+	li {
+		float left
+		padding-left 20px
+		cursor pointer
+		height 24px
+		line-height 24px
+
+		em {
+			vertical-align middle
+			display inline-block
+			background-color #B8573E
+			padding 0 7px
+			border-radius 10px
+			margin-left 10px
+		}
+
+		img {
+			vertical-align middle
+		}
+	}
+}
+
+#left-league {
+	display block
+	position absolute
+	top 70px
+	left 50%
+	margin-left -850px
+	border solid 1px #e85202
+
+	ul {
+		display none
+
+		&.on {
+			display block
+		}
+	}
+
+	li {
+		display block
+
+		.cnt {
+			float right
+			display block
+			background-color #e85202
+			height 18px
+			line-height 18px
+			padding 0 7px
+			border-radius 10px
+			margin-top 6px
+			color #fff
+		}
+
+		p {
+
+			&.sports {
+				background #333
+			}
+
+			width 200px
+			padding 0 10px
+			height 36px
+			line-height 36px
+			cursor pointer
+			background #444
+			margin 1px 0
+			color #d8af3a
+
+			&.top {
+				height 40px
+				line-height 40px
+				font-weight 600
+				background #222
+				color #fff
+
+				.cnt {
+					margin-top 8px
+				}
+			}
+
+			&.league {
+				display flex
+				padding-left 16px
+				background #444
+
+				.flag {
+					width 36px
+				}
+
+				.name {
+					flex 1
+					white-space nowrap
+					overflow hidden
+					text-overflow ellipsis
+				}
+			}
+		}
+	}
+}
+
+#game-cart {
+	&.fixed {
+		#clock, .cart-wrap, #betInfo {
+			position fixed
+		}
+
+		#clock {
+			top 10px
+			//transition(all 0.5s ease-out)
+		}
+
+		.cart-wrap {
+			top 54px
+			//transition(all 0.5s ease-out)
+		}
+
+		#bettingInfo {
+			top 54px
+			left 50%
+			margin-left 655px
+			position fixed
+			//transition(all 0.5s ease-out)
+		}
+	}
+
+	position relative
+}
+
+#clock {
+	margin-top -1px
+	margin-bottom 6px
+}
+
+.cart-wrap {
+	top 206px
+
+	width 220px
+	font-size 13px
+
+	.cart-top {
+		font-size 14px
+		font-weight 600
+		background #000
+		//border solid 1px #e85202
+		color #d8af3a
+		height 40px
+		line-height 40px
+		padding 0 10px
+		display flex
+		justify-content space-between
+		align-items center
+		border-radius 4px
+
+		div {
+			display flex
+			justify-content space-between
+			align-items center
+
+			.switch {
+				margin-left 4px
+			}
+		}
+	}
+	.cart-odds {
+		margin-top 4px
+		padding 10px
+		background #333
+		border-radius 4px
+
+		p {
+			height 24px
+			line-height 24px
+			color #fff
+
+			input {
+				width 120px
+				height 22px
+				text-align right
+				font-size 14px
+				padding 0
+				color #fff
+				background #000
+			}
+
+			span {
+				display inline-block
+				float right
+			}
+
+			em {
+				color #d8af3a
+				font-weight 600
+			}
+		}
+	}
+	.cart-amount {
+		overflow hidden
+		margin-top 2px
+		li {
+			float left
+			display block
+			width 32%
+			margin-top 2px
+			margin-bottom 2px
+
+			.btn {
+				width 100%
+				padding 0
+				text-align center
+				height 32px
+				line-height 32px
+				background #444
+				//border solid 1px #e85202
+				color #fff
+				border-radius 4px
+				//border solid 1px rgba(0,0,0,0.4)
+
+				&:hover {
+					background #222
+					color #fff
+				 }
+			}
+
+			&:nth-child(3n + 2) {
+				margin-left 2%
+				margin-right 2%
+			}
+		}
+	}
+	.cart-betting {
+		margin-top 2px
+		.btn {
+			border-radius 5px
+			width 100%
+			text-align center
+			font-size 16px
+			height 42px
+			line-height 42px
+			background #e85202
+			//background url(/images/gold_bg.jpg) center bottom no-repeat //#59a735
+			//background url(/images/top-bg.jpg) right bottom no-repeat
+			//background-size 100%
+			color #fff
+			font-weight 600
+
+			&:hover {
+				background-color darken(#e85202, 30%)
+				//filter hue-rotate(90deg)
+				//background-position center top
+				//background url(/images/btn-bg.png) center bottom no-repeat
+				//background-position-y top
+			}
+
+			em {
+				margin-left 2px
+				font-size 13px
+				display inline-block
+				height 22px
+				line-height 20px
+				vertical-align middle
+				background #363537
+				padding 0 8px
+				border-radius 50%
+			}
+		}
+	}
+	.cart-item {
+		div {
+			margin-top 4px
+			padding 10px
+			position relative
+			background #000
+
+			&.bonus {
+				background #363537
+				span {
+					color #5bc0de
+				}
+			}
+		}
+		.btn {
+			padding 0 6px
+			position absolute
+			height 20px
+			line-height 20px
+			right 10px
+			top 8px
+			background #e85202
+			color #fff
+
+			&:hover {
+				background darken(#e85202, 16%)
+			}
+		}
+		p {
+			height 18px
+			line-height 18px
+
+			&.odds {
+				margin-bottom 8px
+				color #fff
+
+				img {
+					vertical-align middle
+				}
+				span {
+					float right
+					padding-right 16px
+					color #5bc0de
+				}
+			}
+
+			&.zone {
+				padding-left 20px
+				color #5bc0de
+			}
+		}
+	}
+}
+
+.ladder-result {
+	background url(/images/ladder-result.png)
+	display inline-block
+	width 26px
+	height 26px
+
+	&.s1 {
+		background-position 0 0
+	}
+
+	&.s2 {
+		background-position -26px 0
+	}
+
+	&.s3 {
+		background-position -52px 0
+	}
+
+	&.s4 {
+		background-position -78px 0
+	}
+}
+
+.lowhi-result {
+	background url(/images/lowhi-result.png)
+	display inline-block
+	width 50px
+	height 25px
+
+	&.s1 {
+		background-position 0 0
+	}
+
+	&.s2 {
+		background-position -50px 0
+	}
+
+	&.s3 {
+		background-position -100px 0
+	}
+
+	&.s4 {
+		background-position -150px 0
+	}
+}

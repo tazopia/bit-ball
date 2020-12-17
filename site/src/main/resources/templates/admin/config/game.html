@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='game'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>환경설정 :</small>
+    스포츠 환경 설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${gameConfig}" onsubmit="return saveConfig()">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-cog"></i>
+                    스포츠 환경 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>스포츠 환경 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">경기 등록 설정</th>
+                    <td>
+                        <select th:field="*{autoParsing}">
+                            <option value="true">게임 자동등록</option>
+                            <option value="false">게임 수동등록</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">배당 변경 설정</th>
+                    <td>
+                        <select th:field="*{autoUpdate}">
+                            <option value="true">배당 자동변경</option>
+                            <option value="false">배당 수동변경</option>
+                        </select>
+                        <span>(스포츠 경기 관리 페이지에서 개별 설정이 가능 합니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">경기 결과 설정</th>
+                    <td>
+                        <select th:field="*{autoClosing}">
+                            <option value="true">결과 자동등록</option>
+                            <option value="false">결과 수동등록</option>
+                        </select>
+                        <span class="color01">(결과 수동 등록시 베팅된 경기 결과만 수동으로 등록 됩니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">진행중 경기 보여주기</th>
+                    <td>
+                        <select th:field="*{endGame}">
+                            <option value="true">진행중 경기 보여주기</option>
+                            <option value="false">진행중 경기 보여주지 않기</option>
+                        </select>
+                        <span class="color01">(회원 스포츠 페이지에서 진행중 경기 보여 줄지의 여부입니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">스포츠 More 버튼</th>
+                    <td>
+                        <label class="color02">
+                            크로스 More 버튼 사용
+                            <input type="checkbox" th:field="*{moreCross}" />
+                        </label>
+                        <label class="color03">
+                            스페셜 More 버튼 사용
+                            <input type="checkbox" th:field="*{moreSpecial}" />
+                        </label>
+                        <label th:if="${sysConfig.sports.canLive}" class="color04">
+                            라이브 More 버튼 사용
+                            <input type="checkbox" th:field="*{moreLive}" />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">배당율 조정 설정</th>
+                    <td>
+                        기본배당 <input type="text" th:field="*{oddsDefault}" class="mr20 sel center" style="width: 60px;"/>
+                        배당 상승 <em class="color03">▲</em> <input type="text" th:field="*{oddsUp}" class="mr20 sel center" style="width: 60px;"/>
+                        배당 하락 <em class="color02">▼</em> <input type="text" th:field="*{oddsDown}" class="center sel" style="width: 60px;"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table-read col10" style="margin: -1px 0;">
+                <caption>배당율 일괄 설정</caption>
+                <colgroup>
+                    <col style="width: 220px;">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th rowspan="2" class="required color01">배당율 일괄 설정</th>
+                    <td rowspan="2" class="color02">승무패</td>
+                    <td colspan="2">핸디캡</td>
+                    <td colspan="2">스페셜</td>
+                    <td rowspan="2">비고</td>
+                </tr>
+                <tr>
+                    <td class="color03">핸디캡</td>
+                    <td class="color04">오버언더</td>
+                    <td class="color03">핸디캡</td>
+                    <td class="color04">오버언더</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>%로 조정</th>
+                    <td><input type="text" th:field="*{oddsUpDownMatch}" class="center color02" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsUpDownHandicap}" class="center color03" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsUpDownOverUnder}" class="center color04" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsUpDownHandicapSpecial}" class="center color03" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsUpDownOverUnderSpecial}" class="center color04" style="width: 100px;"/></td>
+                    <td>변경을 원하지 않으시면 100%로 맞춰 놓으세요. %로 변경 합니다.</td>
+                </tr>
+                <tr>
+                    <th>+-로 조정</th>
+                    <td><input type="text" th:field="*{oddsPlusMatch}" class="center color02" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsPlusHandicap}" class="center color03" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsPlusOverUnder}" class="center color04" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsPlusHandicapSpecial}" class="center color03" style="width: 100px;"/></td>
+                    <td><input type="text" th:field="*{oddsPlusOverUnderSpecial}" class="center color04" style="width: 100px;"/></td>
+                    <td>변경을 원하지 않으시면 0으로 맞춰 놓으세요. +- 로 배당에 일괄 적용 됩니다.</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body" th:if="${sysConfig.zone.balance}">
+                <h3>
+                    <i class="bul fa fa-balance-scale" aria-hidden="true"></i>
+                    발란스 환경 설정
+                </h3>
+            </div>
+            <table class="table-read" th:if="${sysConfig.zone.balance}">
+                <caption>발란스 환경 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">사다리 보험</th>
+                    <td>
+                        <label>
+                            <select th:field="*{balanceLadder}">
+                                <option th:value="true">보험 사용하기</option>
+                                <option th:value="false">보험 사용하지 않기</option>
+                            </select>
+                        </label>
+                        <label>
+                            효율 :
+                            <input type="text" th:field="*{balanceLadderRate}" style="width: 60px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">다리다리 보험</th>
+                    <td>
+                        <label>
+                            <select th:field="*{balanceDari}">
+                                <option th:value="true">보험 사용하기</option>
+                                <option th:value="false">보험 사용하지 않기</option>
+                            </select>
+                        </label>
+                        <label>
+                            효율 :
+                            <input type="text" th:field="*{balanceDariRate}" style="width: 60px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">파워볼 보험</th>
+                    <td>
+                        <label>
+                            <select th:field="*{balancePower}">
+                                <option th:value="true">보험 사용하기</option>
+                                <option th:value="false">보험 사용하지 않기</option>
+                            </select>
+                        </label>
+                        <label>
+                            효율 :
+                            <input type="text" th:field="*{balancePowerRate}" style="width: 60px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr th:if="${sysConfig.zone.canBalanceAladdin}">
+                    <th class="required">알라딘 보험</th>
+                    <td>
+                        <label>
+                            <select th:field="*{balanceAladdin}">
+                                <option th:value="true">보험 사용하기</option>
+                                <option th:value="false">보험 사용하지 않기</option>
+                            </select>
+                        </label>
+                        <label>
+                            효율 :
+                            <input type="text" th:field="*{balanceAladdinRate}" style="width: 60px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr th:if="${sysConfig.zone.canBalanceLowhi}">
+                    <th class="required">로하이 보험</th>
+                    <td>
+                        <label>
+                            <select th:field="*{balanceLowhi}">
+                                <option th:value="true">보험 사용하기</option>
+                                <option th:value="false">보험 사용하지 않기</option>
+                            </select>
+                        </label>
+                        <label>
+                            효율 :
+                            <input type="text" th:field="*{balanceLowhiRate}" style="width: 60px;"/>
+                        </label>
+                    </td>
+                </tr>
+                <tr th:if="${sysConfig.zone.balanceType eq 'polygon'}">
+                    <th class="required color01">회원번호</th>
+                    <td>
+                        <input type="text" style="width: 400px;" th:field="*{balancePolygon}" />
+                    </td>
+                </tr>
+                <tr th:if="${sysConfig.zone.balanceType eq 'gate'}">
+                    <th class="required color01">아이디</th>
+                    <td>
+                        <input type="text" style="width: 400px;" th:field="*{balanceGateId}" />
+                    </td>
+                </tr>
+                <tr th:if="${sysConfig.zone.balanceType eq 'gate'}">
+                    <th class="required color01">API KEY</th>
+                    <td>
+                        <input type="text" style="width: 400px;" th:field="*{balanceGateKey}" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-line-chart" aria-hidden="true"></i>
+                    보너스 배당 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>보너스 배당 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+				<tr>
+					<th class="required color02">최소 보너스 배당</th>
+					<td>
+						<label>
+							최소 보너스 배당을
+							<select th:field="*{enabledMinOdds}">
+								<option th:value="true">사용</option>
+								<option th:value="false">미사용</option>
+							</select>
+							합니다.
+						</label>
+						<label class="color01">
+							조합배당중
+							<input type="text" style="text-align: center; width:80px;" th:field="*{minOdds}"> 미만 배당이 포함될 때 보너스 배당 지급하지 않음
+						</label>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required color02" rowspan="2">보너스 배당 추가 폴더</th>
+                    <td>
+                        <label><input type="checkbox" th:field="*{bonus[0]}"> 크로스</label>
+                        <label><input type="checkbox" th:field="*{bonus[1]}"> 스페셜</label>
+                        <label th:if="${sysConfig.sports.canLive}"><input type="checkbox" th:field="*{bonus[2]}"> 라이브</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <ul class="col7">
+                            <li>
+                                <label class="color03">1폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[1]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">2폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[2]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">3폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[3]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">4폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[4]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">5폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[5]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">6폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[6]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">7폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[7]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">8폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[8]}"/>
+                            </li>
+                            <li>
+                                <label class="color03">9폴더</label>
+                                X<input type="text" th:field="*{bonusOdds[9]}"/>
+                            </li>
+                            <li style="width:auto;">
+                                <label class="color03">10폴더 이상</label>
+                                X<input type="text" th:field="*{bonusOdds[10]}"/>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">단폴더 베팅시</th>
+                    <td>
+                        <input type="text" class="num" style="width: 60px;" th:field="*{bonusOne}"/>
+                        배당하락 합니다.
+                        <span th:if="${sysConfig.sports.canLive}" class="color02">(라이브 제외)</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-trophy" aria-hidden="true"></i>
+                    베팅 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>베팅 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">스포츠 베팅 시각</th>
+                    <td>
+                        스포츠 경기시작
+                        <input type="text" th:field="*{sportsTime}" style="width: 60px;" class="num color03"/>
+                        초 전까지 베팅 가능.
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">스포츠 조합 가능 베팅수</th>
+                    <td>
+                        스포츠 조합최대
+                        <input type="text" th:field="*{sportsMaxFolder}" style="width: 60px;" class="num color03"/>
+                        경기까지 베팅 가능.
+                        <span>최대 조합 배당율</span>
+                        <input type="text" th:field="*{sportsMaxOdds}" style="width: 60px;" class="num color02"/>
+                        이하만 베팅 가능.
+                        <span>축베팅 조합은 최대</span>
+                        <input type="text" th:field="*{sportsBetCnt}" style="width: 60px;" class="num color03"/>
+                        번까지 허용.
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">베팅 취소</th>
+                    <td>
+                        베팅시각
+                        <input type="text" th:field="*{cancelBetTime}" style="width: 60px;" class="num color03"/>
+                        분 이내
+                        <span>경기 시작</span>
+                        <input type="text" th:field="*{cancelGameTime}" style="width: 60px;" class="num color02"/>
+                        분 전까지
+                        <span>하루</span>
+                        <input type="text" th:field="*{cancelMax}" style="width: 60px;" class="num color03"/>
+                        회까지 가능
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-undo" aria-hidden="true"></i>
+                    조합 베팅 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>베팅 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required" rowspan="2">기본 조합 설정</th>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbDefault.matchHandicap}"/> 승무패 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbDefault.matchOverUnder}"/> 승무패 / 오버언더 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbDefault.handicapOverUnder}"/> 핸디캡 / 오버언더 조합불가</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbDefault.drawHandicap}"/> 승무패 무 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbDefault.drawOverUnder}"/> 승무패 무 / 오버언더 조합불가</label>
+                        <span class="color02">(조합 가능일때 무 조합 체크)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required" rowspan="2">축구 조합 설정</th>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbSoccer.matchHandicap}"/> 승무패 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbSoccer.matchOverUnder}"/> 승무패 / 오버언더 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbSoccer.handicapOverUnder}"/> 핸디캡 / 오버언더 조합불가</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbSoccer.drawHandicap}"/> 승무패 무 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbSoccer.drawOverUnder}"/> 승무패 무 / 오버언더 조합불가</label>
+                        <span class="color02">(조합 가능일때 무 조합 체크)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required" rowspan="2">농구 조합 설정</th>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbBasketball.matchHandicap}"/> 승무패 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbBasketball.matchOverUnder}"/> 승무패 / 오버언더 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbBasketball.handicapOverUnder}"/> 핸디캡 / 오버언더 조합불가</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbBasketball.drawHandicap}"/> 승무패 무 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbBasketball.drawOverUnder}"/> 승무패 무 / 오버언더 조합불가</label>
+                        <span class="color02">(조합 가능일때 무 조합 체크)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required" rowspan="2">배구 조합 설정</th>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbVolleyball.matchHandicap}"/> 승무패 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbVolleyball.matchOverUnder}"/> 승무패 / 오버언더 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbVolleyball.handicapOverUnder}"/> 핸디캡 / 오버언더 조합불가</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbVolleyball.drawHandicap}"/> 승무패 무 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbVolleyball.drawOverUnder}"/> 승무패 무 / 오버언더 조합불가</label>
+                        <span class="color02">(조합 가능일때 무 조합 체크)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required" rowspan="2">아이스하키 조합 설정</th>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbHockey.matchHandicap}"/> 승무패 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbHockey.matchOverUnder}"/> 승무패 / 오버언더 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbHockey.handicapOverUnder}"/> 핸디캡 / 오버언더 조합불가</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" th:field="*{cbHockey.drawHandicap}"/> 승무패 무 / 핸디캡 조합불가</label>
+                        <label><input type="checkbox" th:field="*{cbHockey.drawOverUnder}"/> 승무패 무 / 오버언더 조합불가</label>
+                        <span class="color02">(조합 가능일때 무 조합 체크)</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-undo" aria-hidden="true"></i>
+                    레벨별 미적중 포인트
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>베팅 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">미적중 포인트 지급</th>
+                    <td>
+                        <input type="text" class="num" style="width: 80px;" th:field="*{noHitFolder}"/>
+                        폴더 베팅부터 미적중 포인트로 재적립
+                        <span class="color02">(전체 지급은 0)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">추천인 포인트</th>
+                    <td>
+                        <input type="text" class="num" style="width: 80px;" th:field="*{recommFolder}"/>
+                        폴더 베팅부터 추천인 포인트는
+                        <select th:field="*{recommType}">
+                            <option th:value="true">베팅시 베팅금액의</option>
+                            <option th:value="false">낙첨시 베팅금액의</option>
+                        </select>
+                        지정 %를 포인트로
+                        <select th:field="*{recommPayment}">
+                            <option th:value="true">지급</option>
+                            <option th:value="false">미지급</option>
+                        </select>
+                        <span class="color02">(전체 지급은 0)</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table-read col10" style="margin: -1px 0;">
+                <caption>미적중 포인트</caption>
+                <colgroup>
+                    <col style="width: 220px;">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="required color01">스포츠 낙첨시</th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">유저</th>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsOdds[10]}"/><br/>%
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">추천인</th>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitSportsRecommOdds[10]}"/><br/>%
+                    </td>
+                </tr>
+                </tbody>
+                <thead>
+                <tr>
+                    <th class="required color04">실시간 낙첨시</th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">유저</th>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneOdds[10]}"/><br/>%
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">추천인</th>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[1]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[2]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[3]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[4]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[5]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[6]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[7]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[8]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[9]}"/><br/>%
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{noHitZoneRecommOdds[10]}"/><br/>%
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-cube" aria-hidden="true"></i>
+                    스포츠 베팅금액 설정
+                </h3>
+            </div>
+            <table class="table-read col10" style="margin: -1px 0 0 0;">
+                <caption>스포츠 베팅금액 설정</caption>
+                <colgroup>
+                    <col style="width: 220px;">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="required color03" style="padding-right: 0;">
+                        크로스 원폴더
+                        <select th:field="*{crossOne}">
+                            <option th:value="true">가능</option>
+                            <option th:value="false">불가능</option>
+                        </select>
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneWin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMax[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossOneMin[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+                <thead>
+                <tr>
+                    <th class="required color03">
+                        크로스 두폴더 이상
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{crossWin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossWin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{crossMax[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMax[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{crossMin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">축베팅 적중 금액</th>
+                    <td>
+                        <input type="text" th:field="*{crossMark[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{crossMark[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+                <thead>
+                <tr>
+                    <th class="required color02" style="padding-right: 0;">
+                        스페셜 원폴더
+                        <select th:field="*{specialOne}">
+                            <option th:value="true">가능</option>
+                            <option th:value="false">불가능</option>
+                        </select>
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneWin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMax[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialOneMin[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+                <thead>
+                <tr>
+                    <th class="required color02">
+                        스페셜 두폴더 이상
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{specialWin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialWin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{specialMax[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMax[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{specialMin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">축베팅 적중 금액</th>
+                    <td>
+                        <input type="text" th:field="*{specialMark[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{specialMark[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+                <thead th:if="${sysConfig.sports.canLive}">
+                <tr>
+                    <th class="required color04" style="padding-right: 0;">
+                        라이브 원폴더
+                        <select th:field="*{liveOne}">
+                            <option th:value="true">가능</option>
+                            <option th:value="false">불가능</option>
+                        </select>
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody th:if="${sysConfig.sports.canLive}">
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneWin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMax[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveOneMin[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+                <thead th:if="${sysConfig.sports.canLive}">
+                <tr>
+                    <th class="required color04">
+                        라이브 두폴더 이상
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody th:if="${sysConfig.sports.canLive}">
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{liveWin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveWin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{liveMax[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMax[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{liveMin[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMin[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">축베팅 적중 금액</th>
+                    <td>
+                        <input type="text" th:field="*{liveMark[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{liveMark[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+				<thead th:if="${sysConfig.sports.canInplay}">
+				<tr>
+					<th class="required color04" style="padding-right: 0;">
+						인플레이
+					</th>
+					<td>1레벨</td>
+					<td>2레벨</td>
+					<td>3레벨</td>
+					<td>4레벨</td>
+					<td>5레벨</td>
+					<td>6레벨</td>
+					<td>7레벨</td>
+					<td>8레벨</td>
+					<td>9레벨</td>
+					<td>10레벨</td>
+				</tr>
+				</thead>
+				<tbody th:if="${sysConfig.sports.canInplay}">
+				<tr>
+					<th class="required">배당금 상한가</th>
+					<td>
+						<input type="text" th:field="*{inplayWin[1]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[2]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[3]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[4]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[5]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[6]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[7]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[8]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[9]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayWin[10]}"/>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">최대 베팅 가능 금액</th>
+					<td>
+						<input type="text" th:field="*{inplayMax[1]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[2]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[3]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[4]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[5]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[6]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[7]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[8]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[9]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMax[10]}"/>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">최소 베팅 가능 금액</th>
+					<td>
+						<input type="text" th:field="*{inplayMin[1]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[2]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[3]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[4]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[5]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[6]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[7]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[8]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[9]}"/>
+					</td>
+					<td>
+						<input type="text" th:field="*{inplayMin[10]}"/>
+					</td>
+				</tr>
+				</tbody>
+            </table>
+
+
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    function saveConfig() {
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

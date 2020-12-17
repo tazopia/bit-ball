@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='board', lnb=${code}">
+<body>
+
+<section layout:fragment="section">
+    <h3 th:text="${title}">자유게시판</h3>
+
+    <table class="list game">
+        <caption>스포츠</caption>
+        <colgroup>
+            <col style="width: 190px;">
+            <col>
+            <col style="width: 36px;">
+            <col style="width: 218px;">
+            <col style="width: 50px;">
+            <col>
+            <col style="width: 50px;">
+            <col style="width: 218px;">
+            <col style="width: 36px;">
+            <col style="width: 70px;">
+        </colgroup>
+        <tbody class="betBody" th:each="b : ${add.bets}">
+        <tr>
+            <th>경기정보</th>
+            <th>베팅타입</th>
+            <th colspan="3">홈팀</th>
+            <th>무</th>
+            <th colspan="3">원정팀</th>
+            <th>결과</th>
+        </tr>
+        <tr class="item" th:each="item : ${b.betItems}">
+            <td class="info" th:title="${item.league}">
+                <img th:src="@{|${tag.sportsFlag(item)}|}"/>
+                <img th:src="@{|${tag.leagueFlag(item)}|}"/>
+                <span th:remove="tag" th:utext="${tag.dayWeekTime(item.gameDate)}">06/21(금)</span>
+            </td>
+            <td>
+                <span th:if="${item.menuCode.name() eq 'SPECIAL'}" th:text="${item.special + ' '}"></span>
+                <span th:text="${item.gameCode.name() eq 'ZONE' ? item.sports : item.gameCode.name}">승무패</span>
+            </td>
+            <td class="over" th:text="${item.gameCode.name() eq 'OVER_UNDER' ? 'O' : 'H'}">H</td>
+            <td th:class="${(item.betTeam eq 'home' ? 'home on' : 'home') + (item.gameResult.name() eq 'HOME' or item.gameResult.name() eq 'OVER' ? ' hit' : '')}">
+                <span th:remove="tag" th:text="${item.teamHome}">홈팀</span>
+                <span class="odds" th:text="${tag.odds(item.oddsHome)}">0.01</span>
+            </td>
+            <td class="score" th:text="${item.scoreHome eq null ? '-' : item.scoreHome}">0</td>
+            <td th:if="${item.gameCode.name() eq 'MATCH' or item.gameCode.name() eq 'ZONE'}"
+                th:with="odds=${tag.odds(item.oddsDraw)}"
+                th:class="${(item.betTeam eq 'draw' ? 'draw on' : 'draw') + (item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' ? ' hit' : '') + (odds eq '0.00' ? '' : ' odds')}"
+                th:text="${odds eq '0.00' ? 'VS' : odds}">
+                무
+            </td>
+            <td th:if="${item.gameCode.name() eq 'HANDICAP' or item.gameCode.name() eq 'OVER_UNDER'}" th:class="${item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' ? 'draw hit' : 'draw'}" th:text="${tag.handicap(item.handicap)}">무</td>
+            <td class="score" th:text="${item.scoreAway eq null ? '-' : item.scoreAway}">0</td>
+            <td th:class="${(item.betTeam eq 'away' ? 'away on' : 'away') + (item.gameResult.name() eq 'AWAY' or item.gameResult.name() eq 'UNDER' ? ' hit' : '')}">
+                <span class="odds" th:text="${tag.odds(item.oddsAway)}">0.01</span>
+                <span th:remove="tag" th:text="${item.teamAway}">홈팀</span>
+            </td>
+            <td class="under" th:text="${item.gameCode.name() eq 'OVER_UNDER' ? 'U' : 'A'}">H</td>
+            <td th:class="${'result ' + item.resultStringCss}" th:text="${item.resultString}"></td>
+        </tr>
+        <tr>
+            <td class="betInfo" colspan="10">
+                <span class="dateDay" th:utext="${tag.dayWeekTimes(b.betDate)}">07/20(토)</span>
+                <span class="betMoney">
+                    베팅금액 : <span class="money" th:text="${tag.num(b.betMoney)}">1,000</span>원
+                </span>
+                <span class="rate">
+                    배당율 : <span class="money" th:text="${tag.odds(b.betOdds)}">1,000</span>배
+                </span>
+                <span class="expMoney">
+                    예상금액 : <span class="money" th:text="${tag.num(b.expMoney)}">1,000</span>원
+                </span>
+                <span class="hitMoney" style="float: right;" th:if="${b.closing}">
+                    적중금액 : <span class="hit" th:text="${tag.num(b.hitMoney)}">1,000</span>원
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form method="post" th:object="${add}" th:action="@{|${siteConfig.pathSite}/board/${code}/add|}" onsubmit="return addBoard();">
+        <input type="hidden" th:field="*{betId}"/>
+        <table class="add">
+            <caption>게시판</caption>
+            <colgroup>
+                <col style="width: 140px;">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <th>제목</th>
+                <td><input type="text" th:field="*{title}" autofocus="autofocus" /></td>
+            </tr>
+            <tr>
+                <th>내용</th>
+                <td><textarea th:field="*{contents}"></textarea></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="command">
+            <button class="btn btn02">등록하기</button>
+            <a th:href="|${siteConfig.pathSite}/board/${code}|" class="btn">돌아가기</a>
+        </div>
+    </form>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    function addBoard() {
+        if ($('#title').val().trim() === '') {
+            alert('제목을 입력 하세요.');
+            $('#title').focus();
+            return false;
+        }
+
+        if ($('#contents').val().trim() === '') {
+            alert('내용을 입력 하세요.');
+            $('#contents').focus();
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

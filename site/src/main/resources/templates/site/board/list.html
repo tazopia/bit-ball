@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='board', lnb=${code}">
+<body>
+
+<section layout:fragment="section">
+    <h3 th:text="${title}">자유게시판</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/board/${code}|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list">
+        <caption>게시판</caption>
+        <colgroup>
+            <col style="width:80px;">
+            <col>
+            <col style="width:160px;">
+            <col style="width:120px;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="b : ${list}" th:if="${code eq 'free'}">
+            <tr class="notice">
+                <td><span th:class="'label ' + ${b.code}" th:text="${b.code eq 'event'} ? 'EVENT' : 'RULES'"></span></td>
+                <td class="title" th:onclick="|location.href='${siteConfig.pathSite}/board/${b.code}/${b.id}'|">
+                    <a class="ellipsis" th:utext="${tag.color(b.title)}"></a>
+                    <span class="hit" th:if="${b.comment gt 0}" th:text="'[' + ${tag.num(b.comment)} + ']'"></span>
+                </td>
+                <td class="user admin" th:utext="${tag.color(b.nickname)}"></td>
+                <td th:text="${#dates.format(b.regDate, 'yyyy.MM.dd')}"></td>
+            </tr>
+        </th:block>
+        <th:block th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 35045}">
+            <tr>
+                <td th:text="${total - num.count}">1</td>
+                <td class="title" th:onclick="|location.href='${siteConfig.pathSite}/board/${b.code}/${b.id}?page=${page.number + 1}'|">
+                    <a class="ellipsis" th:utext="${tag.color(b.title)}"></a>
+                    <span class="hit" th:if="${b.comment gt 0}" th:text="'[' + ${tag.num(b.comment)} + ']'"></span>
+                    <em class="new" th:if="${b.new}">N</em>
+                    <em class="bet" th:if="${b.bet}">B</em>
+                </td>
+                <td class="user admin" th:if="${b.role.name() eq 'ADMIN'}" th:utext="${tag.color(b.nickname)}"></td>
+                <td class="user" th:if="${b.role.name() ne 'ADMIN'}">
+                    <span th:replace="fragments/site :: level(lv=${b.level})"></span>
+                    <span th:text="${b.nickname}" th:remove="tag"></span>
+                </td>
+                <td th:text="${#dates.format(b.regDate, 'yyyy.MM.dd')}"></td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <div class="command" th:if="${code eq 'free' and !user.block}">
+        <a th:href="|${siteConfig.pathSite}/board/${code}/add|" class="btn btn02">새글작성</a>
+    </div>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

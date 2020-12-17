@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='betting',title='베팅내역'">
+<body>
+<div layout:fragment="tab-menu" th:if="false">
+	<div class="tab-menu">
+		<div class="tab-menu-wrap2" style="width: 100%;">
+			<a class="on" th:href="@{|${siteConfig.pathSite}/betting|}" style="width: 50%;">스포츠/미니게임</a>
+			<a th:href="@{|${siteConfig.pathSite}/betting/inplay|}" style="width: 50%;">인플레이</a>
+		</div>
+	</div>
+</div>
+<main class="page" layout:fragment="page">
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/betting|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <div class="box">
+        <h4>베팅취소 안내</h4>
+        <p>
+            베팅취소는 베팅시각으로부터 <span class="color02" th:text="${gameConfig.cancelBetTime + '분 이내'}">60분 이내</span>
+            경기시작시간 <span class="color02" th:text="${gameConfig.cancelGameTime + '분전'}">1분전</span>까지,
+            하루 최대 <span class="color03" th:text="${gameConfig.cancelMax + '회'}">10회</span> 가능합니다.<br/>
+            베팅취소 후 복구가 불가능하며, 취소된 베팅금액은 보유머니로 적립됩니다.<br/>
+            베팅내역 삭제는 모든 경기가 종료된 이후 가능하며 <span class="color02">삭제된 내역은 복구가 불가</span> 합니다.<br/>
+            <span class="color03">고객센터를 통한 베팅취소는 절대 불가</span>하며 직접 취소만 인정 됩니다.
+            <br/><br/>
+            <span class="color01">베팅내역은 최대 일주일치만 확인 하실 수 있습니다.</span>
+        </p>
+<!--        <p style="padding:10px 0; text-align: center;">-->
+<!--			<a href="#" class="btn btn-box btn01" onclick="addBoard();" style="right: 170px;">게시판 내역등록</a>-->
+<!--			<a href="#" class="btn btn-box btn03" onclick="addQna();" style="right: 170px;">고객센터 내역등록</a>-->
+<!--            <a href="#" class="btn btn-box btn02" onclick="goDeleteClosing();">종료내역 전체삭제</a>-->
+<!--        </p>-->
+    </div>
+    <div class="table-wrap">
+        <table class="table-game table-bet">
+            <caption>스포츠</caption>
+            <colgroup>
+                <col>
+                <col style="width: 40px;">
+                <col style="width: 40px;">
+                <col>
+            </colgroup>
+            <tbody class="betBody" th:each="b : ${page.content}">
+            <tr>
+                <th class="betTitle" colspan="4">
+                    <span class="code" th:text="${b.menuCode.name}"></span>
+                    <span class="time" th:utext="${tag.dayWeekTime(b.betDate)}"></span>
+                </th>
+            </tr>
+            <th:block th:each="item : ${b.betItems}">
+                <tr>
+                    <th class="league" colspan="4">
+                        <img th:src="@{|${tag.sportsFlag(item)}|}"/>
+                        <img th:src="@{|${tag.leagueFlag(item)}|}"/>
+                        <span th:text="${item.league}"></span>
+                        <span class="date" th:utext="${tag.dayWeekTime(item.gameDate)}">06/21(금)</span>
+                    </th>
+                </tr>
+                <tr class="item">
+                    <td rowspan="2" th:class="${(item.betTeam eq 'home' ? 'bet home on' : 'bet home') + (item.gameResult.name() eq 'HOME' or item.gameResult.name() eq 'OVER' ? ' hit' : '')}">
+                        <p class="ellipses">
+                            <em th:text="${item.teamHome}" th:remove="tag"></em>
+<!--							<span th:if="${item.special} != '' and ${!#strings.contains(item.special, '|')}" class="color01" th:text="${item.special}"></span>-->
+<!--							<span th:if="${item.special} != '' and ${#strings.contains(item.special, '|')}" class="color01" th:text="${#strings.arraySplit(item.special, '|')[0]}"></span>-->
+                        </p>
+                        <span class="odds">
+                        <span th:if="${item.gameCode.name() eq 'HANDICAP' or (item.menuCode.name() eq 'SOCCER' and item.special eq '핸디캡')}" class="handy">[핸디캡]</span>
+                        <span th:if="${item.gameCode.name() eq 'OVER_UNDER' or (item.menuCode.name() eq 'SOCCER' and item.special eq '오버언더')}" class="over">[오버]</span>
+                        <em th:text="${tag.odds(item.oddsHome)}" th:remove="tag"></em>
+                    </span>
+                    </td>
+                    <td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'MATCH' or item.gameCode.name() eq 'ZONE' and not (item.special eq '핸디캡' or item.special eq '오버언더')}"
+                        th:with="odds=${tag.odds(item.oddsDraw)}"
+                        th:class="${(item.betTeam eq 'draw' ? 'draw on' : 'draw') + (item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' or item.gameResult.name() eq 'DRAW_HIT' ? ' hit' : '') + (odds eq '0.00' ? '' : ' odds')}"
+                        th:text="${odds eq '0.00' ? 'VS' : odds}">
+                        무
+                    </td>
+                    <td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'HANDICAP' or item.gameCode.name() eq 'OVER_UNDER' or item.special eq '핸디캡' or item.special eq '오버언더'}" th:class="${item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' or item.gameResult.name() eq 'DRAW_HIT' ? 'draw hit' : 'draw'}" th:text="${tag.handicap(item.handicap)}">무</td>
+                    <td rowspan="2" th:class="${(item.betTeam eq 'away' ? 'bet away on' : 'bet away') + (item.gameResult.name() eq 'AWAY' or item.gameResult.name() eq 'UNDER' ? ' hit' : '')}">
+                        <p class="ellipses">
+<!--							<span th:if="${item.special} != '' and ${!#strings.contains(item.special, '|')}" class="color01" th:text="${item.special}"></span>-->
+<!--							<span th:if="${item.special} != '' and ${#strings.contains(item.special, '|')}" class="color01" th:text="${#strings.arraySplit(item.special, '|')[1]}"></span>-->
+                            <em th:text="${item.teamAway}" th:remove="tag"></em>
+                        </p>
+                        <span class="odds">
+                        <em th:text="${tag.odds(item.oddsAway)}" th:remove="tag"></em>
+                        <span th:if="${item.gameCode.name() eq 'HANDICAP' or (item.menuCode.name() eq 'SOCCER' and item.special eq '핸디캡')}" class="handy">[핸디캡]</span>
+                        <span th:if="${item.gameCode.name() eq 'OVER_UNDER' or (item.menuCode.name() eq 'SOCCER' and item.special eq '오버언더')}" class="under">[언더]</span>
+                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:0;height:33px" class="score" th:text="${item.scoreHome eq null ? '-' : item.scoreHome}"></td>
+                    <td style="padding:0;height:33px" class="score" th:text="${item.scoreAway eq null ? '-' : item.scoreAway}"></td>
+                </tr>
+            </th:block>
+            <tr>
+                <td class="betInfo" colspan="4">
+                    <em class="rate">
+                        배당율 : <span th:text="${tag.odds(b.betOdds)}">1,000</span>배
+                    </em>
+                    <em class="betMoney">
+                        베팅금액 : <span th:text="${tag.num(b.betMoney)}">1,000</span>원
+                    </em>
+                    <em class="expMoney">
+                        예상금액 : <span th:text="${tag.num(b.expMoney)}">1,000</span>원
+                    </em>
+                    <em class="hitMoney" th:if="${b.closing}">
+                        적중금액 : <span class="hit" th:text="${tag.num(b.hitMoney)}">1,000</span>원
+						&nbsp;
+						<i style="font-size:14px;font-weight:800;" th:if="${b.resultString eq '적중'}" class="color07" th:text="' (' + ${b.resultString} + ')'">결과</i>
+						<i style="font-size:14px;font-weight:800;" th:if="${b.resultString eq '미적중'}" class="color03" th:text="' (' + ${b.resultString} + ')'">결과</i>
+						<i style="font-size:14px;font-weight:800;" th:if="${b.resultString eq '적특'}" class="color01" th:text="' (' + ${b.resultString} + ')'">결과</i>
+						<i style="font-size:14px;font-weight:800;" th:if="${b.resultString ne '적특' and b.resultString ne '적중' and b.resultString ne '미적중'}" class="color02" th:text="' (' + ${b.resultString} + ')'">결과</i>
+                    </em>
+
+                    <div class="btn-box">
+                        <input type="checkbox" name="betId" th:value="${b.id}" style="width: 26px; height: 26px; float: left;"/>
+						<a th:href="@{|${siteConfig.pathSite}/board/free/add?betId=${b.id}|}" class="btn btn01">게시판 등록</a>
+                        <a th:href="@{|${siteConfig.pathSite}/customer/qna/add?betId=${b.id}|}" class="btn btn04">고객센터 등록</a>
+                        <a th:if="${b.closing}" href="#" th:onclick="|goDelete('${b.id}');return false;|" class="btn btn02">내역 삭제</a>
+                        <a th:if="${b.canCancel}" href="#" th:onclick="|goCancel('${b.id}');return false;|" class="btn btn02">베팅 취소</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="paging">
+        <ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    function goCancel(id) {
+        if (confirm('취소를 하시면 되살릴 수 없습니다.\n\n취소를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/betting/cancel',
+                method: 'post',
+                data: {
+                    id: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function goDelete(id) {
+        if (confirm('삭제를 하시면 되살릴 수 없습니다.\n\n취소를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/betting/delete',
+                method: 'post',
+                data: {
+                    betIds: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function goDeleteClosing() {
+        if (confirm('마감된 베팅내역을 모두 삭제하시겠습니까?')) {
+            $.ajax({
+                url: path + '/betting/delete/closing',
+                method: 'post'
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function addQna() {
+        var obj = $('input[name="betId"]:checked');
+        var cnt = obj.length, betIds = [];
+        if (cnt === 0) {
+            alert('등록하실 내역을 선택하여 주세요');
+            return false;
+        }
+        obj.each(function () {
+            betIds.push($(this).val());
+        });
+        location.href = path + '/customer/qna/add?betId=' + betIds.join(',');
+    }
+
+    function addBoard() {
+        var obj = $('input[name="betId"]:checked');
+        var cnt = obj.length, betIds = [];
+        if (cnt === 0) {
+            alert('등록하실 내역을 선택하여 주세요');
+            return false;
+        }
+        obj.each(function () {
+            betIds.push($(this).val());
+        });
+        location.href = path + '/board/free/add?betId=' + betIds.join(',');
+    }
+</script>
+</body>
+</html>

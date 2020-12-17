@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" enctype="multipart/form-data" th:object="${popup}" onsubmit="return addPopup()">
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-futbol-o"></i> 팝업 등록</h3>
+            </div>
+            <table class="table-read">
+                <caption>팝업 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">설명</th>
+                    <td><input type="text" autofocus="autofocus" th:field="*{summary}" style="width: 500px;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">팝업 <span class="color03">(380X546)</span></th>
+                    <td><input type="file" name="image" id="image" style="width: 500px;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">순서</th>
+                    <td><input type="text" th:field="*{sort}"/> <span>숫자만 가능</span></td>
+                </tr>
+                <tr>
+                    <th class="required">노출여부</th>
+                    <td>
+                        <label><input type="radio" th:field="*{enabled}" th:value="true"/> 노출</label>
+                        <label><input type="radio" th:field="*{enabled}" th:value="false"/> 숨김</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn02" value="등록"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    $('#sort').onlyNum();
+
+    if ('[[${closing}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function addPopup() {
+        if ($('#image').val() == '') {
+            alert('팝업 이미지를 선택하세요.');
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

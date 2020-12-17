@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${score}" onsubmit="return setScore();">
+        <input type="hidden" th:field="*{id}"/>
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-bars"></i> 가상축구 종료처리</h3>
+            </div>
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임일시</th>
+                    <td>
+                        <span th:text="${#dates.format(score.gameDate, 'MM/dd(E) HH:mm')}"></span>
+                        <span class="color03" th:text="${score.league}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">경기결과</th>
+                    <td>
+                        <input type="text" th:field="*{winNumber}" style="width: 60px; text-align: center;"/> 레인 우승
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">적특처리</th>
+                    <td class="color01">
+                        <label><input type="checkbox" th:field="*{cancel}"/> 현재회차 적특처리</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="결과입력"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    $('#winNumber').onlyNum();
+
+    function setScore() {
+        if (!$('input:checkbox[name=cancel]').is(':checked')) {
+            if ($('#winNumber').val() == '') {
+                $('#winNumber').focus();
+                alert('우승팀 레인을 입력 하세요.');
+                return false;
+            }
+
+            if (parseInt($('#winNumber').val()) < 1 || parseInt($('#winNumber').val()) > 6) {
+                $('#winNumber').focus();
+                alert('우승팀을 1~6레인 사이로 입력 하세요.');
+                return false;
+            }
+        }
+    }
+</script>
+</body>
+</html>

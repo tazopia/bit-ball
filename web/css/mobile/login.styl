@@ -1,0 +1,172 @@
+@media screen and (orientation:landscape) {
+	#login {
+		.login-wrap {
+			padding-top 40px !important
+		}
+	}
+
+	#layout-box {
+		top 50px !important
+		margin-top 0 !important
+	}
+}
+
+#background {
+	position fixed
+	left 0
+	right 0
+	top 0
+	bottom 0
+	width 100%
+	height 100%
+	-o-object-fit cover
+	-ms-object-fit cover
+	object-fit cover
+	z-index -1
+	background url(/images/background.jpg) center center no-repeat
+	//background-size cover
+	opacity 1
+}
+
+#login {
+	#login-bg {
+		position fixed
+		left 0
+		right 0
+		top 0
+		bottom 0
+		width 100%
+		height 100%
+		-o-object-fit cover
+		-ms-object-fit cover
+		object-fit cover
+		z-index 0
+		//opacity 0.5
+	}
+
+	.ribbon {
+		width 150px
+		height 150px
+		background url(/images/ribbon.png) right top no-repeat
+		background-size 75%
+		position absolute
+		right 0
+		top -80px
+	}
+
+	.login-wrap {
+		min-height 100%
+		max-width 400px
+		display flex
+		margin 0 auto
+
+
+		.login-box {
+			width 100%
+			justify-self center
+			align-self center
+			padding 20px
+			//backdrop-filter blur(10px)
+		}
+
+		&.login-join {
+			padding-top 40px
+		}
+	}
+
+	.command {
+		background none
+	}
+
+	input, select {
+		border solid 1px #4c5358
+		background #222
+		color #ccc
+	}
+
+	h1 {
+		font-size 50px
+		font-weight 800
+		margin-bottom 80px
+		color #fff
+		text-align center
+	}
+
+	div {
+		position relative
+
+		p {
+			font-size 12.5px
+			padding-bottom 10px
+			line-height 1.4
+		}
+
+		.bul {
+			position absolute
+			right 10px
+			top 2px
+			display inline-block
+			width 20px
+			height 20px
+			background url(/images/btn_join.png) center left no-repeat
+
+			&.bul-ready {
+				background-position -20px 0
+			}
+
+			&.bul-error {
+				background-position -40px 0
+			}
+		}
+	}
+
+	.command {
+		margin-top 20px
+	}
+
+	.btn-login {
+		background #0153de
+		color #fff
+		text-shadow 0 0 5px rgba(0, 0, 0, 1)
+		border solid 2px #0b113a
+		box-shadow(inset 0 0 1px 1px #888)
+	}
+
+	.btn-join {
+		border 2px solid #222
+		color #ccc
+		background #222
+		box-shadow(inset 0 0 1px 1px #888)
+	}
+
+	.copyright {
+		text-align center
+		margin-top 40px
+		font-size 11px
+		color #ccc
+
+		span {
+			color #fff
+		}
+	}
+}
+
+.spinner {
+
+}
+
+.loading {
+	width 100px
+	height 100px
+	background url(/images/m/loading.png) center center no-repeat
+	animation(sk-span 2s infinite linear)
+}
+
+@keyframes sk-span {
+	from {
+		transform rotate(0deg)
+	}
+	to {
+		transform rotate(360deg)
+	}
+}

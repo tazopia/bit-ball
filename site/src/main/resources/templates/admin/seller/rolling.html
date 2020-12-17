@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='seller', lnb='rolling'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>총본사 :</small>
+    총본사 정산 관리
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/seller/rolling|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+				<label id="label2">
+					총본사 :
+					<select th:field="*{agency4}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+				<label id="label2">
+					부본사 :
+					<select th:field="*{agency3}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+				<label id="label2">
+					총판 :
+					<select th:field="*{agency2}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+				<label id="label1">
+					매장 :
+					<select th:field="*{agency1}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/seller/rolling|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+				<span>총판 정산 관리</span>
+				<span class="total">( 검색된 내역수 : <span th:text="${page.totalElements}">100</span> 건 )</span>
+            </h3>
+        </div>
+		<table class="table-list">
+			<caption>종목 설정</caption>
+			<colgroup>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>번호</th>
+				<th>총본사</th>
+				<th>부본사</th>
+				<th>총판</th>
+				<th>매장</th>
+				<th>대상</th>
+				<th>사용내역</th>
+				<th>비고</th>
+				<th>기존머니</th>
+				<th>머니</th>
+				<th>최종머니</th>
+				<th>날짜</th>
+				<th>베팅유저</th>
+			</tr>
+			</thead>
+			<tbody id="money-body">
+			<tr th:each="m,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+				<td th:text="${total - num.count}">1</td>
+				<td th:text="${m.agency4}">총본사</td>
+				<td th:text="${m.role.name() ne 'AGENCY4' ? m.agency3 : '-'}">부본사</td>
+				<td th:text="${m.role.name() eq 'AGENCY2' or m.role.name() eq 'AGENCY1' ? m.agency2 : '-'}">총판</td>
+				<td th:text="${m.role.name() eq 'AGENCY1' ? m.userid : '-'}">매장</td>
+				<td class="color02" th:text="${m.actionId}">0</td>
+				<td th:class="${m.amount < 0} ? 'color03' : 'color01'" th:text="${m.moneyCode.name}">사용내역</td>
+				<td th:text="${#strings.defaultString(m.memo, '-')}">비고</td>
+				<td class="num" th:text="${tag.num(m.orgMoney)}">기존머니</td>
+				<td th:class="${m.amount < 0} ? 'color03 num popup' : 'color01 num popup'" th:onclick="|popup.payment.money('${m.userid}');|" th:text="${tag.num(m.amount)}">머니</td>
+				<td class="num color0" th:text="${tag.num(m.orgMoney + m.amount)}">최종머니</td>
+				<td th:utext="${tag.dayWeekTimes(m.regDate)}"></td>
+				<td class="color01" th:text="${m.worker}"></td>
+			</tr>
+			</tbody>
+		</table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+    var agencies = [(${agencies})];
+    var _agency4 = '';
+    agencies.forEach(function (agency) {
+        if (_agency4 !== agency.agency4) {
+            $('#agency4').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            _agency4 = agency.agency4;
+        }
+    });
+
+    $('#agency4').on('change', function () {
+        var agency4 = $('#agency4').val();
+        var agency3 = '';
+        $('#agency3').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency4 === agency.agency4 && agency.agency3 != null && agency.agency3 !== '' && agency3 !== agency.agency3) {
+                $('#agency3').append('<option value="' + agency.agency3 + '">' + agency.agency3 + '</option>');
+            }
+            agency3 = agency.agency3;
+        });
+        $('#agency3').change();
+    });
+
+    $('#agency3').on('change', function () {
+        var agency3 = $('#agency3').val();
+        var agency2 = '';
+        $('#agency2').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency3 === agency.agency3 && agency.agency2 != null && agency.agency2 !== '' && agency2 !== agency.agency2) {
+                $('#agency2').append('<option value="' + agency.agency2 + '">' + agency.agency2 + '</option>');
+            }
+            agency2 = agency.agency2;
+        });
+        $('#agency2').change();
+    });
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        var agency1 = '';
+        $('#agency1').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency2 == agency.agency2 && agency.agency1 != null && agency.agency1 !== '' && agency1 !== agency.agency1) {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+            agency1 = agency.agency1;
+        });
+        $('#agency1').change();
+    });
+
+
+    $('#agency4').val('[[${command.agency4}]]').change();
+    $('#agency3').val('[[${command.agency3}]]').change();
+    $('#agency2').val('[[${command.agency2}]]').change();
+    $('#agency1').val('[[${command.agency1}]]');
+
+    // function goSale(userid, id, obj) {
+    //     if (!confirm(userid + ' 총판에게 포인트 지급완료를 하시겠습니까?')) {
+    //         return;
+    //     }
+	//
+    //     var amount = $(obj).parent().parent().find('input').val();
+	//
+    //     $.post(path + '/seller/sale/payment', {
+    //         userid: userid,
+    //         saleId: id,
+    //         amount: amount
+    //     }).done(function () {
+    //         setTimeout(function () {
+    //             location.reload();
+    //         }, 1000);
+    //     });
+    // }
+	//
+    // function toggle(cls) {
+    //     $('.' + cls).toggle();
+    // }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='customer', lnb='memo', title='메시지함'">
+<body>
+<div layout:fragment="tab-menu" th:replace="fragments/mobile :: customer" th:if="true"></div>
+<main class="page" layout:fragment="page">
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/customer/memo|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+	<h3>
+		<p class="btn-box">
+			<button onclick="selectAll();" class="btn reload">전체선택</button>
+			<button onclick="deleteSelect();" class="btn write">선택항목 삭제하기</button>
+		</p>
+	</h3>
+    <ul class="board qna">
+        <th:block th:each="m, num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+            <li th:onclick="|viewMemo(${m.id});return false;|">
+                <p class="title">
+                    <a th:utext="${tag.memo(m.title)}"></a>
+                </p>
+                <p class="info">
+                    <span th:class="${m.checked} ? 'lv checked' : 'lv'" th:text="${m.checked} ? '확인' : '미확인'"></span>
+                    <span class="date" th:utext="${tag.dayWeekTimes(m.regDate)}"></span>
+                </p>
+				<input type="checkbox" name="id" th:value="${m.id}" style="width:30px;height:30px;position:absolute;right:10px;bottom:10px;" />
+            </li>
+            <li th:id="${m.id}" class="contents">
+                <div>
+                    <h5 th:utext="${tag.memo(m.title)}">질문</h5>
+                    <p>
+                        <a href="#" th:onclick="|deleteMemo(${m.id});return false;|" class="icon_delete"></a>
+                        <span th:utext="${tag.memo(m.contents)}" th:remove="tag"></span>
+                    </p>
+                </div>
+            </li>
+        </th:block>
+    </ul>
+    <ul class="list qna" th:if="${page.numberOfElements eq 0}">
+        <li style="height: 300px;line-height: 300px; text-align: center; padding:0;">등록된 쪽지가 없습니다.</li>
+    </ul>
+    <div class="paging">
+        <ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    var memo = [[${user.memo}]];
+    if (memo > 0) {
+        alert('쪽지를 확인 하세요.');
+    }
+
+    function viewMemo(id) {
+        if ($('#' + id).is(':visible')) {
+            $('#' + id).hide();
+            $('input[value=' + id + ']').prop('checked', false);
+        } else {
+            $('input[value=' + id + ']').prop('checked', true);
+            $('.contents').hide();
+            $('#' + id).show();
+            showMemo(id);
+        }
+    }
+
+    function showMemo(id) {
+        $.post(path + '/customer/memo/view', {
+            id: id
+        }).done(function success() {
+            $('#' + id).prev().find('.lv').text('확인').addClass('checked');
+        });
+    }
+
+    function deleteMemo(id) {
+        $.post(path + '/customer/memo/delete', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    function deleteSelect() {
+        var checked = $('input[name=id]:checked');
+
+        if (checked.length === 0) {
+            alert('삭제할 메시지를 선택하여 주세요.');
+            return;
+        }
+
+        if (!confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            return;
+
+        }
+        var ids = [];
+        checked.each(function () {
+            ids.push($(this).val());
+        });
+
+        $.post(path + '/customer/memo/deleteAll', {
+            ids: ids
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    var sel = false;
+    function selectAll() {
+        sel = !sel;
+        $('input[name=id]').each(function () {
+            if (sel) {
+                $(this).prop('checked', true);
+            } else {
+                $(this).prop('checked', false);
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org" th:with="tag = ${T(spoon.support.web.CustomTag)}">
+<head th:replace="fragments/mobileFragment :: head">
+	<meta charset="UTF-8"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<title>Best of Stella</title>
+	<link rel="shortcut icon" th:href="@{/images/favicon.ico?v=${siteConfig.version}|}}"/>
+	<link rel="stylesheet" th:href="@{/css/style.mobile.css}"/>
+	<script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
+</head>
+<body>
+<div id="screen"></div>
+<div class="page-gradient"></div>
+<div id="milliseconds" style="display: none" th:text="${user.milliseconds}"></div>
+<div th:replace="fragments/mobileFragment :: gnb"></div>
+<header style="text-align: center">
+	<a id="btn-menu" style="float:left;"></a>
+	<h1 th:if="${mode eq 'main'}"><img src="/images/brand.png" style="height:50px;"/></h1>
+	<h1 th:if="${mode ne 'main'}" th:text="${title}">Mac</h1>
+	<a th:href="@{|${siteConfig.pathSite}/main|}" id="btn-home" style="float:right;"></a>
+</header>
+<div id="user-info" class="user-info">
+	<span style="float: left; margin-left:10px">
+		<a th:href="@{|${siteConfig.pathSite}/customer/memo|}">
+		<img src="/images/icon_memo.png" style="padding-right:6px;"/><span class="color02" th:text="${tag.num(user.memo)}">0 건</span>
+		</a>
+	</span>
+	<em>보유머니 <span class="color03" th:text="${tag.num(user.money)}" id="user-money">1,000,000</span> 원</em>
+	<a th:href="@{|${siteConfig.pathSite}/payment/point|}"><em>포인트 <span class="color02" th:text="${tag.num(user.point)}" id="user-point">500</span> 점</em></a>
+</div>
+<div layout:fragment="tab-menu" th:if="false" th:remove="tag"></div>
+<main layout:fragment="page"></main>
+<footer th:class="${main eq 'game' or main eq 'zone' ? 'game' : ''}">
+	<div style="background: #000; padding: 10px 0;">
+		<img src="/images/bottom.png" style="max-width: 100%"/>
+	</div>
+	<a href="/logout" class="btn">로그아웃</a>
+	<a th:href="@{|${siteConfig.pathSite}/main?site_preference=normal|}" class="btn">PC화면</a>
+	<p>Copyright &copy; [[${siteConfig.since}]] <span th:text="${siteConfig.companyName}">Mac.</span> All Right Reserved.</p>
+</footer>
+<div id="cart-wrap" class="zone" th:if="${main eq 'game' or main eq 'zone'}">
+	<div id="btn-cart">
+		<button class="cart-up"></button>
+		<div class="cart-betting">
+			<a class="btn-big btn02">베팅하기 <em ng-bind="cart.length"></em></a>
+		</div>
+	</div>
+	<div id="box-cart">
+		<button class="cart-down" th:classappend="${main eq 'game'} ? 'game'"></button>
+		<div class="cart-slip">
+			<div class="cart-wrap ng-cloak" ng-cloak>
+				<div class="cart-odds">
+					<p th:if="${main eq 'game'}">
+						배당변경 적용:
+						<label class="switch" style="float: right">
+							<input type="checkbox" ng-model="force" value="true"/>
+							<span class="slider round"></span>
+						</label>
+					</p>
+					<p>배당율 : <span><em>{{odds | number : 2}}</em> 배</span></p>
+					<p>적중금 : <span><em>{{parseFloat(odds * money) | number : 0}}</em> 원</span></p>
+					<p>베팅금 : <span><input type="text" ng-model="money" ng-change="checkMoney()"/> 원</span></p>
+				</div>
+				<div class="cart-amount">
+					<ul>
+						<li><a class="btn" ng-click="addMoney(10000)">10,000</a></li>
+						<li><a class="btn" ng-click="addMoney(30000)">30,000</a></li>
+						<li><a class="btn" ng-click="addMoney(50000)">50,000</a></li>
+						<li><a class="btn" ng-click="addMoney(100000)">100,000</a></li>
+						<li><a class="btn" ng-click="addMoney(300000)">300,000</a></li>
+						<li><a class="btn" ng-click="addMoney(500000)">500,000</a></li>
+						<li><a class="btn" ng-click="addReset(10000)">RESET</a></li>
+						<li><a class="btn" ng-click="addMax()">MAX</a></li>
+					</ul>
+				</div>
+				<div class="cart-item">
+					<div class="bonus" ng-if="bonus != null && bonus.odds > 1 && !bonus.isMin">
+						<p>{{bonus.folder}}폴더 이상 보너스 배당 <span> ({{bonus.odds}})</span></p>
+					</div>
+					<div class="bonus" ng-if="bonus != null && bonus.odds > 1 && bonus.isMin">
+						<p><span>{{bonus.minOdd}} 미만 배당. </span> 보너스 배당 없음</p>
+					</div>
+					<div ng-repeat="c in cart" ng-if="sports">
+						<p class="team">
+							<img ng-src="/images/sports/{{c.game.sf}}"/>
+							{{c.game.hn}}
+						</p>
+						<p class="odds">
+                            <span class="odd">
+                                X {{c.pos == 'home' ? (c.game.oh | number : 2) : (c.pos == 'draw' ? (c.game.od | number : 2) : (c.game.oa | number : 2))}}
+                                <span ng-if="c.game.gc != 'OVER_UNDER'">{{c.pos == 'home' ? ' (승)' : (c.pos == 'draw' ? ' (무)' : ' (패)')}}</span>
+                                <span ng-if="c.game.gc == 'OVER_UNDER'">{{c.pos == 'home' ? ' (오버)' : ' (언더)'}}</span>
+                            </span>
+						</p>
+						<a class="btn" ng-click="remove(c.id)">X</a>
+					</div>
+					<div ng-repeat="c in cart" ng-if="zone">
+						<p class="team">
+							<img ng-src="{{flag}}"/>
+							{{name}} [{{c.pos}}]
+						</p>
+						<p class="odds">
+							X {{c.odds | number : 2}}배
+						</p>
+						<a class="btn" ng-click="remove()">X</a>
+					</div>
+					<div ng-repeat="c in cart" ng-if="soccer">
+						<p class="team">
+							<img ng-src="/images/sports/축구.png"/>
+							{{c.home}}
+						<p class="odds">
+							{{c.code}}
+							<span class="color01">
+                                    X {{odds | number : 2}}배
+                                    ({{c.pos}})
+                            </span>
+						</p>
+						<a class="btn" ng-click="remove();">X</a>
+					</div>
+					<div ng-repeat="c in cart" ng-if="dog">
+						<p class="team">
+							<img ng-src="{{flag}}"/>
+							{{c.betZone + 1}}. {{c.team[c.betZone]}}
+						<p class="odds">
+							{{c.code}}
+							<span class="color01">
+                                    X {{odds | number : 2}}배
+                                    ({{c.pos}})
+                                </span>
+						</p>
+						<a class="btn" ng-click="remove();">X</a>
+					</div>
+				</div>
+
+<!--				<div class="bettingInfo">-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>[[${title}]] 최소폴더</div>-->
+<!--						<div class="value">{{config.one ? '1' : '2'}}</div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>[[${title}]] 최대폴더</div>-->
+<!--						<div class="value">{{config.sportsMaxFolder}}</div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>[[${title}]] 베팅최소</div>-->
+<!--						<div class="value">{{config.min | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>[[${title}]] 베팅최대</div>-->
+<!--						<div class="value">{{config.max | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>[[${title}]] 당첨최대</div>-->
+<!--						<div class="value">{{config.win | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>단폴 베팅최소</div>-->
+<!--						<div class="value">{{config.oneMin | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>단폴 베팅최대</div>-->
+<!--						<div class="value">{{config.oneMax | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>단폴 당첨최대</div>-->
+<!--						<div class="value">{{config.oneWin | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>낙첨보상</div>-->
+<!--						<div class="value" th:text="${betInfo.noHitFolder} + '폴더 이상'"></div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>낙첨보상률</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.noHitSportsOdds)} + '%'"></div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>추천보상</div>-->
+<!--						<div class="value" th:text="${betInfo.folder}"></div>-->
+<!--					</div>-->
+<!--					<div class="item" th:if="${main eq 'game'}">-->
+<!--						<div>추천보상률</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.odds)} + '%'"></div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>가입 첫충전 보너스</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.joinRate)} + '%'"></div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>첫충전 보너스</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.firstRate)} + '%'"></div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>매충전 보너스</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.everyRate)} + '%'"></div>-->
+<!--					</div>-->
+<!--				</div>-->
+
+			</div>
+		</div>
+		<div class="cart-betting" ng-click="betting()">
+			<a class="btn-big btn02">베팅하기 <em ng-bind="cart.length"></em></a>
+		</div>
+	</div>
+</div>
+<div id="cart-wrap" th:if="${main eq 'inplay'}">
+	<div id="btn-cart">
+		<button class="cart-up"></button>
+		<div class="cart-betting">
+			<a class="btn-big btn02">베팅하기 <em ng-bind="cart.length"></em></a>
+		</div>
+	</div>
+	<div id="box-cart">
+		<button class="cart-down"></button>
+		<div class="cart-slip">
+			<div class="cart-wrap ng-cloak" ng-cloak>
+				<div class="cart-odds">
+					<p>배당율 : <span><em>{{mathOdds(cart[0].odds.odds)}}</em> 배</span></p>
+					<p>적중금 : <span><em>{{parseFloat(mathOdds(cart[0].odds.odds) * money) | number : 0}}</em> 원</span></p>
+					<p>베팅금 : <span><input type="text" ng-model="money" ng-change="checkMoney()"/> 원</span></p>
+				</div>
+				<div class="cart-amount">
+					<ul>
+						<li><a class="btn" ng-click="addMoney(10000)">10,000</a></li>
+						<li><a class="btn" ng-click="addMoney(30000)">30,000</a></li>
+						<li><a class="btn" ng-click="addMoney(50000)">50,000</a></li>
+						<li><a class="btn" ng-click="addMoney(100000)">100,000</a></li>
+						<li><a class="btn" ng-click="addMoney(300000)">300,000</a></li>
+						<li><a class="btn" ng-click="addMoney(500000)">500,000</a></li>
+						<li><a class="btn" ng-click="addReset(10000)">RESET</a></li>
+						<li><a class="btn" ng-click="addMax()">MAX</a></li>
+					</ul>
+				</div>
+				<div class="cart-item cart-inplay">
+					<div ng-repeat="c in cart">
+						<p class="league"><img ng-src="/images/inplay/league/{{c.game.leagueFlag}}"/> {{c.game.leagueName}}</p>
+						<div class="team">
+							<p class="home">1. {{c.game.teamHome}}</p>
+							<p class="away">2. {{c.game.teamAway}}</p>
+							<p class="vs">VS</p>
+						</div>
+						<div>
+							<p class="market">{{c.market.korName}} {{strMarket(c.odds.marketId, c.odds.name, c.odds.line, c.odds.oname)}}</p>
+							<p class="odd">{{mathOdds(c.odds.odds)}}</p>
+							<a class="btn" ng-click="remove(c.odds.id)">X</a>
+						</div>
+					</div>
+				</div>
+<!--				<div class="bettingInfo">-->
+<!--					<div class="item">-->
+<!--						<div>인플레이 베팅최소</div>-->
+<!--						<div class="value">{{config.min | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>인플레이 베팅최대</div>-->
+<!--						<div class="value">{{config.max | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>인플레이 당첨최대</div>-->
+<!--						<div class="value">{{config.win | number}}원</div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>가입 첫충전 보너스</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.joinRate)} + '%'"></div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>첫충전 보너스</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.firstRate)} + '%'"></div>-->
+<!--					</div>-->
+<!--					<div class="item">-->
+<!--						<div>매충전 보너스</div>-->
+<!--						<div class="value" th:text="${tag.handicap(betInfo.everyRate)} + '%'"></div>-->
+<!--					</div>-->
+<!--				</div>-->
+			</div>
+		</div>
+		<div class="cart-betting" ng-click="betting()">
+			<a class="btn-big btn02">베팅하기 <em ng-bind="cart.length"></em></a>
+		</div>
+	</div>
+</div>
+<a id="btn-top">TOP</a>
+<div th:replace="fragments/mobileFragment :: javascript"></div>
+<div layout:fragment="popup" th:if="false" th:remove="tag"></div>
+<script layout:fragment="script" th:if="false"></script>
+</body>
+</html>

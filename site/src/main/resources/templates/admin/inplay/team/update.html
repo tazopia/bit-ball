@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:action="|${siteConfig.pathAdmin}/inplay/team/popup|" th:object="${team}" onsubmit="return update()">
+        <input type="hidden" th:field="*{name}" />
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-trophy"></i> 팀명 수정</h3>
+            </div>
+            <table class="table-read">
+                <caption>팀명 수정</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">종목</th>
+                    <td th:text="${tag.sports(team.sports)}">축구</td>
+                </tr>
+				<tr>
+					<th class="required">리그</th>
+					<td th:text="${tag.league(team.league)}">축구</td>
+				</tr>
+                <tr>
+                    <th class="required">기본팀명</th>
+                    <td th:text="${team.name}">기본팀명</td>
+                </tr>
+                <tr>
+                    <th class="required">노출팀명</th>
+                    <td>
+                        <input th:field="*{korName}" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn04" value="수정" />
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' === 'closing') {
+        popup.reloadClose();
+    }
+
+    function update() {
+        if ($('#korName').val() === '') {
+            alert('팀명을 입력 하세요.');
+            $('#korName').focus();
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

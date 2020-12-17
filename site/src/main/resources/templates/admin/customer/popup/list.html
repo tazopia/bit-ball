@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='customer', lnb='popup'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>고객응대 :</small>
+    팝업 관리
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-envelope"></i>
+                팝업 관리
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(#arrays.length(list))}">100</span>)</span>
+                <span class="color03">팝업 크기는 ( 380 X 546 )으로 하세요.</span>
+                <button class="btn btn03" onclick="popup.popup.add();">등록</button>
+            </h3>
+        </div>
+        <div class="panel-body line" style="overflow: hidden; padding: 20px;">
+            <div th:each="m : ${list}" th:if="${m.enabled}" class="banner-popup" th:onclick="|popup.popup.update(${m.id});|">
+				<p style="padding:10px 0;font-size:16px;"><em th:text="${m.summary}" class="color01"></em><span class="color03" th:text="${m.sort}"></span></p>
+				<img th:src="@{|/images/notice/${m.image}?sdate=${m.sdate}|}"/>
+            </div>
+            <hr style="clear: both; border-top:1px solid #444; margin-bottom: 20px; height: 5px;" />
+            <div th:each="m : ${list}" th:if="${!m.enabled}" class="banner-popup" th:onclick="|popup.popup.update(${m.id});|">
+				<p style="padding:10px 0;font-size:16px;"><em th:text="${m.summary}" class="color01"></em><span class="color03" th:text="${m.sort}"></span></p>
+                <img th:src="@{|/images/notice/${m.image}?sdate=${m.sdate}|}"/>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn03" onclick="popup.popup.add();">등록</button>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

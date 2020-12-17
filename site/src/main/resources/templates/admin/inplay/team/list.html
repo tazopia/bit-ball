@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/adminLayout" th:with="gnb='inplay', lnb='team'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+	<small>환경설정 :</small>
+	팀명 설정
+</h2>
+<div layout:fragment="content">
+	<section>
+		<div class="panel-search">
+			<form id="frm-search" th:action="@{|${siteConfig.pathAdmin}/inplay/team|}" th:object="${command}"
+				  method="get">
+				<input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+				<label>
+					종목 :
+					<select th:field="*{sports}">
+						<option value="">선택하세요</option>
+						<option th:each="sport: ${sports}" th:value="${sport.name}" th:text="${sport.korName}">
+							축구
+						</option>
+					</select>
+				</label>
+				<label>
+					팀명/리그명 : <input type="text" th:field="*{name}"/>
+				</label>
+				<div class="command">
+					<a class="btn btn01" onclick="goSearch();">검색</a>
+					<a th:href="@{|${siteConfig.pathAdmin}/inplay/team|}" class="btn">취소</a>
+				</div>
+				<div>
+				</div>
+			</form>
+			<form id="frm-update" th:action="@{|${siteConfig.pathAdmin}/inplay/team/update|}" th:method="post">
+				<input type="hidden" id="name2" name="name"/>
+				<input type="hidden" id="korName2" name="korName"/>
+			</form>
+		</div>
+	</section>
+	<section>
+		<div class="panel-header">
+			<h3>
+				<i class="bul fa fa-trophy"></i>
+				팀명 설정
+				<span class="total">( 검색된 팀명 : <span th:text="${#numbers.formatInteger(page.totalElements, 0, 'DEFAULT')}">100</span> )</span>
+			</h3>
+		</div>
+		<table class="table-list">
+			<caption>팀명 설정</caption>
+			<colgroup>
+				<col style="width: 100px;">
+				<col>
+				<col>
+				<col>
+				<col>
+				<col style="width: 200px;">
+			</colgroup>
+			<thead>
+			<tr>
+				<th>번호</th>
+				<th>종목</th>
+				<th>리그</th>
+				<th>팀명</th>
+				<th>출력팀명</th>
+				<th>관리</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="team,num: ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}" th:data-name="${team.name}">
+				<td th:text="${total -  num.count}">1</td>
+				<td class="color0" th:text="${tag.sports(team.sports)}">스포츠</td>
+				<td th:text="${tag.league(team.league)}">리그</td>
+				<td th:text="${team.name}">팀명</td>
+				<td><input type="text" name="teamNick" th:value="${team.korName}" style="width: 400px;"/></td>
+				<td>
+					<a class="btn btn04" onclick="updateTeam(this);">수정</a>
+				</td>
+			</tr>
+			<tr th:if="${page.numberOfElements eq 0}">
+				<td colspan="5" style="height: 200px;">
+					검색된 팀이 없습니다.
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="panel-footer">
+			<div class="paging">
+				<ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+			</div>
+		</div>
+	</section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+    function updateTeam(o) {
+        let obj = $(o).parents('tr');
+        let korName = obj.find('input');
+        $('#korName2').val(korName.val());
+        $('#name2').val(obj.data('name'));
+
+        if ($('#korName2').val() === '') {
+            alert('출력팀명을 입력하세요.');
+            korName.focus();
+            return false;
+        }
+        $('#frm-update').submit();
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='sale', lnb='money'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>정산관리 :</small>
+    머니 변동 내역
+</h2>
+<div layout:fragment="content">
+	<section>
+		<div class="panel-search">
+			<form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathSeller}/sale/money|}" method="get">
+				<input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+				<label>
+					사용내역 :
+					<select th:field="*{code}">
+						<option value="">선택하세요</option>
+						<option value="충환전">충환전</option>
+						<option value="베팅">베팅 및 적중</option>
+						<option value="롤링">베팅 커미션</option>
+						<option value="포인트전환">포인트 전환</option>
+						<option value="관리자">관리자 증차감</option>
+					</select>
+				</label>
+				<label>
+					아이디 :
+					<input type="text" th:field="*{userid}"/>
+				</label>
+				<label>
+					검색기간 :
+					<input type="text" class="cal" th:field="*{sdate}" />
+					~
+					<input type="text" class="cal" th:field="*{edate}" />
+				</label>
+				<div class="command">
+					<a class="btn btn01" onclick="goSearch();">검색</a>
+					<a th:href="@{|${siteConfig.pathSeller}/sale/money|}" class="btn">취소</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<section>
+		<div class="panel-header">
+			<h3>
+				<i class="bul fa fa-cog"></i>
+				<span>머니변동 내역</span>
+				<span class="total">( 검색된 내역수 : <span th:text="${page.totalElements}">100</span> 건 )</span>
+			</h3>
+		</div>
+		<table class="table-list">
+			<caption>종목 설정</caption>
+			<colgroup>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>번호</th>
+				<th>아이디</th>
+				<th>닉네임</th>
+				<th>등급</th>
+				<th>사용내역</th>
+				<th>비고</th>
+				<th>기존머니</th>
+				<th>머니</th>
+				<th>최종머니</th>
+				<th>날짜</th>
+			</tr>
+			</thead>
+			<tbody id="money-body">
+			<tr th:each="m,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+				<td th:text="${total - num.count}">1</td>
+				<td class="popup color03" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.userid}">아이디</td>
+				<td class="popup color02" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.nickname}">닉네임</td>
+				<td th:text="${m.level > 10 ? m.role.name : m.level}">5</td>
+				<td th:class="${m.amount < 0} ? 'color03' : 'color01'" th:text="${m.moneyCode.name}">사용내역</td>
+				<td th:text="${#strings.defaultString(m.memo, '-')}">비고</td>
+				<td class="num" th:text="${tag.num(m.orgMoney)}">기존머니</td>
+				<td th:class="${m.amount < 0} ? 'color03 num popup' : 'color01 num popup'" th:onclick="|popup.payment.money('${m.userid}');|" th:text="${tag.num(m.amount)}">머니</td>
+				<td class="num color0" th:text="${tag.num(m.orgMoney + m.amount)}">최종머니</td>
+				<td th:utext="${tag.dayWeekTimes(m.regDate)}"></td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="panel-footer">
+			<div class="paging">
+				<ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+			</div>
+		</div>
+	</section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

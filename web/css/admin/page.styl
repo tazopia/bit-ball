@@ -1,0 +1,393 @@
+.color0 {
+    color #fff !important
+}
+
+.color00 {
+    color #444 !important
+}
+
+.color01, .txt3 {
+    color color01 !important
+}
+
+.color02, .txt1 {
+    color color02 !important
+}
+
+.color03, .txt2 {
+    color color03 !important
+}
+
+.color04 {
+    color color04 !important
+}
+
+.color05 {
+    color color05 !important
+}
+
+.color06 {
+    color color06 !important
+}
+
+.color07 {
+    color color07 !important
+}
+
+
+.fa.disabled {
+    &:before {
+        color #000
+    }
+}
+
+section {
+    color #aaa
+    background #1a1a1a
+
+    h3 {
+        padding 0 20px
+        font-size 15px
+        font-weight 600
+        color #ccc
+
+        .bul {
+            display inline-block
+            width 20px
+            color #444
+        }
+
+        span {
+            display inline-block
+            margin-left 20px
+            font-size 13px
+            color #fff
+            font-weight normal
+
+            &.total {
+                color #aaa
+
+                span {
+                    margin 0;
+                    color color03
+                }
+            }
+        }
+
+        & > .btn {
+            margin-top 12px
+            float right
+            font-size 13px
+            height 30px
+            line-height 30px
+        }
+    }
+
+    .panel-search {
+        border-radius 3px
+        padding 10px 20px
+        line-height 1.4
+        margin-bottom 20px
+
+        overflow hidden
+
+        label {
+            margin-top 2.5px
+            display inline-block
+            margin-right 30px
+        }
+
+        .command {
+            float right
+            .btn {
+                width auto
+                padding 0 30px
+                height 28px
+                line-height 28px
+            }
+        }
+
+        input[type=text] {
+            width 140px
+            &.cal {
+                width 90px
+            }
+        }
+    }
+
+    .panel-header {
+        border-radius 3px 3px 0 0
+        border border-light
+        border-bottom none
+        min-height 56px
+        line-height 55px
+
+        div {
+            padding 0 20px
+
+            &.comment {
+                padding-bottom 20px
+                textarea {
+                    width calc(100% - 120px)
+                    height 60px
+                }
+
+                .btn {
+                    float right
+                    width 110px
+                    height 60px
+                    line-height 60px
+                }
+            }
+        }
+    }
+
+    .panel-body {
+        border border-light
+        border-top none
+        margin-bottom -1px
+        padding 20px 0
+
+        &.line {
+            border-top border-light
+        }
+    }
+
+    .panel-footer {
+        background #222
+        border-radius 0 0 3px 3px
+        border border-light
+        border-top none
+        min-height 76px
+        line-height 75px
+        padding 0 20px
+        text-align center
+    }
+
+    input[type=checkbox], input[type=radio] {
+        width 20px
+        height 20px
+        margin-top 2px
+    }
+
+    .banner-popup {
+        float left
+        padding 0 10px 20px 10px
+        cursor pointer
+        width 400px
+
+        &:nth-child(3n+1) {
+            clear both;
+            //background #fff
+        }
+
+		img {
+			max-width 100%
+		}
+
+        p {
+            margin-top 20px
+            span {
+                float right
+            }
+        }
+    }
+}
+
+
+.alert {
+    position absolute
+    left 18px
+    z-index 9
+    padding 10px 20px
+    margin-top 4px
+    background #666
+    border border-dark
+    border-radius 3px
+}
+
+.cursor {
+    cursor pointer
+}
+
+.disabled {
+    opacity 0.2
+}
+
+.tab-menu {
+    overflow hidden
+    ul {
+        float right
+
+        li {
+            float left
+            margin-left -1px
+
+            a {
+                display block
+                font-size 14px
+                height 40px
+                line-height 40px
+                width 130px
+                text-align center
+                border solid 1px rgba(255,255,255,.1)
+                border-bottom none
+                border-radius 10px 10px 0 0
+                background #222
+
+                &:hover, &.on {
+                    background #444
+                }
+            }
+        }
+    }
+}
+
+.paging {
+    padding 30px 0
+    overflow hidden
+    position relative
+    line-height normal
+    min-height 30px
+
+    ul {
+        display inline-block
+        margin 0 auto
+        li {
+            float left
+        }
+
+        a, em {
+            display inline-block
+            height 30px
+            line-height 30px
+            border-radius 3px
+            padding 0 11px
+            background #333
+            margin 0 2px
+            box-shadow(1px 1px 1px #111)
+            border solid 1px rgba(255, 255, 255, 0.1)
+            cursor pointer
+
+            &:hover {
+                box-shadow(none)
+                border-color color02
+            }
+        }
+
+        em {
+            background none
+            font-weight 600
+            color color02
+            box-shadow(none)
+            border-color color02
+            cursor auto
+        }
+
+        .first, .prev, .next, .last {
+            color #ccc
+        }
+    }
+
+    .command {
+        right 0
+        height 34px
+        top 30px
+        float right
+    }
+
+    ul+.command {
+        position absolute
+    }
+
+    .prev {
+        margin-right 14px
+    }
+
+    .next {
+        margin-left 14px
+    }
+}
+
+#flashMessage {
+    min-width min-width
+    max-width max-width
+    width 100%
+    position fixed
+    z-index 9999
+    top 0
+    text-align right
+    display none
+
+    &.error {
+        div {
+            background #a03a19
+            color #fff
+        }
+    }
+
+    div {
+        background #f4c600
+        display inline-block
+        margin 0 auto
+        padding 0 30px
+        height 48px
+        line-height 48px
+        color #000
+        font-size 14px
+        font-weight 600
+        border-radius 0 0 4px 4px
+    }
+}
+
+#zone-monitor {
+    position absolute
+    z-index: 5
+    right 20px
+    top 58px
+
+    a {
+        display inline-block
+        width 40px
+        height 40px
+        line-height 40px
+        text-align center
+        background #385820
+        margin-left 10px
+        letter-spacing -1px
+        cursor pointer
+
+        &.err {
+            background #f30
+        }
+    }
+}
+
+#site-monitor {
+    position absolute
+    right -200px
+    top 60px
+    width 180px
+    z-index: 5
+    font-size 12px
+
+    div {
+        border solid 1px #111
+        border-radius 4px
+
+        h5 {
+            border-radius 4px 4px 0 0
+            padding 5px 10px
+            background #353535
+            text-align center
+        }
+
+        p {
+            padding 5px 10px
+
+            em {
+                float right
+            }
+        }
+    }
+}

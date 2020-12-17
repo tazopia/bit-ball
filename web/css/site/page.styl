@@ -1,0 +1,399 @@
+
+main.page {
+	figure {
+		display none
+	}
+
+	.main-bg {
+		//backdrop-filter blur(10px)
+		position absolute
+		left 0
+		top 0
+		bottom 0
+		right 0
+		z-index -1
+		border-radius 20px
+	}
+
+	.container {
+		//background rgba(0, 0, 0, 0.3)
+		position relative
+		display flex
+		//background #000
+		//background #262527
+		//background #26252a
+		//overflow hidden
+		border-radius 20px
+		justify-content space-between
+
+		section {
+			width 1080px
+			//float left
+			padding 20px 20px 60px 20px
+			background rgba(0, 0, 0, 0.5)
+			border-radius 4px
+		}
+
+		aside {
+			//margin-top -10px
+			width 220px
+			//float right
+		}
+
+		h3 {
+			font-size 20px
+			font-weight 600
+			padding 10px 0
+			border-bottom solid 1px rgba(255,255,255,0.2)
+			margin-bottom 20px
+
+			.btn {
+				float right
+				height 30px
+				line-height 30px
+				margin-top -6px
+			}
+		}
+
+		h4 {
+			font-size 15px
+			font-weight 600
+			padding-bottom 10px
+		}
+
+		h5 {
+			font-size 14px
+			font-weight 600
+			padding-bottom 10px
+		}
+
+		.box {
+			padding 30px 20px
+			line-height 1.8
+			//background rgba(0, 0, 0, 0.6)
+			//border solid 1px #565658
+			position relative
+			//box-shadow(inset -1px -1px 8px 0px rgba(0, 0, 0, 0.4))
+
+			.btn01, .btn02 {
+				position absolute
+				bottom 20px
+				right 20px
+			}
+
+			.btn-box {
+				height 32px
+				line-height 32px
+				border-radius 4px
+			}
+		}
+
+		.command {
+			padding 20px 0
+			text-align right
+			//text-align center
+
+			.btn {
+				font-size 14px
+				font-weight 600
+				height 32px
+				line-height 32px
+				box-shadow(1px 1px 5px rgba(0,0,0,0.4))
+				border-radius 4px
+
+				&:hover {
+					box-shadow(none)
+				}
+			}
+		}
+	}
+
+	.tab-menu {
+		display flex
+		gap 1px
+
+		.tab-menu-item {
+			text-align center
+			background #2f3853
+			border-bottom solid 2px #2f3853
+			padding 17px 0 15px 0
+			cursor pointer
+			font-size 13px
+			flex 1
+
+			&:hover {
+				background #232938
+			}
+			&.on {
+				background #232938
+				border-bottom-color #fec823
+			}
+		}
+	}
+}
+
+.color0 {
+	color #fff !important
+}
+
+.color01, .txt1 {
+	color #5bc0de !important
+}
+
+.color02, .txt2 {
+	color #ee5f5b !important
+
+}
+
+.color03, .txt3 {
+	color #f89406 !important
+}
+
+.color04 {
+	color #62c462 !important
+}
+
+.btn {
+	cursor pointer
+	display inline-block
+	background #363537
+	height 24px
+	line-height 24px
+	padding 0 20px
+	border-radius 4px
+
+	&.on, &:hover {
+		background darken(#363537, 30%)
+	}
+
+	&.btn01 {
+		background #0066aa
+		&.on, &:hover {
+			background darken(#0066aa, 30%)
+		}
+	}
+
+	&.btn02 {
+		background #64973a !important
+		color #fff !important
+		&.on, &:hover {
+			background darken(#64973a, 30%) !important
+		}
+	}
+
+	&.btn03 {
+		background #B8573E
+		&.on, &:hover {
+			background darken(#B8573E, 30%)
+		}
+	}
+}
+
+main {
+	margin-top 10px
+
+	input, select, textarea {
+		background #222
+		//border 1px solid #1c1c1c
+		border-radius 4px
+		padding 0 10px
+		height 25px
+		line-height 25px
+		color #ccc
+		box-shadow(inset 0 0 5px 2px rgba(0, 0, 0, .2))
+		vertical-align middle
+
+		&:focus {
+			border-color #444
+		}
+
+		&.ng-invalid {
+			border-color color03
+		}
+
+		&[disabled=disabled] {
+			color #666
+		}
+	}
+
+	input {
+		&.num {
+			text-align right
+		}
+	}
+
+	textarea {
+		padding 10px
+		line-height 1.6
+	}
+}
+
+div.paging {
+	text-align center
+	font-size 0
+	margin 25px 0
+
+	ul {
+		display inline-block
+	}
+
+	li {
+		float left
+		font-size 13px
+		margin 0 2px
+		height 34px
+		line-height 32px
+		border solid 1px rgba(255, 255, 255, 0.05)
+
+		&:hover {
+			position relative
+			border-color rgba(255, 255, 255, 0.3)
+			z-index 1
+		}
+
+		&.prev {
+			margin-right 8px
+			a {
+				background rgba(0, 0, 0, 0.5)
+			}
+		}
+
+		&.next {
+			margin-left 8px
+			a {
+				background rgba(0, 0, 0, 0.5)
+			}
+		}
+	}
+
+	a, em {
+		display block
+		padding 0 12.5px
+	}
+
+	a {
+		cursor pointer
+	}
+
+	em {
+		background #e85202
+	}
+}
+
+
+#layout-wrap {
+	background rgba(0, 0, 0, 0.6)
+	width 100%
+	height 100%
+	position fixed
+	z-index 998
+	left 0
+	top 0
+}
+
+#layout-box {
+	top 50%
+	width 100%
+	text-align center
+	position fixed
+	z-index 999
+	height 546px
+	margin-top -273px
+
+	img {
+		display inline-block
+		margin 0 10px
+	}
+}
+
+#layout-load {
+	position absolute
+	top 50%
+	left 50%
+	width 300px
+	height 300px
+	margin-top -200px
+	margin-left -150px
+	z-index 999
+}
+
+.lv {
+	display inline-block
+	background #1f809c
+	height 20px
+	line-height 20px
+	width 36px
+	color #fff
+	text-align center
+	margin-right 10px
+	font-size 12px
+}
+
+.cal-title {
+	text-align center
+	margin-bottom 20px
+	span {
+		display inline-block
+		font-size 24px
+		height 36px
+		line-height 36px
+		vertical-align middle
+		padding 0 20px
+	}
+
+	.btn {
+		width 60px
+		height 36px
+		line-height 36px
+		padding 0
+		text-align center
+	}
+}
+
+ul.calendar {
+	width 100%
+	display table
+	border-spacing 1px !important
+	border-collapse separate
+	//margin-left 1px
+
+	li {
+		display table-cell
+		float left
+		margin 1px
+		width 14%
+		//border solid 1px #565658
+		//margin-left -1px
+		//margin-top -1px
+		height 100px
+		background #333
+		text-align right
+		padding 10px
+		font-size 16px
+
+		&.blank {
+			background none
+		}
+
+		&.check {
+			background url(/images/check.png) center center no-repeat #3b0403
+		}
+
+		&:nth-child(7n + 1) {
+			color #B8573E
+		}
+
+		&:nth-child(7n + 0) {
+			color #4488ff
+		}
+
+		&.th {
+			background #2a2a2a
+			height 40px
+			line-height 40px
+			text-align center
+			font-weight 600
+			padding 0
+		}
+	}
+}

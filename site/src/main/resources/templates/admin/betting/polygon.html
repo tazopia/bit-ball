@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='betting', lnb='balance'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>베팅 :</small>
+    발란스 보험
+</h2>
+<div layout:fragment="content">
+    <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/betting/balance|}" method="get">
+        <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+    </form>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-list"></i>
+                보험 내역
+                <span class="total">( 검색된 베팅내역 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>게임</th>
+                <th>날짜</th>
+                <th>회차</th>
+                <th>타입</th>
+                <th>베팅</th>
+                <th>금액</th>
+                <th>결과</th>
+                <th>베팅시간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td class="color03" th:text="${b.game}">게임</td>
+                <td class="color02" th:text="${b.gameDate}">날짜</td>
+                <td th:text="${b.round}">회차</td>
+                <td th:text="${b.gameType}">타입</td>
+                <td th:text="${b.betType}">베팅</td>
+                <td class="color01 num" th:text="${tag.num(b.price)}"></td>
+                <td th:text="${b.message}"></td>
+                <td th:utext="${tag.dayWeekTimes(b.regDate)}">날짜</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

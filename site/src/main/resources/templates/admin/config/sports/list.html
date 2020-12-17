@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='sports'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>환경설정 :</small>
+    종목 설정
+</h2>
+<div layout:fragment="content">
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-futbol-o"></i>
+                종목 설정
+                <button class="btn btn03" th:onclick="|popup.sports.add();|">등록</button>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col style="width: 100px;">
+                <col>
+                <col>
+                <col>
+                <col style="width: 180px;">
+                <col style="width: 180px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>종목</th>
+                <th>아이콘</th>
+                <th>노출여부</th>
+                <th>정렬</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sports,num : ${list}" th:with="total = ${#arrays.length(list) + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td class="color0" th:text="${sports.sportsName}">축구</td>
+                <td><img th:src="@{|/images/sports/${sports.sportsFlag}|}" /></td>
+                <td th:class="${!sports.hidden} ? 'color01'" th:text="${sports.hidden} ? '숨김' : '노출'">숨김</td>
+                <td>
+                    <button class="btn btn02" th:onclick="|sports.sortUp(${sports.id});|">▲</button>
+                    <button class="btn btn01" th:onclick="|sports.sortDown(${sports.id});|">▼</button>
+                </td>
+                <td>
+                    <a class="btn btn04" th:onclick="|popup.sports.update(${sports.id});|">수정</a>
+                    <a class="btn btn02" th:onclick="|sports.delete(${sports.id});|">삭제</a>
+                </td>
+            </tr>
+            <tr th:if="${list.empty}">
+                <td colspan="6" class="empty">
+                    검색된 종목이 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <button class="btn btn03" th:onclick="|popup.sports.add();|">등록</button>
+        </div>
+    </section>
+</div>
+</body>
+</html>

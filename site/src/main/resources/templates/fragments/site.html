@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="paging" th:fragment="paging(p)" th:remove="tag">
+    <ul th:with="size=10, start=${T(Math).ceil(p.number / size).intValue() * size}, end=${T(Math).ceil(p.number / 10).intValue() * size + size - 1}">
+        <li class="prev"><a href="#" th:onclick="|goPage(${p.first ? 1 : p.number});return false;|">&lt;</a></li>
+        <li th:each="i:${#numbers.sequence(start, end > p.totalPages - 1 ? (p.totalPages > 0 ? p.totalPages - 1 : 0) : end)}">
+            <em th:if="${i == p.number}" th:text="${i + 1}">1</em>
+            <a th:if="${i != p.number}" th:onclick="|goPage(${i + 1});return false;|" th:text="${i + 1}">2</a>
+        </li>
+        <li class="next"><a href="#" th:onclick="|goPage(${p.totalPages < start + 1 + size ? p.totalPages: p.number + 2});return false;|">&gt;</a></li>
+    </ul>
+</div>
+<div th:fragment="level(lv)" th:remove="tag">
+<!--    <span th:class="'lv lv' + ${lv}" th:text="'Lv.' + ${lv}">Lv.1</span>-->
+	<span th:class="'level lv' + ${lv % 10}" style="height: 24px;"><img th:src="'/images/level/lv' + ${lv % 10} + '.png'" style="height: 24px;" /></span>
+</div>
+</html>

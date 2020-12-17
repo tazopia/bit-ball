@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='customer', lnb='rolling'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>고객응대 :</small>
+    상단 한줄 공지
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-cutlery"></i>
+                상단 한줄 공지
+            </h3>
+        </div>
+        <table class="table-memo">
+            <caption>상단 한줄 공지 환경설정</caption>
+            <colgroup>
+                <col style="width:200px;">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <th>내용</th>
+                <td>
+                    <textarea id="json" th:inline="text">[[${rolling}]]</textarea>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <button class="btn btn04" onclick="updateRolling();">수정</button>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function updateRolling() {
+        $.ajax({
+            url: path + '/customer/rolling',
+            method: 'post',
+            data: {json: $('#json').val()}
+        }).done(function () {
+
+        });
+    }
+</script>
+</body>
+</html>

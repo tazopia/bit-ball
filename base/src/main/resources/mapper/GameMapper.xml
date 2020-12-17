@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.GameMapper">
+
+    <select id="mainList" resultType="spoon.game.domain.GameDto$Main">
+        SELECT DISTINCT TOP 8 teamHome, teamAway, sports, league, gameDate
+        FROM game
+        WHERE enabled = 1 AND closing = 0 AND deleted = 0 AND gameDate &gt; getDate()
+        ORDER BY gameDate
+    </select>
+
+    <select id="readyLeague" resultType="spoon.game.domain.LeagueDto$List" parameterType="String">
+        SELECT DISTINCT a.league as leagueName, b.leagueKor, a.sports
+        FROM game a LEFT JOIN league b
+        ON a.league = b.leagueName AND a.sports = b.sports
+        WHERE a.closing = 0 AND a.enabled = 0 AND a.deleted = 0
+        <include refid="findLeague"/>
+        AND a.gameDate &gt;= getDate()
+        ORDER BY a.league
+    </select>
+
+    <select id="completeLeague" resultType="spoon.game.domain.LeagueDto$List" parameterType="String">
+        SELECT DISTINCT a.league as leagueName, b.leagueKor, a.sports
+        FROM game a LEFT JOIN league b
+        ON a.league = b.leagueName AND a.sports = b.sports
+        WHERE a.closing = 0 AND a.enabled = 1 AND a.deleted = 0
+        <include refid="findLeague"/>
+        AND a.gameDate &gt;= getDate()
+        ORDER BY a.league
+    </select>
+
+    <select id="resultLeague" resultType="spoon.game.domain.LeagueDto$List" parameterType="String">
+        SELECT DISTINCT a.league as leagueName, b.leagueKor, a.sports
+        FROM game a LEFT JOIN league b
+        ON a.league = b.leagueName AND a.sports = b.sports
+        WHERE a.closing = 0
+        AND (a.enabled = 1 OR a.amountHome + a.amountAway + a.amountDraw &gt; 0)
+        AND a.deleted = 0
+        <include refid="findLeague"/>
+        AND a.gameDate &gt;= getDate()
+        ORDER BY a.league
+    </select>
+
+    <select id="closingLeague" resultType="spoon.game.domain.LeagueDto$List" parameterType="String">
+        SELECT DISTINCT a.league as leagueName, b.leagueKor, a.sports
+        FROM game a LEFT JOIN league b
+        ON a.league = b.leagueName AND a.sports = b.sports
+        WHERE a.closing = 1
+        AND (a.enabled = 1 OR a.amountHome + a.amountAway + a.amountDraw &gt; 0)
+        AND a.deleted = 0
+        <include refid="findLeague"/>
+    </select>
+
+    <select id="gameList" parameterType="String" resultType="spoon.game.domain.GameDto$List">
+        SELECT b.* FROM
+        (
+        SELECT a.*, ROW_NUMBER() OVER (PARTITION BY a.groupId, a.gameCode ORDER BY a.odds) AS rank FROM
+        (
+        SELECT sort,
+        id, groupId, siteCode, gameDate, sports, menuCode, gameCode, special, league, teamHome, teamAway, handicap,
+        oddsHome, oddsDraw, oddsAway, betHome, betDraw, betAway, upDownHome, upDownDraw, upDownAway,
+        odds = CASE gameCode WHEN 'MATCH' THEN 100 - oddsDraw ELSE oddsHome + oddsAway END
+        FROM GAME
+        WHERE enabled = 1 AND cancel = 0 AND closing = 0 AND deleted = 0 AND betHome = 1 AND betAway = 1
+        <if test="menu == 'match'">AND menuCode = 'MATCH'</if>
+        <if test="menu == 'handicap'">AND menuCode = 'HANDICAP'</if>
+        <if test="menu == 'cross'">AND menuCode IN ('MATCH', 'HANDICAP')</if>
+        <if test="menu == 'special'">AND menuCode = 'SPECIAL'</if>
+        <if test="menu == 'live'">AND menuCode = 'LIVE'</if>
+        <if test="sports != null">AND sports = #{sports}</if>
+        AND (gameCode = 'MATCH' OR (gameCode IN ('HANDICAP', 'OVER_UNDER') AND oddsHome &gt;= 1.1 AND oddsAway &gt;= 1.1))
+        AND gameDate
+        BETWEEN getDate() AND dateadd(HOUR, 24, getDate())
+        ) a
+        ) b
+        WHERE b.rank &lt;= #{spread}
+        ORDER BY gameDate, sports, league, teamHome,
+        <if test="menu == 'special'">
+            special,
+        </if>
+        sort, handicap
+    </select>
+
+    <select id="gameEndList" parameterType="String" resultType="spoon.game.domain.GameDto$List">
+        SELECT b.* FROM
+        (
+        SELECT a.*, ROW_NUMBER() OVER (PARTITION BY a.groupId, a.gameCode ORDER BY a.odds) AS rank FROM
+        (
+        SELECT sort,
+        id, groupId, siteCode, gameDate, sports, menuCode, gameCode, special, league, teamHome, teamAway, handicap,
+        oddsHome, oddsDraw, oddsAway, betHome, betDraw, betAway, upDownHome, upDownDraw, upDownAway,
+        odds = CASE gameCode WHEN 'MATCH' THEN 100 - oddsDraw ELSE oddsHome + oddsAway END
+        FROM GAME
+        WHERE
+        gameDate &lt; getDate()
+        AND enabled = 1 AND cancel = 0 AND closing = 0 AND deleted = 0 AND betHome = 1 AND betAway = 1
+        <if test="menu == 'match'">AND menuCode = 'MATCH'</if>
+        <if test="menu == 'handicap'">AND menuCode = 'HANDICAP'</if>
+        <if test="menu == 'cross'">AND menuCode IN ('MATCH', 'HANDICAP')</if>
+        <if test="menu == 'special'">AND menuCode = 'SPECIAL'</if>
+        <if test="menu == 'live'">AND menuCode = 'LIVE'</if>
+        <if test="sports != null">AND sports = #{sports}</if>
+        AND (gameCode = 'MATCH' OR (gameCode IN ('HANDICAP', 'OVER_UNDER') AND oddsHome &gt;= 1.1 AND oddsAway &gt;= 1.1))
+        ) a
+        ) b
+        WHERE b.rank &lt;= #{spread}
+        ORDER BY gameDate DESC, sports, league, teamHome, sort, handicap
+    </select>
+
+    <select id="gameLeague" parameterType="String" resultType="spoon.game.domain.GameDto$League">
+        SELECT sports, league, cnt FROM (
+        SELECT sports, league, count(*) as cnt FROM
+        (
+        SELECT a.*, ROW_NUMBER() OVER (PARTITION BY a.groupId, a.gameCode ORDER BY a.odds) AS rank FROM
+        (
+        SELECT
+        sports, league, gameCode, groupId, odds = CASE gameCode WHEN 'MATCH' THEN 100 - oddsDraw ELSE oddsHome + oddsAway END
+        FROM GAME
+        WHERE enabled = 1 AND cancel = 0 AND closing = 0 AND deleted = 0 AND betHome = 1 AND betAway = 1
+        <if test="menu == 'match'">AND menuCode = 'MATCH'</if>
+        <if test="menu == 'handicap'">AND menuCode = 'HANDICAP'</if>
+        <if test="menu == 'cross'">AND menuCode IN ('MATCH', 'HANDICAP')</if>
+        <if test="menu == 'special'">AND menuCode = 'SPECIAL'</if>
+        <if test="menu == 'live'">AND menuCode = 'LIVE'</if>
+        <if test="sports != null">AND sports = #{sports}</if>
+        AND (gameCode = 'MATCH' OR (gameCode IN ('HANDICAP', 'OVER_UNDER') AND oddsHome &gt;= 1.1 AND oddsAway &gt;= 1.1))
+        AND gameDate
+        BETWEEN getDate() AND dateadd(HOUR, 24, getDate())
+        ) a
+        ) b
+        WHERE b.rank &lt;= #{spread}
+        GROUP BY sports, league
+        ) c JOIN SPORTS
+        ON c.sports = SPORTS.sportsName
+        ORDER BY SPORTS.sort, c.league
+    </select>
+
+    <select id="findGroupId" resultType="String">
+        SELECT TOP 1 groupId FROM GAME WHERE
+        siteCode = #{siteCode} AND league = #{league} AND gameDate = #{gameDate} AND teamHome = #{teamHome} AND teamAway = #{teamAway}
+    </select>
+
+    <delete id="deleteBeforeGameDate">
+        DELETE GAME_LOGGER WHERE gameId IN (SELECT id FROM GAME WHERE gameDate &lt; #{gameDate});
+        DELETE GAME WHERE gameDate &lt; #{gameDate};
+    </delete>
+
+    <select id="initOdds" resultType="spoon.game.domain.GameDto$Bot">
+        SELECT siteId as id, ut FROM game WHERE siteCode = #{siteCode} and gameDate &gt; getDate()
+    </select>
+
+    <select id="initScore" resultType="spoon.game.domain.GameDto$Bot" parameterType="String">
+        SELECT siteId as id, ut FROM game WHERE siteCode = #{siteCode} and gameDate &lt; getDate() and closing = 0
+    </select>
+
+    <sql id="findLeague">
+        <if test="_parameter == 'match'">AND a.menuCode = 'MATCH'</if>
+        <if test="_parameter == 'handicap'">AND a.menuCode = 'HANDICAP'</if>
+        <if test="_parameter == 'cross'">AND a.menuCode IN ('MATCH', 'HANDICAP')</if>
+        <if test="_parameter == 'special'">AND a.menuCode = 'SPECIAL'</if>
+        <if test="_parameter == 'live'">AND a.menuCode = 'LIVE'</if>
+    </sql>
+</mapper>

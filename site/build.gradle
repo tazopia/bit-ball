@@ -1,0 +1,55 @@
+plugins {
+    id 'org.springframework.boot' version '1.5.3.RELEASE'
+    id 'java'
+    id 'war'
+    id 'idea'
+}
+
+war {
+    baseName = 'site'
+    version = '0.0.1-SNAPSHOT'
+}
+
+bootRun {
+    addResources = true
+}
+
+repositories {
+    jcenter()
+}
+
+sourceCompatibility = 8
+targetCompatibility = 8
+
+dependencies {
+    compile project(":base")
+
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-websocket")
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-starter-mobile")
+    compile("org.springframework.boot:spring-boot-starter-tomcat")
+
+    compile("org.modelmapper:modelmapper:0.+")
+    compile("org.projectlombok:lombok:1.+")
+    compile("org.jsoup:jsoup:1.+")
+
+    compile("org.thymeleaf:thymeleaf:3.0.6.RELEASE")
+    compile("org.thymeleaf:thymeleaf-spring4:3.0.6.RELEASE")
+    compile("org.thymeleaf.extras:thymeleaf-extras-springsecurity4:3.0.2.RELEASE")
+    compile("io.github.jpenren:thymeleaf-spring-data-dialect:3.3.0")
+    compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.2.2")
+
+    compile("commons-codec:commons-codec:1.+")
+
+    // IP db
+    compile("com.maxmind.db:maxmind-db:1.+")
+    compile("com.maxmind.geoip2:geoip2:2.+")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+springBoot {
+    mainClass = 'spoon.Application'
+}

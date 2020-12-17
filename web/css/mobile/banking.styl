@@ -1,0 +1,43 @@
+.banking {
+	margin-bottom 30px
+
+	h4 {
+		font-size 16px
+		border-bottom solid 1px #222
+		margin-bottom 10px
+	}
+
+	.bank-list {
+		display grid
+		grid-gap 2px
+		grid-template-columns repeat(1, 1fr)
+
+		& > div {
+			display flex
+			grid-gap 2px
+		}
+
+		.bank {
+			width 130px
+			padding 10px
+			background #222
+		}
+
+		.time {
+			padding 10px
+			background rgba(0, 0, 0, 0.6)
+			color #aaa
+			flex 1
+		}
+	}
+}
+
+@media screen and (orientation:landscape) {
+	.banking {
+		.bank-list {
+			display grid
+			grid-gap 10px
+			grid-template-columns repeat(3, 1fr)
+		}
+	}
+}

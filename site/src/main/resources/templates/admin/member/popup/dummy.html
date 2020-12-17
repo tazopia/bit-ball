@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <form id="frm" th:object="${dummy}" method="post">
+            <div class="panel-header">
+                <h3><i class="bul fa fa-user-plus"></i> 게시판 유저 등록</h3>
+            </div>
+            <table class="table-read">
+                <caption>회원 기본정보</caption>
+                <colgroup>
+                    <col style="width: 140px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">등급 범위</th>
+                    <td>
+                        <select th:field="*{start}">
+                            <option th:each="level : ${#numbers.sequence(1, 10)}" th:value="${level}" th:text="${level + '등급'}"></option>
+                        </select>
+                        ~
+                        <select th:field="*{end}">
+                            <option th:each="level : ${#numbers.sequence(1, 10)}" th:value="${level}" th:text="${level + '등급'}"></option>
+                        </select>
+                        <span>(랜덤하게 생성)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">닉네임</th>
+                    <td>
+                        <textarea th:field="*{text}" style="width: 100%;height: 200px;" placeholder="닉네임은 공백없이 줄바꿈으로 구분합니다.&#10;예)&#10;홍길동&#10;아름이"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <a class="btn btn03" onclick="addMember();">등록</a>
+                <a onclick="popup.close();return false;" class="btn">창닫기</a>
+            </div>
+        </form>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    function addMember() {
+        if ($('#text').val() == '') {
+            alert('사용하실 닉네임을 입력하여 주세요.');
+            $('#text').focus();
+            return false;
+        }
+        $.post(path + '/member/dummy', $('#frm').serialize()).done(function (data) {
+            if (data.success) {
+                try {
+                    opener.location.href = path + '/member/list?mode=dummy';
+                } catch(e) {}
+                setTimeout(function () {
+                    self.close();
+                }, 1000);
+
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+plugins {
+    id 'org.springframework.boot' version '1.5.3.RELEASE'
+    id 'java'
+    id 'war'
+    id 'idea'
+}
+
+jar {
+    baseName = 'base'
+    version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 8
+targetCompatibility = 8
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-security")
+    //compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-starter-mobile")
+    //compile("org.springframework.boot:spring-boot-starter-tomcat")
+
+    compile("com.rabbitmq:amqp-client:+")
+
+    //compile("mysql:mysql-connector-java:5.+")
+    compile("com.microsoft.sqlserver:mssql-jdbc:8.2.2.jre8")
+    compile("com.querydsl:querydsl-core:4.+")
+    compile("com.querydsl:querydsl-jpa:4.+")
+    compile("com.querydsl:querydsl-apt:4.+")
+    compile("org.mybatis:mybatis:3.+")
+    compile("org.mybatis:mybatis-spring:1.+")
+
+    compile("org.modelmapper:modelmapper:0.+")
+    compile("org.projectlombok:lombok:1.+")
+    compile("org.jsoup:jsoup:1.+")
+
+    compile("commons-codec:commons-codec:1.+")
+
+    // excel
+    compile("org.apache.poi:poi:3.+")
+    compile("org.apache.poi:poi-ooxml:3.+")
+
+    // IP db
+    compile("com.maxmind.db:maxmind-db:2.+")
+    compile("com.maxmind.geoip2:geoip2:2.+")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+compileJava.dependsOn(processResources)
+
+configurations {
+    querydslapt
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java', 'src/main/generated'
+        }
+    }
+}
+
+springBoot {
+    mainClass = 'spoon.Application'
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'build') {
+    source = sourceSets.main.java
+    classpath = configurations.compile + configurations.querydslapt
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", "com.querydsl.apt.jpa.JPAAnnotationProcessor"
+    ]
+    destinationDir = file('./src/main/generated')
+}
+
+idea {
+    module {
+        sourceDirs += file('src/main/generated')
+        generatedSourceDirs += file('generated/')
+    }
+}
+
+clean {
+    delete file("./src/main/generated")
+}

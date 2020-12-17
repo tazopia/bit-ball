@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='board', lnb=${board.code}">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>게시판 :</small>
+    <em th:text="${title}" th:remove="tag"> 게시판</em>
+</h2>
+<div layout:fragment="content">
+    <section>
+        <form id="frm" th:object="${board}" th:action="@{|${siteConfig.pathAdmin}/board/${board.code}/update|}" method="post" onsubmit="return addBoard();">
+            <input type="hidden" th:field="*{id}"/>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-user-plus"></i> 게시물 등록</h3>
+            </div>
+            <table class="table-read">
+                <caption>게시물 등록</caption>
+                <colgroup>
+                    <col style="width: 220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">등록일</th>
+                    <td>
+                        <input th:field="*{date}" class="cal">
+                        <select th:field="*{hour}">
+                            <option th:each="h:${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(h, 2)}" th:text="${#numbers.formatInteger(h, 2)}"></option>
+                        </select>시
+                        <select th:field="*{minute}">
+                            <option th:each="m:${#numbers.sequence(0, 59)}" th:value="${#numbers.formatInteger(m, 2)}" th:text="${#numbers.formatInteger(m, 2)}"></option>
+                        </select>분
+                        <select th:field="*{second}">
+                            <option th:each="s:${#numbers.sequence(0, 59)}" th:value="${#numbers.formatInteger(s, 2)}" th:text="${#numbers.formatInteger(s, 2)}"></option>
+                        </select>초
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">작성자</th>
+                    <td>
+                        <label th:if="${board.code ne 'event' and board.code ne 'notice'}">
+                            <select th:field="*{userid}">
+                                <option value="">선택하세요.</option>
+                                <option value="_ADMIN_" class="color03">관리자</option>
+                                <option th:each="dummy : ${dummyList}" th:value="${dummy.userid}" th:text="${dummy.nickname} + ' (' + ${dummy.level} + ')'"></option>
+                            </select>
+                        </label>
+                        <label th:if="${board.code eq 'event' or board.code eq 'notice'}">
+                            <em th:utext="${tag.color(siteConfig.nickname)}"></em>
+                            <span>자유게시판 노출 <input type="checkbox" th:field="*{showTop}" /></span>
+                            <input type="hidden" name="userid" id="userid" value="_ADMIN_" />
+                        </label>
+                        <span th:if="${board.code ne 'event' and board.code ne 'notice'}">(작성자를 선택하지 않으시면 랜덤하게 작성자가 들어갑니다.)</span>
+                    </td>
+                </tr>
+                <tr th:if="${board.code ne 'notice' and board.code ne 'event'}">
+                    <th>베팅내역</th>
+                    <td>
+                        <label>
+                            <input type="text" th:field="*{betId}" readonly="readonly" style="width: 400px;"/>
+                        </label>
+                        <a href="#" onclick="popup.betting.board();" class="btn btn01">베팅내역</a>
+                        <span>(새창의 베팅번호를 클릭하시면 자동으로 입력 됩니다.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>조회수</th>
+                    <td>
+                        <input type="text" th:field="*{hit}" class="num" style="width: 80px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">제목</th>
+                    <td><input type="text" th:field="*{title}" style="width: 100%;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">내용</th>
+                    <td><textarea th:field="*{contents}" style="width: 100%; height: 300px;"></textarea></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+                <a onclick="history.back();" class="btn">취소</a>
+            </div>
+        </form>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var betIds = $('#betId').val().split(',');
+
+    function addBetId(betId) {
+        betIds.push(betId);
+        sortBetIds();
+    }
+
+    function removeBetId(betId) {
+        var index = betIds.indexOf(betId);
+        if (index > -1) {
+            betIds.splice(index, 1);
+        }
+        sortBetIds();
+    }
+
+    function sortBetIds() {
+        betIds = betIds.slice().sort(function (a, b) {
+            return a - b
+        }).reduce(function (a, b) {
+            if (a.slice(-1)[0] !== b) a.push(b);
+            return a;
+        }, []);
+        $('#betId').val(betIds.join(','));
+    }
+
+</script>
+</body>
+</html>

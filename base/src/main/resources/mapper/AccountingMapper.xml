@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.AccountingMapper">
+
+    <select id="daily" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Daily">
+		SELECT a.dt,
+			(SELECT COUNT(*) FROM MEMBER WHERE joinDate BETWEEN a.dt + ' 00:00:00.000' AND a.dt + ' 23:59:59.999' AND role = 'USER' AND enabled = 1 <include refid="whereAgency"/>) as member,
+			IsNULL((SELECT SUM(amount) FROM BANKING WHERE closingDate BETWEEN a.dt + ' 00:00:00.000' AND a.dt + ' 23:59:59.999' AND bankingCode = 'IN' AND closing = 1 AND cancel = 0 <include refid="whereAgency"/>), 0) as inMoney,
+			IsNULL((SELECT SUM(amount + fees) FROM BANKING WHERE regDate BETWEEN a.dt + ' 00:00:00.000' AND a.dt + ' 23:59:59.999' AND bankingCode = 'OUT' AND closing = 1 AND cancel = 0 <include refid="whereAgency"/>), 0) as outMoney,
+			IsNull(betUser, 0) as betUser,
+			(SELECT COUNT(DISTINCT userid) FROM BET WHERE betDate BETWEEN a.dt + ' 00:00:00.000' AND a.dt + ' 23:59:59.999' AND role != 'DUMMY' AND closing = 1 AND cancel = 0 AND menuCode IN ('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE') <include refid="whereAgency"/>) as sportsUser,
+			IsNull(sportsBet, 0) as sportsBet, IsNull(sportsHit, 0) as sportsHit,
+			(SELECT COUNT(DISTINCT userid) FROM BET WHERE betDate BETWEEN a.dt + ' 00:00:00.000' AND a.dt + ' 23:59:59.999' AND role != 'DUMMY' AND closing = 1 AND cancel = 0 AND menuCode NOT IN ('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE') <include refid="whereAgency"/>) as zoneUser,
+			IsNull(zoneBet, 0) as zoneBet, IsNull(zoneHit, 0) as zoneHit,
+        (SELECT COUNT(DISTINCT userid) FROM LOGIN_HISTORY WHERE loginDay = a.dt AND role = 'USER' <include refid="whereAgency"/>) as loginCnt
+		FROM
+			(SELECT dt FROM d_Date WHERE dt BETWEEN #{start} AND #{end}) a
+		LEFT OUTER JOIN
+			(
+				SELECT
+					date, COUNT(DISTINCT userid) as betUser,
+					SUM(CASE WHEN menuCode IN ('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE') THEN betMoney ELSE 0 END) as sportsBet,
+					SUM(CASE WHEN menuCode IN ('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE') THEN hitMoney ELSE 0 END) as sportsHit,
+					SUM(CASE WHEN menuCode IN ('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE') THEN 0 ELSE betMoney END) as zoneBet,
+					SUM(CASE WHEN menuCode IN ('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE') THEN 0 ELSE hitMoney END) as zoneHit
+				FROM
+				(
+					SELECT
+					userid, betMoney, hitMoney, menuCode, CONVERT(VARCHAR(10), betDate, 23) as date
+					FROM BET
+					WHERE betDate BETWEEN #{start} + ' 00:00:00.000' AND #{end} + ' 23:59:59.999' AND closing = 1 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>
+				) x
+				GROUP BY date
+			) b
+		ON a.dt = b.date
+		ORDER BY a.dt
+    </select>
+
+	<select id="gameAccount" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Game">
+		SELECT
+			#{menuCode} as menuCode,
+			IsNull((SELECT SUM(betMoney) FROM BET WHERE betDate <include refid="whereDate"/> <include refid="whereMenuCode"/> AND closing = 1 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as betMoney,
+			IsNull((SELECT SUM(hitMoney) FROM BET WHERE betDate <include refid="whereDate"/> <include refid="whereMenuCode"/> AND closing = 1 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as winMoney,
+			IsNull((SELECT SUM(betMoney) FROM BET WHERE betDate <include refid="whereDate"/> <include refid="whereMenuCode"/> AND closing = 1 AND cancel = 0 AND hitMoney = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as loseMoney,
+			IsNull((SELECT SUM(betMoney) FROM BET WHERE betDate <include refid="whereDate"/> <include refid="whereMenuCode"/> AND closing = 0 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as ingMoney
+	</select>
+
+    <select id="gameInplay" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Game">
+        SELECT
+            'inplay' as menuCode,
+            ISNULL((SELECT SUM(betMoney) FROM INPLAY_BET WHERE betDate <include refid="whereDate"/> AND closing = 1 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as betMoney,
+            IsNull((SELECT SUM(hitMoney) FROM INPLAY_BET WHERE betDate <include refid="whereDate"/> AND closing = 1 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as winMoney,
+            IsNull((SELECT SUM(betMoney) FROM INPLAY_BET WHERE betDate <include refid="whereDate"/> AND closing = 1 AND cancel = 0 AND hitMoney = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as loseMoney,
+            IsNull((SELECT SUM(betMoney) FROM INPLAY_BET WHERE betDate <include refid="whereDate"/> AND closing = 0 AND cancel = 0 AND role != 'DUMMY' <include refid="whereAgency"/>), 0) as ingMoney
+    </select>
+
+	<select id="money" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Amount">
+		SELECT moneyCode as code, SUM(amount) as amount FROM MONEY WHERE regDate <include refid="whereDate"/> <include refid="whereAgency"/> GROUP BY moneyCode
+	</select>
+
+	<select id="point" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Amount">
+		SELECT pointCode as code, SUM(amount) as amount FROM POINT WHERE regDate <include refid="whereDate"/> <include refid="whereAgency"/> GROUP BY pointCode
+	</select>
+
+	<select id="board" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Amount">
+		SELECT role as code, count(*) as amount FROM BOARD WHERE regDate <include refid="whereDate"/> AND role IN ('DUMMY', 'USER') <include refid="whereAgency"/> GROUP BY role;
+	</select>
+
+	<select id="comment" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.accounting.domain.AccountingDto$Amount">
+		SELECT role as code, count(*) as amount FROM COMMENT WHERE regDate <include refid="whereDate"/> AND role IN ('DUMMY', 'USER') <include refid="whereAgency"/> GROUP BY role;
+	</select>
+
+	<select id="amount" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="spoon.monitor.domain.MonitorDto$Amount">
+		SELECT IsNull(SUM(money), 0) as money, IsNull(SUM(point), 0) as point
+		FROM member
+		WHERE role = 'USER' AND enabled = 1 AND secession = 0 <include refid="whereAgency"/>
+	</select>
+
+	<select id="fees" parameterType="spoon.accounting.domain.AccountingDto$Command" resultType="Long">
+		SELECT IsNull(SUM(fees), 0) FROM BANKING WHERE regDate <include refid="whereDate"/> AND bankingCode = 'OUT' AND closing = 1 AND cancel = 0 <include refid="whereAgency"/>
+	</select>
+
+	<sql id="whereDate">
+		BETWEEN #{start} + ' 00:00:00.000' AND #{end} + ' 23:59:59.999'
+	</sql>
+
+	<sql id="whereMenuCode">
+		<if test="menuCode == 'SPORTS'">
+			AND menuCode IN ('MATCH', 'CROSS', 'HANDICAP', 'SPECIAL', 'LIVE')
+		</if>
+		<if test="menuCode != 'SPORTS'">
+			AND menuCode = #{menuCode}
+		</if>
+	</sql>
+
+	<sql id="whereAgency">
+        <if test="agency4 != null and agency4 != ''">
+            AND agency4 = #{agency4}
+        </if>
+        <if test="agency3 != null and agency3 != ''">
+            AND agency3 = #{agency3}
+        </if>
+		<if test="agency2 != null and agency2 != ''">
+			AND agency2 = #{agency2}
+		</if>
+		<if test="agency1 != null and agency1 != ''">
+			AND agency1 = #{agency1}
+		</if>
+	</sql>
+
+</mapper>

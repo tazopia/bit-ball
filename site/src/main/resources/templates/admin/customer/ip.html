@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='customer', lnb=${command.code}">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>고객응대 :</small>
+    <em th:text="${command.code eq 'admin'} ? '관리자 IP 허용' : '사용자 IP 제한'" th:remove="tag"> 아이피 설정</em>
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/customer/ip/${command.code}|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>아이피 :
+                    <input type="text" th:field="*{ip}"/>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/customer/ip/${command.code}|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3 th:if="${command.code eq 'admin'}">
+                <i class="bul fa fa-unlock"></i>
+                관리자 IP 허용
+                <span class="color02">(관리자 아이피는 등록된 아이피로만 접근이 가능 합니다. 그룹으로 할때는 XXX.XXX.XXX.* 으로 표시)</span>
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+            </h3>
+            <h3 th:if="${command.code eq 'user'}">
+                <i class="bul fa fa-lock"></i>
+                사용자 IP 제한
+                <span class="color03">(사용자 및 총판 아이피는 등록된 아이피로는 접근이 불가능 합니다. 그룹으로 할때는 XXX.XXX.XXX.* 으로 표시)</span>
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>아이피 설정</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>아이피</th>
+                <th>비고</th>
+                <th>작업자</th>
+                <th>등록일</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="on">
+                <td>-</td>
+                <td>
+                    <input type="text" id="ipAddr"/>
+                </td>
+                <td>
+                    <input type="text" id="memo" style="width: 600px;"/>
+                </td>
+                <td colspan="3">
+                    <a class="btn btn03" onclick="addIp();" style="width:126px;">등록</a>
+                </td>
+            </tr>
+            <tr th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total -  num.count}"></td>
+                <td th:text="${b.ip}"></td>
+                <td th:text="${b.memo}"></td>
+                <td th:text="${b.worker}"></td>
+                <td th:utext="${tag.dayWeekTimes(b.regDate)}"></td>
+                <td><a class="btn btn02" th:onclick="|deleteIp(${b.id});|">삭제</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+    function addIp() {
+        if ($('#ipAddr').val() === '') {
+            alert('아이피를 입력 하세요.');
+            $('#ipAddr').focus();
+            return false;
+        }
+
+        $.post(path + '/customer/ip/[[${command.code}]]', {
+                ip: $('#ipAddr').val(),
+                memo: $('#memo').val()
+            }
+        ).done(function (data) {
+            if (data.success) {
+                setTimeout(function () {
+                    location.href = path + '/customer/ip/[[${command.code}]]';
+                }, 1000);
+            }
+        })
+    }
+
+    function deleteIp(id) {
+        if (confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            $.post(path + '/customer/ip/delete', {
+                id: id
+            }).done(function (data) {
+                if (data.success) {
+                    setTimeout(function () {
+                        location.href = path + '/customer/ip/[[${command.code}]]';
+                    }, 1000);
+                }
+            })
+        }
+    }
+
+</script>
+</body>
+</html>

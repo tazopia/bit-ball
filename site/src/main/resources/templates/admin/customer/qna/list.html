@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='customer', lnb='qna'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>고객응대 :</small>
+    고객센터
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/customer/qna|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    <select th:field="*{searchType}">
+                        <option value="title">제목</option>
+                        <option value="contents">내용</option>
+                        <option value="agency">총판/대리점</option>
+                    </select>
+                    <input type="text" th:field="*{searchValue}" />
+                </label>
+                <label>
+                    아이디/닉네임 :
+                    <input type="text" th:field="*{username}" />
+                    (일치 <input type="checkbox" th:field="*{match}" />)
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/customer/qna|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-desktop"></i>
+                고객센터
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(page.totalElements)}">100</span> 명 )</span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>고객센터</caption>
+            <colgroup>
+                <col>
+                <col style="width: 500px;">
+                <col style="width: 130px;">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+				<col>
+				<col>
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>등록일</th>
+				<th>총본사</th>
+				<th>부본사</th>
+                <th>총판</th>
+                <th>매장</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>등급</th>
+                <th colspan="4">회원정보</th>
+                <th>답변</th>
+                <th>확인</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="q, num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}" th:class="${!q.re} ? 'on'">
+                <td th:text="${total - num.count}">1</td>
+                <td class="title"><a th:class="${q.alarm} ? 'color03 ellipsis' : 'ellipsis'" th:href="|${siteConfig.pathAdmin}/customer/qna/${q.id}|" th:text="${q.title}" style="width: 460px;"></a></td>
+                <td th:utext="${tag.dayWeekTime(q.regDate)}">2014.1.0</td>
+				<td th:text="${#strings.defaultString(q.agency4, '-')}">총판</td>
+				<td th:text="${#strings.defaultString(q.agency3, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(q.agency2, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(q.agency1, '-')}">대리점</td>
+                <td th:onclick="|popup.member.info('${q.userid}');|" class="color03 popup" th:text="${q.userid}">아이디</td>
+                <td th:onclick="|popup.member.info('${q.userid}');|" class="color02 popup" th:text="${q.nickname}">닉네임</td>
+                <td th:text="${q.level}">레벨</td>
+                <td class="popup color04" th:onclick="|popup.payment.money('${q.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                <td class="popup color04" th:onclick="|popup.payment.point('${q.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                <td class="popup color04" th:onclick="|popup.betting.list('${q.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                <td class="popup color04" th:onclick="|popup.customer.memo('${q.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                <td th:class="${!q.re} ? 'color03'" th:text="${q.re ? '답변' : '대기'}"></td>
+                <td th:class="${!q.checked} ? 'color03'" th:text="${q.checked ? '확인' : '미확인'}"></td>
+                <td th:class="${q.hidden} ? 'color03'" th:text="${q.hidden ? '삭제' : '-'}"></td>
+            </tr>
+            <tr th:if="${page.totalElements eq 0}">
+                <td colspan="15" style="height: 300px;">
+                    검색된 고객센터 질문이 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

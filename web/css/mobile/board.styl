@@ -1,0 +1,280 @@
+
+div.board {
+	padding 20px 0
+	border-bottom solid 1px rgba(255,255,255,0.2)
+}
+
+.contents {
+	//background rgba(255,255,255,0.16)
+	min-height 100px
+	padding 20px 4px
+	line-height 1.6
+	color #ccc
+	font-size 17px
+	font-weight normal
+
+	img {
+		max-width 100%
+	}
+}
+
+.board {
+	li {
+		display block
+		position relative
+		padding 16px 70px 16px 10px
+		margin-bottom 2px
+		//background url(/images/pattern03.png) #000
+		//background rgba(0,0,0,0.5)
+		background #333
+		border-radius 5px
+
+		a {
+			display inline-block
+			vertical-align middle
+		}
+
+		.title {
+			display block
+			font-size 18px
+			line-height 1.4
+
+			.new, .bet {
+				display inline-block
+				width 15px
+				height 15px
+				line-height 15px
+				color #fff
+				margin 0 1px
+				text-align center
+				font-size 10px
+				font-family Arial
+				vertical-align middle
+
+				&.new {
+					background-color #c8232c
+				}
+
+				&.bet {
+					background-color #389638
+				}
+			}
+		}
+	}
+
+	.hit {
+		display block
+		position absolute
+		right 10px
+		top 20px
+		min-width 30px
+		height 28px
+		line-height 28px
+		border-radius 16px
+		border solid 1px #424242
+		color #aaa
+		text-align center
+	}
+
+	.info {
+
+		.hit {
+			border solid 1px rgba(255,255,255,0.2)
+			top 4px
+		}
+
+		position relative
+		color #aaa
+		padding-top 10px
+		font-size 13px
+
+		span {
+			display inline-block
+			padding 0 10px
+			border-right solid 1px #424242
+
+			&.date {
+				border none
+			}
+		}
+
+		.label {
+			display inline-block
+			height 20px
+			line-height 21px
+			padding 0 7px
+			background color03
+			font-size 12px
+			color #fff
+			border-radius 10px
+			margin 0
+
+			&.notice {
+				background color02
+			}
+		}
+	}
+
+	h4 {
+		font-size 21px
+		line-height 1.5
+		font-weight 600
+	}
+}
+
+.qna {
+	.lv {
+		width auto
+
+		&.reply {
+			background color05
+		}
+
+		&.checked {
+			background color03
+		}
+	}
+
+	.contents {
+		display none
+		background none
+		padding 0
+		font-size 14px
+
+		h5 {
+			background #1B2338
+			border-radius 4px
+			padding 10px
+		}
+
+		p {
+			margin-top 2px
+			padding 50px 10px 20px 10px
+			position relative
+			line-height 1.6
+			border-radius 4px
+			//background #333
+
+			.icon_delete {
+				position absolute
+				right 10px
+				top 20px
+				width 21px
+				height 21px
+				background url(/images/icon_delete.png) center center no-repeat #ee5f5b
+			}
+		}
+	}
+}
+
+.comment {
+
+	textarea {
+		width calc(100% - 84px)
+		height 80px
+	}
+
+	.btn {
+		float right
+		width 80px
+		height 80px
+		font-size 14px
+		font-weight 600
+		border-radius 0 4px 4px 0
+	}
+}
+
+.comments {
+
+	color #ccc
+
+	> div {
+		overflow hidden
+		border-bottom solid 1px rgba(255,255,255,0.2)
+		padding 10px
+		//background #464547
+
+		.date {
+			margin-top 6px
+			display block
+			height 20px
+			line-height 20px
+			background url(/images/icon_time.png) left 3px no-repeat
+			padding-left 16px
+		}
+
+		.user {
+			float left
+			width 140px
+		}
+
+		.title {
+			position relative
+			padding-left 140px
+			p {
+				color #fff
+				line-height 1.6
+			}
+
+			.icon_delete {
+				position absolute
+				right 0
+				top 0
+				width 21px
+				height 21px
+				background url(/images/icon_delete.png) center center no-repeat #dc0405
+			}
+		}
+	}
+
+}
+
+table.bet {
+	border-collapse separate
+	border-spacing 2px
+
+	th {
+		height 46px
+		text-align center
+		background #292828
+		color #d8af3a
+	}
+	td {
+		text-align center
+		vertical-align middle
+		background #363537
+		padding 10px 0
+		line-height 1.6 !important
+
+		&.cancel {
+			color #ff4400
+		}
+
+		&.win {
+			color #ffb900
+		}
+
+		&.lose {
+			color #f89406
+		}
+
+		&.tie {
+			color #62c462;
+		}
+
+		.team {
+			color #ffb900
+		}
+
+		.odds {
+			font-size 16px
+			font-style italic
+			color #fff
+
+		}
+
+		.btn {
+			width 50px
+		}
+	}
+}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='zone', lnb='cw_sutda', pnb='config'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>실시간 :</small>
+    섯다 게임설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${config}" onsubmit="return saveConfig()">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-bars" aria-hidden="true"></i>
+					섯다 게임설정
+                    <span th:class="${config.enabled} ? 'color02' : 'color03'" th:text="${config.enabled} ? '(게임 실행 중)' : '(게임 중지 중)'">게임실행중</span>
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>바카라 게임설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임 활성화</th>
+                    <td>
+                        <label><input type="radio" th:field="*{enabled}" th:value="true"/> 사용</label>
+                        <label><input type="radio" th:field="*{enabled}" th:value="false"/> 사용하지않음</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">베팅 가능 시각</th>
+                    <td>
+                        경기시작
+                        <input type="text" class="num" style="width: 80px;" th:field="*{betTime}"/>초 까지 베팅 가능.
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">회차별 베팅가능 수</th>
+                    <td>
+                        동일회차 다른게임으로
+                        <input type="text" class="num" style="width: 80px;" th:field="*{betMax}"/>베팅 까지 가능 합니다.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-cube" aria-hidden="true"></i>
+					섯다 배당설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>바카라 배당설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">
+                        <label>
+							섯다 배당
+                        </label>
+                    </th>
+                    <td>
+                        <label class="color03">
+                            <span class="title">KOREA :</span>
+                            <input type="text" th:field="*{odds[0]}" class="center" style="width: 100px;"/>
+                        </label>
+                        <label class="color01">
+                            <span class="title">TIE :</span>
+                            <input type="text" th:field="*{odds[1]}" class="center" style="width: 100px;"/>
+                        </label>
+                        <label class="color02">
+                            <span class="title">JAPAN :</span>
+                            <input type="text" th:field="*{odds[2]}" class="center" style="width: 100px;"/>
+                        </label>
+                        <span class="color04">(결과가 Tie일 경우 Player, Banker는 적특처리 됩니다.)</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-cube" aria-hidden="true"></i>
+					섯다 금액설정
+                </h3>
+            </div>
+            <table class="table-read col10" style="margin: -1px 0 0 0;">
+                <caption>바카라 베팅금액 설정</caption>
+                <colgroup>
+                    <col style="width: 220px;">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="required color03" style="padding-right: 0;">
+						섯다 베팅금액
+                    </th>
+                    <td>1레벨</td>
+                    <td>2레벨</td>
+                    <td>3레벨</td>
+                    <td>4레벨</td>
+                    <td>5레벨</td>
+                    <td>6레벨</td>
+                    <td>7레벨</td>
+                    <td>8레벨</td>
+                    <td>9레벨</td>
+                    <td>10레벨</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="required">배당금 상한가</th>
+                    <td>
+                        <input type="text" th:field="*{win[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{win[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최대 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{max[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{max[10]}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">최소 베팅 가능 금액</th>
+                    <td>
+                        <input type="text" th:field="*{min[1]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[2]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[3]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[4]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[5]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[6]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[7]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[8]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[9]}"/>
+                    </td>
+                    <td>
+                        <input type="text" th:field="*{min[10]}"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    $('input[type=text]').onlyFloat();
+
+    function saveConfig() {
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

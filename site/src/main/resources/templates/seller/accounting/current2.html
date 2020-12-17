@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='accounting', lnb='current'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>정산관리 :</small>
+    현재 정산 관리
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                현재 정산 관리
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>총판 정산 관리</caption>
+            <thead>
+            <tr>
+                <th>총판</th>
+				<th>매장</th>
+                <th>회원</th>
+                <th>입금</th>
+                <th>출금</th>
+                <th>수익</th>
+                <th>스포츠</th>
+                <th>실시간</th>
+                <th>정산방식</th>
+                <th>지급율</th>
+                <th>지난정산금</th>
+                <th>지난정산일</th>
+                <th>정산금액</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${list}" th:with="isHQ = ${m.role.name() eq 'AGENCY2'}" th:class="${m.hq eq 2} ? 'on'">
+				<td th:text="${m.hq eq 2 ? m.agency2 : '-'}">대리점</td>
+                <td th:text="${m.hq eq 1 ? m.agency1 : '-'}">대리점</td>
+                <td class="color01 num" th:text="${tag.num(m.users)}">정상회원</td>
+                <td class="color04 num" th:text="${tag.num(m.inMoney) + '원'}">입금</td>
+                <td class="color03 num" th:text="${tag.num(m.outMoney) + '원'}">출금</td>
+                <td class="color02 num" th:text="${tag.num(m.inMoney - m.outMoney) + '원'}">수익</td>
+                <td class="color04 num" th:text="${tag.num(m.betSports) + '원'}">스포츠</td>
+                <td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
+                <td class="color01" th:switch="${m.rateCode}">
+                    <span th:remove="tag" th:case="'수익분배'" th:text="${m.rateCode}"></span>
+                    <span th:remove="tag" th:case="'롤링분배'" th:text="${m.rateCode}"></span>
+                    <span th:remove="tag" th:case="*" th:text="'-'"></span>
+                </td>
+                <td class="color02" th:switch="${m.rateCode}">
+                    <span th:remove="tag" th:case="'수익분배'" th:text="${m.rateShare + '%'}"></span>
+                    <span th:remove="tag" th:case="'롤링분배'" th:text="${m.rateSports + '% / ' + m.rateZone + '%'}"></span>
+                    <span th:remove="tag" th:case="*" th:text="'-'"></span>
+                </td>
+                <td class="num" th:text="${tag.num(m.lastMoney) + '원'}">지난정산금</td>
+                <td>
+                    <span th:if="${m.hq eq 2}" th:remove="tag" th:utext="${tag.dayWeekTimes(m.regDate)}"></span>
+                    <span th:if="${m.hq ne 2}" th:remove="tag" th:text="'-'"></span>
+                </td>
+                <td class="color04 num" th:text="${tag.num(m.calcMoney) + '원'}">정산금</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

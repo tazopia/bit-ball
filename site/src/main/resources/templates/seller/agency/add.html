@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='agency', lnb='add'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small><em th:text="${title}" th:remove="tag"></em> 관리 :</small>
+	<span th:text="${title}" th:remove="tag">대리점</span> 등록
+</h2>
+<div layout:fragment="content">
+    <section>
+        <form id="frm" th:object="${member}" method="post" onsubmit="return addMember();">
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-user-plus" aria-hidden="true"></i>
+                    <span th:remove="tag" th:text="${title}">대리점</span> 등록
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>회원 기본정보</caption>
+                <colgroup>
+                    <col style="width: 140px;">
+                    <col style="width: 350px;">
+                    <col style="width: 140px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">아이디</th>
+                    <td>
+                        <input type="text" th:field="*{userid}" autofocus="autofocus"/>
+                        <span id="enableUserid" class="bul fa fa-check color04" style="display: none;"></span>
+                        <span id="disableUserid" class="bul fa fa-ban color03"></span>
+                    </td>
+                    <th class="required">비밀번호</th>
+                    <td><input type="password" th:field="*{password}"/></td>
+                </tr>
+                <tr>
+                    <th class="required">닉네임</th>
+                    <td>
+                        <input type="text" th:field="*{nickname}"/>
+                        <span id="enableNickname" class="bul fa fa-check color04" style="display: none;"></span>
+                        <span id="disableNickname" class="bul fa fa-ban color03"></span>
+                    </td>
+                    <th>연락처</th>
+                    <td>
+                        <input type="text" th:field="*{phone}"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-body">
+                <h3>
+                    <i class="bul fa fa-user-plus"></i> 계좌정보
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>계좌정보</caption>
+                <colgroup>
+                    <col style="width: 140px;">
+                    <col style="width: 350px;">
+                    <col style="width: 140px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th>은행명</th>
+                    <td>
+                        <select th:field="*{bank}">
+                            <option value="">선택하세요.</option>
+                            <option th:each="bank : ${banks}" th:value="${bank}" th:text="${bank}">은행</option>
+                        </select>
+                    </td>
+                    <th>계좌번호</th>
+                    <td><input type="text" th:field="*{account}"></td>
+                </tr>
+                <tr>
+                    <th>예금주</th>
+                    <td><input type="text" th:field="*{depositor}"></td>
+                    <th>출금 비밀번호</th>
+                    <td><input type="password" th:field="*{bankPassword}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn03">등록</button>
+            </div>
+        </form>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+    $('#userid').on('blur', function () {
+        $.post('[[${pathJoin}]]/userid', {userid: $('#userid').val()}).done(function (data) {
+            if (data.success && $('#userid').val().length > 3) {
+                $('#enableUserid').show();
+                $('#disableUserid').hide();
+                checkUserid = true;
+            } else {
+                $('#enableUserid').hide();
+                $('#disableUserid').show();
+                checkUserid = false;
+            }
+        });
+    }).on('focus', function () {
+        checkUserid = false;
+    });
+
+    $('#nickname').on('blur', function () {
+        $.post('[[${pathJoin}]]/nickname', {nickname: $('#nickname').val()}).done(function (data) {
+            if (data.success && $('#nickname').val().length > 1) {
+                $('#enableNickname').show();
+                $('#disableNickname').hide();
+                checkNickname = true;
+            } else {
+                $('#enableNickname').hide();
+                $('#disableNickname').show();
+                checkNickname = false;
+            }
+        });
+    }).on('focus', function () {
+        checkNickname = false;
+    });
+
+    function addMember() {
+        if (!checkUserid) {
+            alert('사용가능한 아이디가 아닙니다.');
+            $('#userid').focus();
+            return false;
+        }
+        if ($('#password').val().length < 4) {
+            alert('비밀번호는 4자리 이상입니다.');
+            $('#password').focus();
+            return false;
+        }
+        if (!checkNickname) {
+            alert('사용가능한 닉네임이 아닙니다.');
+            $('#nickname').focus();
+            return false;
+        }
+        $.post(path + '/member/add', $('#frm').serialize()).done(function (data) {
+            if (data.success) {
+                try {
+                    location.reload();
+                } catch (e) {
+                }
+            } else {
+                $('form')[0].reset();
+                $('#enableUserid').hide();
+                $('#disableUserid').show();
+                checkUserid = false;
+                $('#enableNickname').hide();
+                $('#disableNickname').show();
+                checkNickname = false;
+                $('#userid').focus();
+            }
+        });
+        return false;
+    }
+
+</script>
+</body>
+</html>

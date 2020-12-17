@@ -1,0 +1,194 @@
+input, select, textarea {
+	color #fff
+	width 100%
+	padding 0 15px
+	height 44px
+	font-size 14px
+	border-radius 4px
+	margin-bottom 4px
+	border solid 1px #9c655c
+	background rgba(0, 0, 0, 0.7)
+}
+
+textarea {
+	padding 15px
+	height 200px
+	//border solid 1px #444
+}
+
+.wrap {
+	padding 20px 0 10px 0
+	//background rgba(255,255,255,0.1)
+
+	label {
+		display block
+		position relative
+		margin-bottom 10px
+
+		span {
+			display block
+			margin-bottom 10px
+			font-weight 600
+		}
+	}
+}
+
+.amount {
+	//background rgba(255,255,255,0.1)
+	text-align center
+	//padding 0 6px
+	//margin-bottom 20px
+	.btn {
+		width 24%
+		height 36px
+		line-height 36px
+		margin 1px -1px
+		padding 0
+		text-align center
+		background #333
+		border solid 1px #9c655c
+		border-radius 4px
+	}
+}
+
+.command {
+	//background rgba(255,255,255,0.1)
+	padding 20px 0
+	.btn {
+		width 100%
+	}
+}
+
+.tab-menu {
+	height 50px
+	border-bottom solid 1px #3a3e41
+	overflow-y hidden
+	overflow-x scroll
+	position relative
+	-webkit-overflow-scrolling touch
+
+	.tab-menu-wrap, .tab-menu-wrap2 {
+		overflow-x auto
+		overflow-y hidden
+		white-space nowrap
+		font-size 0
+
+		a {
+			width 20%
+			display inline-block
+			height 50px
+			line-height 50px
+			text-align center
+			background linear-gradient(to bottom, #414b4d, #11161a 100%)
+
+			&.on {
+				background #2a2f35
+				box-shadow(inset 0 0 6px 2px rgba(0, 0, 0, 0.8))
+			}
+		}
+	}
+
+	.tab-menu-wrap2 {
+		a {
+			width 50%
+		}
+	}
+}
+
+.tab-menu2 {
+	margin 0 -6px
+	text-align center
+	width calc(100% + 12px)
+	border-bottom solid 1px rgba(0, 0, 0, 0.5)
+	background rgba(0, 0, 0, 0.5)
+	display table
+	a {
+		display table-cell
+		width 18%
+		height 40px
+		line-height 40px
+
+		&.on {
+			color #d8af3a
+		}
+	}
+}
+
+.tab-sports {
+	//background rgba(255,255,255,0.1)
+	padding 10px 0
+}
+
+#layout-load {
+	position fixed
+	top 50%
+	left 50%
+	width 100px
+	height 100px
+	margin-top -50px
+	margin-left -50px
+	z-index 999
+}
+
+.cal-title {
+	text-align center
+	padding 20px 0
+	span {
+		display inline-block
+		font-size 24px
+		height 36px
+		line-height 36px
+		vertical-align middle
+		padding 0 20px
+	}
+
+	.btn {
+		padding 0
+		width 60px
+	}
+}
+
+ul.calendar {
+	width 100%
+	display block
+	margin-left 4px
+
+	li {
+		display table-cell
+		float left
+		width 13.9%
+		margin-left 1px
+		margin-top 1px
+		height 70px
+		background #2f3853
+		text-align right
+		padding 10px
+		font-size 16px
+
+		&.blank {
+			background none
+		}
+
+		&.check {
+			background url(/images/check.png) center 24px no-repeat #30353c
+			background-size 35px 36px
+		}
+
+		&:nth-child(7n + 1) {
+			color #ff3300
+		}
+
+		&:nth-child(7n + 0) {
+			color #4488ff
+		}
+
+		&.th {
+			background #1f2226
+			height 40px
+			line-height 40px
+			text-align center
+			font-weight 600
+			padding 0
+		}
+	}
+}

@@ -1,0 +1,57 @@
+.slotTitle {
+	text-align center
+	font-size 24px
+	padding 20px 0
+}
+
+.sun-balance {
+	display grid
+	grid-gap 10px
+	grid-template-columns 1fr 1fr 1fr 1fr 1fr
+	margin-bottom 20px
+}
+.balance-item {
+	background #333
+	border-radius 20px 0 20px 0
+	border solid 1px #222
+	position relative
+}
+
+.balance-reload {
+	position absolute
+	right -10px
+	top -10px
+	padding 5px
+	background #B8573E
+	cursor pointer
+	border-radius 50%
+}
+
+.balance-flag {
+	text-align center
+	height 50px
+	line-height 50px
+	img {
+		max-height 40px
+		max-width 140px
+	}
+}
+.balance-money {
+	display flex
+	padding 10px 20px
+	align-items center
+
+	.btn {
+		border-radius 10px
+	}
+
+	span {
+		flex 1
+		text-align right
+	}
+}
+.balance-error {
+	text-align center
+	padding 10px 0;
+	color #B8573E
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='event', lnb='bet', title='출석체크'">
+<body>
+<main class="page" layout:fragment="page">
+    <div class="cal-title">
+        <a class="btn btn01" th:href="@{|${siteConfig.pathSite}/event/daily?month=${prev}|}">이전달</a>
+        <span th:text="${month}"></span>
+        <a class="btn btn01" th:href="@{|${siteConfig.pathSite}/event/daily?month=${next}|}">다음달</a>
+    </div>
+
+    <ul class="calendar">
+        <li class="th">일</li>
+        <li class="th">월</li>
+        <li class="th">화</li>
+        <li class="th">수</li>
+        <li class="th">목</li>
+        <li class="th">금</li>
+        <li class="th">토</li>
+        <th:block th:if="${week ne 0}" th:each="i : ${#numbers.sequence(1, week)}">
+            <li class="blank"></li>
+        </th:block>
+        <th:block th:each="c, i : ${calendar}">
+            <li th:class="${c.daily gt 0} ? 'check'" th:text="${i.index + 1}"></li>
+        </th:block>
+    </ul>
+
+    <th:block th:if="${#arrays.length(payment) gt 0}">
+        <div style="clear: both"></div>
+        <br/><br/>
+        <h2>출석체크 당첨내역</h2>
+        <br/>
+
+        <table class="list" style="table-layout: auto">
+            <caption>게시판</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>날짜</th>
+                <th>이벤트명</th>
+                <th>당첨금</th>
+                <th>처리상태</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p, i : ${payment}" th:with="total = ${#arrays.length(payment)}">
+                <td th:text="${p.sdate}"></td>
+                <td th:text="${p.memo}"></td>
+                <td class="color01" th:text="${tag.num(p.amount)}"></td>
+                <td>
+                    <span th:if="${p.closing and not p.cancel}">지급</span>
+                    <span class="color03" th:if="${p.closing and p.cancel}">취소</span>
+                    <span class="color02" th:if="${not p.closing and not p.enabled}">대기</span>
+                    <span class="color02" th:if="${not p.closing and p.enabled}">신청</span>
+                </td>
+                <td>
+                    <a th:if="${p.closing}" th:onclick="|goDelete('${p.id}');return false;|" class="btn btn03">삭제</a>
+                    <a th:if="${not p.closing and not p.enabled}" th:onclick="|goPayment('${p.id}');return false;|" class="btn btn02">신청</a>
+                    <span th:if="${not p.closing and p.enabled}">-</span>
+                </td>
+            </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </th:block>
+    <div style="clear: both"></div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    function goPayment(id) {
+        if (!confirm('출석체크 당첨내역 신청하시겠습니까?')) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/event/daily/payment',
+            method: 'post',
+            data: { id: id }
+        }).done(function(data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    function goDelete(id) {
+        if (!confirm('보너스 내역을 삭제 하시겠습니까?')) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/event/daily/delete',
+            method: 'post',
+            data: { id: id }
+        }).done(function(data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

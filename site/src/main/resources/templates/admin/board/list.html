@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='board', lnb=${command.code}">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>게시판 :</small>
+    <em th:text="${title}" th:remove="tag">회원 관리</em>
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/board/${command.code}|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    <select th:field="*{searchType}">
+                        <option value="title">제목</option>
+                        <option value="contents">내용</option>
+                    </select>
+                    <input type="text" th:field="*{searchValue}"/>
+                </label>
+                <label>
+                    아이디/닉네임
+                    <input type="text" th:field="*{username}"/>
+                    (일치 <input type="checkbox" th:field="*{match}" th:value="true"/>)
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/board/${command.code}|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i th:class="${icon}"></i>
+                [[${title}]]
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+                <a th:href="@{|${siteConfig.pathAdmin}/board/${command.code}/add|}" class="btn btn03">등록</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col style="width: 80px;">
+                <col>
+                <col style="width: 120px;">
+                <col style="width: 120px;">
+                <col style="width: 80px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 140px;">
+                <col style="width: 60px;">
+                <col th:if="${command.code eq 'notice' or command.code eq 'event'}" style="width: 60px;">
+                <col style="width: 60px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>레벨</th>
+                <th colspan="4">회원정보</th>
+                <th>작성일</th>
+                <th>조회</th>
+                <th th:if="${command.code eq 'notice' or command.code eq 'event'}">노출</th>
+                <th>숨김</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}" th:class="${b.alarm} ? 'on'">
+                <td th:text="${total - num.count}">1</td>
+                <td th:onclick="@{|location.href='${siteConfig.pathAdmin}/board/${command.code}/${b.id}|(page=${page.number + 1}, searchType=${command.searchType}, searchValue=${command.searchValue}, username=${command.username}, match=${command.match})} + '\''" class="title cursor">
+                    <a th:if="${tag.isAdmin(b.role)}" th:utext="${tag.color(b.title)}" th:remove="tag" style="max-width: 580px;"></a>
+                    <a th:if="${!tag.isAdmin(b.role)}" th:text="${b.title}" th:remove="tag" style="max-width: 580px;"></a>
+                    <span class="color03" th:if="${b.comment gt 0}" th:text="'[' + ${tag.num(b.comment)} + ']'"></span>
+                    <em class="new" th:if="${b.new}">N</em>
+                    <em class="bet" th:if="${b.bet}">B</em>
+                </td>
+                <td th:onclick="|popup.member.info('${b.userid}');|" class="color03 popup" th:text="${b.userid}">아이디</td>
+                <td th:onclick="|popup.member.info('${b.userid}');|" class="color02 popup">
+                    <span th:if="${b.role.name() eq 'ADMIN'}" th:utext="${tag.color(siteConfig.nickname)}" th:remove="tag"></span>
+                    <span th:if="${b.role.name() ne 'ADMIN'}" th:text="${b.nickname}" th:remove="tag"></span>
+                </td>
+                <td th:text="${b.role.name + ' [' + b.level + ']'}">레벨</td>
+                <td class="popup color04" th:onclick="|popup.payment.money('${b.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                <td class="popup color04" th:onclick="|popup.payment.point('${b.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                <td class="popup color04" th:onclick="|popup.betting.list('${b.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                <td class="popup color04" th:onclick="|popup.customer.memo('${b.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                <td th:utext="${tag.dayWeekTimes(b.regDate)}">작성일</td>
+                <td th:text="${tag.num(b.hit)}">조회</td>
+                <td th:if="${command.code eq 'notice' or command.code eq 'event'}">
+                    <input type="checkbox" name="showTop" th:value="${b.id}" th:checked="${b.showTop}"/>
+                </td>
+                <td><input type="checkbox" name="hidden" th:value="${b.id}" th:checked="${b.hidden}"/></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+                <div class="command">
+                    <a th:href="@{|${siteConfig.pathAdmin}/board/${command.code}/add|}" class="btn btn03">등록</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    $('input[name=hidden]').on('click', function () {
+        $.post(path + '/board/hidden', {
+            id: $(this).val(),
+            hidden: $(this).is(':checked')
+        });
+    });
+
+    $('input[name=showTop]').on('click', function () {
+        $.post(path + '/board/showTop', {
+            id: $(this).val(),
+            showTop: $(this).is(':checked')
+        });
+    });
+</script>
+</body>
+</html>

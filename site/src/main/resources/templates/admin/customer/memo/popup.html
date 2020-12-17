@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <form id="frm" th:object="${add}" method="post" onsubmit="return addMemo();">
+            <div class="panel-header">
+                <h3><i class="bul fa fa-envelope"></i> 쪽지 발송</h3>
+            </div>
+            <table class="table-read">
+                <caption>쪽지 발송</caption>
+                <colgroup>
+                    <col style="width: 140px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">아이디</th>
+                    <td>
+                        <input type="text" th:field="*{userid}" readonly="readonly"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">제목</th>
+                    <td><input type="text" th:field="*{title}" style="width: 100%;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">내용</th>
+                    <td><textarea th:field="*{contents}" style="width: 100%; height: 164px;"></textarea></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn03">발송</button>
+                <a onclick="popup.close();return false;" class="btn">창닫기</a>
+            </div>
+        </form>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    function addMemo() {
+        if ($('#title').val() === '') {
+            alert('제목을 입력 하세요.');
+            $('#title').focus();
+            return false;
+        }
+        if ($('#contents').val() === '') {
+            alert('내용을 입력 하세요.');
+            $('#contents').focus();
+            return false;
+        }
+        $.post(path + '/customer/memo/add', $('#frm').serialize()).done(function (data) {
+            if (data.success) {
+                setTimeout(function () {
+                    self.close();
+                }, 1000);
+
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='config', lnb='change'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>회원 :</small>
+    회원 마이그레이션
+</h2>
+<div layout:fragment="content">
+    <section>
+        <form method="post" id="frm">
+            <div class="panel-header">
+                <div style="line-height: 1.6; padding:20px;">
+                    select role, level, userid, password, nickname, phoneNumberString, agency1, agency2, domain, money, point, regDate, joinIp, joinDate, loginIp, enabled, secession, bank, depositor, account, bankPassword, recomm, code, saleType, rate, rateSport, rateGameZone, inMoney, outMoney, bettingMoney, cntBetting, cntLogin, disableBalance, TRIM(REPLACE(REPLACE(REPLACE(memo, '\n', ' '), '\r', ' '), '\t', ' ')) from member where role in ('USER', 'AGENCY1', 'AGENCY2')
+                </div>
+            </div>
+            <div class="panel-body line">
+                <textarea name="memberText" style="width: 100%;height: 300px;"></textarea>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn01">확인</button>
+            </div>
+        </form>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='zone', gnb='zone', lnb='cw_baccarat', title='바카라'" ng-app="app">
+<body ng-controller="gameCtrl">
+
+<main class="page" layout:fragment="page">
+    <div class="zone">
+		<div id="zoneBox">
+			<iframe style="display: block" src="http://vod.99-pco.com/crown/ba_m.html" width="100%" height="850px" frameborder="0" scrolling="no" ></iframe>
+		</div>
+
+		<h3>
+			<img ng-src="{{flag}}"/>
+			CROWN 바카라
+			<span class="color03" th:text="'[제 {{config.round}}회차]'">256회차</span>
+		</h3>
+
+        <div class="timer" ng-cloak ng-show="config.enabled">
+            <em>베팅남은시간</em>
+            <div class="timer-box">
+                <div id="timer">
+                    <div ng-bind="countdown[0]"></div>
+                    <div ng-bind="countdown[1]"></div>
+                    <span>:</span>
+                    <div ng-bind="countdown[2]"></div>
+                    <div ng-bind="countdown[3]"></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <table class="table-game ng-cloak" ng-cloak ng-if="config.enabled">
+                <caption>바카라</caption>
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr ng-if="config.enabled" ng-class="bet">
+                    <td class="home bet">
+                        <p>PLAYER</p>
+                        <em class="odds">{{config.odds[0] | number: 2}}</em>
+                        <a ng-click="add('baccarat', 'home', 0, 'PLAYER', $event)"></a>
+                    </td>
+                    <td class="home bet">
+                        <p>TIE</p>
+                        <em class="odds">{{config.odds[1] | number: 2}}</em>
+                        <a ng-click="add('baccarat', 'draw', 1, 'TIE', $event)"></a>
+                    </td>
+                    <td class="home bet">
+                        <p>BANKER</p>
+                        <em class="odds">{{config.odds[2] | number: 2}}</em>
+                        <a ng-click="add('baccarat', 'away', 2, 'BANKER', $event)"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+        $scope.parseFloat = window.parseFloat;
+        $scope.zone = true;
+        $scope.cart = [];
+        $scope.odds = 0.00;
+        $scope.money = 0;
+        $scope.flag = '/images/zone/flag-crown_baccarat.png';
+        $scope.config = [(${config})];
+        $scope.milliseconds = [[${user.milliseconds}]];
+        $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+        $scope.name = $scope.config.round + '회 바카라';
+        $scope.countdown = ['0', '0', '0', '0'];
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $interval(function () {
+            if ($scope.milliseconds <= $scope.config.gameDate + 60000) { // 홀짝,바카라 1분 리셋
+                $scope.milliseconds += 1000;
+                if ($scope.config.betTime < 0) {
+                    $scope.countdowon = ['0', '0', '0', '0'];
+                    angular.element('.bet').removeClass('on');
+                    $scope.cart.length = 0;
+                    $scope.bet = 'off';
+                } else {
+                    var min = '0' + parseInt($scope.config.betTime / 60);
+                    min = min.substring(min.length - 2);
+                    var sec = '0' + $scope.config.betTime % 60;
+                    sec = sec.substring(sec.length - 2);
+                    $scope.countdown = [min.substring(0, 1), min.substring(1, 2), sec.substring(0, 1), sec.substring(1, 2)];
+                }
+                $scope.config.betTime--;
+            } else {
+                $scope.setConfig();
+                $scope.countdowon = ['0', '0', '0', '0'];
+            }
+        }, 1000);
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.setConfig = function () {
+            //angular.element('#cart-wrap').removeClass('on');
+            $http({
+                url: path + '/zone/cw_baccarat/config',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.config = response.data;
+                $scope.name = $scope.config.round + '회 바카라';
+                $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+            });
+        };
+
+        $scope.add = function (gameCode, betTeam, betZone, pos, event) {
+            if ($scope.bet === 'off') {
+                alert('현재 베팅이 중지 되었습니다.\n\n다음 게임을 베팅하시기 바랍니다.');
+                return;
+            }
+
+            var ele = angular.element(event.target).parent();
+            $scope.cart.length = 0;
+            if (ele.hasClass('on')) {
+                ele.removeClass('on');
+                $scope.odds = 0.00;
+            } else {
+                angular.element('.bet').removeClass('on');
+                ele.addClass('on');
+                var odds = $scope.config.odds[betZone];
+                $scope.cart.push({sdate: $scope.config.sdate, gameCode: gameCode, betTeam: betTeam, betZone: betZone, odds: odds, pos: pos});
+                $scope.odds = odds;
+            }
+        };
+
+        $scope.remove = function () {
+            angular.element('.bet').removeClass('on');
+            $scope.cart.length = 0;
+            $scope.odds = 0.00;
+        };
+
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) {
+                $scope.money = 0;
+            } else {
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / $scope.odds), $scope.config.max), $scope.config.money);
+            }
+        };
+
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.odds * $scope.money > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            // 베팅
+            $http({
+                url: path + '/zone/cw_baccarat/betting',
+                method: 'POST',
+                data: {
+                    "betMoney": $scope.money,
+                    "sdate": $scope.cart[0].sdate,
+                    "gameCode": $scope.cart[0].gameCode,
+                    "betTeam": $scope.cart[0].betTeam,
+                    "betZone": $scope.cart[0].betZone,
+                    "odds": $scope.cart[0].odds
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                angular.element('.bet').removeClass('on');
+                if (!response.data.success) {
+                    alert(response.data.message);
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+            }, function error(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                angular.element('.bet').removeClass('on');
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+            });
+        };
+    }]);
+</script>
+</body>
+</html>

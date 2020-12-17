@@ -1,0 +1,344 @@
+@keyframes icon {
+	40% {
+		transform rotate(20deg)
+	}
+	60% {
+		transform rotate(-20deg)
+	}
+	80% {
+		transform rotate(10deg)
+	}
+	90% {
+		transform rotate(-5deg)
+	}
+	100% {
+		transform rotate(0deg)
+	}
+}
+
+@keyframes MOVE-BG {
+	from {
+		background-position: center top
+	}
+	to {
+		background-position: center bottom
+	}
+}
+
+header {
+
+	nav {
+		//background url(/images/background3.jpg) center top no-repeat
+		//background-size cover
+		//animation(MOVE-BG 30s infinite alternate)
+		background #480100
+	}
+
+	&.fixed {
+		.info {
+			&:after {
+				content ''
+				position fixed
+				left 0
+				top 0
+				right 0
+				height 80px
+				background rgba(0, 0, 0, 0.5)
+				z-index -1
+			}
+
+			width 100%
+			position fixed
+			z-index 2
+			background url(/images/background.jpg) center -160px no-repeat
+			background-size cover
+			transition(all 0.3s ease-out)
+			border-bottom-color #d8af3a
+			box-shadow(0 0 10px 20px rgba(0,0,0.0.5))
+			color #fff
+
+			.container {
+				height 80px
+			}
+
+			.menu {
+				display block
+			}
+		}
+	}
+
+	.container {
+		width 1310px
+	}
+
+	.gnb {
+		background rgba(32,32,32,0.8)
+		overflow hidden
+		height 40px
+		line-height 40px
+
+		.title {
+			position absolute
+			left 0
+			top 0
+			text-align center
+			width 167px
+			height 40px
+			z-index 2
+			background transparent
+		}
+
+		#rolling-wrap {
+			width 1270px
+			height 40px
+			line-height 40px
+			position relative
+			overflow hidden
+			font-size 14px
+		}
+	}
+
+	.info {
+		border-bottom solid 2px transparent
+		background rgba(32,32,32,0.8)
+
+		.container {
+			display flex
+			height 36px
+			align-items center
+			justify-items center
+		}
+
+		.menu {
+			display none
+			width 40px
+			height 40px
+			background url(/images/menu.png) center center no-repeat
+			cursor pointer
+		}
+
+		.level {
+			margin-left auto
+		}
+
+		.userid {
+			margin-left 10px
+			color #d8af3a
+			font-weight 600
+		}
+
+		.logout {
+			display inline-block
+			background #565658
+			height 24px
+			line-height 24px
+			padding 0 10px
+			margin-left 10px
+			color #fff
+			border-radius 4px
+
+			&:hover {
+				background #e85202
+			}
+		}
+
+		.qna {
+			margin-left 40px
+			background url(/images/icon_qna.png) left center no-repeat
+			padding-left 24px
+
+			em {
+				color #d8af3a
+			}
+		}
+
+		.memo {
+			margin-left 30px
+			background url(/images/icon_memo.png) left center no-repeat
+			padding-left 22px
+			margin-right 100px
+
+			em {
+				color #d8af3a
+			}
+		}
+
+		.money {
+			background url(/images/icon_money.png) left center no-repeat
+			padding-left 18px
+			margin-left 30px
+
+			em {
+				color #d8af3a
+			}
+		}
+
+		.point {
+			margin-left 30px
+			background url(/images/icon_point.png) left center no-repeat
+			padding-left 18px
+
+			em {
+				color #d8af3a
+			}
+		}
+
+		.exchange {
+			display inline-block
+			background #565658
+			height 24px
+			line-height 24px
+			padding 0 10px
+			margin-left 10px
+			color #fff
+			border-radius 4px
+
+			&:hover {
+				background #0066aa
+			}
+		}
+	}
+
+	.logo {
+		width 195px
+		height 130px
+		margin-top -20px
+		float left
+		position absolute
+		z-index 2
+
+		img {
+			height 80px
+			position absolute
+			left 30px
+			top 10px
+			margin auto
+		}
+	}
+
+	.nav {
+		//float right
+		display flex
+		height 60px
+		justify-content space-between
+		align-items center
+
+		& > ul {
+			display flex
+			margin-left auto
+		}
+
+		li {
+			position relative
+			display block
+
+			ul.sub {
+				z-index 9
+				display none
+				position absolute
+				left 50%
+				margin-left -80px
+				width 160px
+				padding 0 10px 10px 10px
+				background #3b0403
+				transition(all 0.2s ease-out)
+
+				li {
+					height 46px
+
+					a {
+						margin-top 10px
+						border solid 1px rgba(255,255,255,0.2)
+						display flex
+						width 100%
+						height 100%
+						align-items center
+						justify-content center
+						font-size 13.5px
+						transition(all 0.2s ease-out)
+
+						&:hover, &.active {
+							background #a35e1e
+							color #fff
+
+							span {
+								animation(icon 0.4s linear)
+							}
+						}
+					}
+				}
+			}
+
+			a {
+				display block
+				padding 0 15px
+				height 60px
+				line-height 60px
+				font-size 16px
+				font-weight 600
+				border-bottom solid 2px transparent
+				color #ccc
+			}
+
+			&.on, &.on:hover {
+				> a {
+					background rgba(0, 0, 0, 0.1)
+					color #fff
+					border-bottom-color #1d0706
+				}
+			}
+
+			&:hover {
+				> a {
+					text-shadow 1px 1px 2px rgba(0, 0, 0, 0.4)
+					//background rgba(0, 0, 0, 0.2)
+					color #e85202
+					//border-bottom-color #727272
+				}
+
+				ul.sub {
+					display block
+				}
+			}
+
+			&.gnb-btn {
+				a {
+					color #fff
+					//border solid 1px rgba(255, 255, 255, 0.3)
+					margin 16px 0 0 6px
+					padding 0 25px
+					border-radius 5px
+					height 26px
+					line-height 24px
+					font-size 14px
+
+					background #e85202
+
+					&:hover {
+						background darken(#e85202, 30%)
+					}
+
+					&.gnb-deposit {
+						margin-left 30px
+						//border solid 1px #63a001
+						background #63a001
+
+						&:hover {
+							background darken(#63a001, 30%)
+						}
+					}
+					//
+					//&.gnb-withdraw {
+					//	border solid 1px #c54613
+					//	color #c54613
+					//
+					//	&:hover {
+					//		background #c54613
+					//		color #fff
+					//	}
+					//}
+				}
+			}
+		}
+	}
+}

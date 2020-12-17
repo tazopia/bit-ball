@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='main', gnb='gate', lnb='suda', title='게이트 섯다'">
+<body>
+
+<div layout:fragment="tab-menu" th:replace="fragments/mobile :: gate" th:if="true"></div>
+<main class="page" layout:fragment="page">
+    <h3>게이트 섯다 게임</h3>
+    <br/><br/>
+
+    <div id="zoneBox">
+        <div style="width:1232px;">
+            <iframe id="frame" style="width: 1232px; height: 620px; display: block" scrolling="no" frameborder="0" th:src="@{|${gameUrl}&url=${frameUrl}|}"></iframe>
+        </div>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    var height = 0;
+    function fn_height(h) {
+        if (height <= 0 || Math.abs(height - h) > 20) {
+            height = h;
+            $('#frame').height(h);
+        }
+    }
+
+    iframeScale(1232, 620);
+
+    $(window).on('orientationchange resize', function () {
+        iframeScale(1232, 620);
+    });
+</script>
+</body>
+</html>

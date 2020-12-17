@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.InPlayMapper">
+
+    <select id="getActiveList" resultType="spoon.inPlay.odds.domain.InPlayDto$GameData">
+        SELECT
+            fixtureId, sname, [location], league, sdate, hname, aname, status, ut,
+            (SELECT count(*) FROM INPLAY_ODDS WHERE INPLAY_ODDS.fixtureId = INPLAY_GAME.fixtureId AND INPLAY_ODDS.status = 1 AND INPLAY_ODDS.marketId IN (SELECT INPLAY_MARKET.id FROM INPLAY_MARKET WHERE enabled = 1)) as odds,
+            (SELECT liveScore FROM INPLAY_SCORE WHERE INPLAY_SCORE.fixtureId = INPLAY_GAME.fixtureId) as score
+        FROM INPLAY_GAME
+        WHERE sdate BETWEEN DATEADD(HOUR, -5, GETDATE()) AND DATEADD(HOUR, 1, GETDATE())  AND [status] IN (2, 9)
+        ORDER BY sdate, sname, [location], league, hname
+    </select>
+
+    <select id="getAdminList" resultType="spoon.inPlay.odds.domain.InPlayDto$AdminGameData">
+        SELECT
+            fixtureId, sname, [location], league, sdate, hname, aname, status, ut,
+            (SELECT count(*) FROM INPLAY_ODDS WHERE INPLAY_ODDS.fixtureId = INPLAY_GAME.fixtureId AND INPLAY_ODDS.status = 1 AND INPLAY_ODDS.marketId IN (SELECT INPLAY_MARKET.id FROM INPLAY_MARKET WHERE enabled = 1)) as odds,
+            (SELECT liveScore FROM INPLAY_SCORE WHERE INPLAY_SCORE.fixtureId = INPLAY_GAME.fixtureId) as score
+        FROM INPLAY_GAME
+        WHERE sdate BETWEEN DATEADD(HOUR, -5, GETDATE()) AND DATEADD(HOUR, 1, GETDATE())  AND [status] IN (2, 9)
+        ORDER BY sdate, sname, [location], league, hname
+    </select>
+</mapper>

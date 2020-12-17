@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <div class="panel-header">
+            <h3><i class="bul fa fa-recycle"></i> 게임 변경 이력</h3>
+        </div>
+        <table class="table-list game-table">
+            <caption>게임 변경 이력</caption>
+            <colgroup>
+
+            </colgroup>
+            <thead>
+            <tr>
+                <th>종목</th>
+                <th>타입</th>
+                <th>리그</th>
+                <th>홈팀</th>
+                <th>승</th>
+                <th>무(핸디)</th>
+                <th>패</th>
+                <th>원정팀</th>
+                <th>스코어</th>
+                <th>수정일</th>
+                <th>작업자</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="g : ${list}">
+                <td>
+                    <img th:src="@{|/images/sports/${g.sportsFlag}|}" class="flag-sport"/>
+                    <p th:text="${g.sports}">축구</p>
+                </td>
+                <td>
+                    <span th:text="${g.gameCode.name}">핸디캡</span>
+                    <p class="color0" th:text="${!g.special.isEmpty()} ? |(${g.special})|">(첫 5득점)</p>
+                </td>
+                <td>
+                    <p class="color0" th:text="${g.league}">리그명</p>
+                    <p th:utext="${tag.dayWeekTime(g.gameDate)}">17(수) 12:00</p>
+                </td>
+                <td>
+                    <p th:text="${g.teamHome}">홈팀</p>
+                </td>
+                <td>
+                    <span th:text="${tag.odds(g.oddsHome)}">2.16</span>
+                    <p th:class="${g.betHome ? 'color04' : 'color03'}" th:text="${g.betHome ? '베팅가능' : '베팅불가'}">베팅가능</p>
+                </td>
+                <td>
+                    <p th:text="${g.gameCode.name() == 'MATCH'} ? ${tag.odds(g.oddsDraw)} : ${tag.handicap(g.handicap)}">3.14</p>
+                    <p class="color04" th:if="${g.betDraw}">베팅가능</p>
+                </td>
+                <td>
+                    <p th:text="${tag.odds(g.oddsAway)}">1.88</p>
+                    <p th:class="${g.betAway ? 'color04' : 'color03'}" th:text="${g.betAway ? '베팅가능' : '베팅불가'}">베팅가능</p>
+                </td>
+                <td>
+                    <p th:text="${g.teamAway}">홈팀</p>
+                </td>
+                <td>
+                    <p th:text="${g.scoreHome eq null ? '-' : g.scoreHome + ' : ' + g.scoreAway}">0:1</p>
+                    <p class="color01" th:text="${tag.odds(g.oddsRate) + '%'}">환수율</p>
+                </td>
+                <td>
+                    <p th:utext="${tag.betDate(g.changeDate)}">17(수) 20:13:11</p>
+                    <p>
+                        <span class="color0" th:text="${g.closing ? '경기종료' : (g.enabled ? '등록완료' : '등록대기') + ', '}">경기종료</span>
+                        <span th:class="${g.autoUpdate ? 'color02' : 'color03'}" th:text="${g.autoUpdate ? 'ON' : 'OFF'}">ON</span>
+                    </p>
+                </td>
+                <td>
+                    <p th:text="${g.userid}">BOT</p>
+                    <p class="color0" th:text="${g.ip}">127.0.0.1</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <button onclick="popup.close();return false;" class="btn">창닫기</button>
+        </div>
+    </section>
+</main>
+</body>
+</html>

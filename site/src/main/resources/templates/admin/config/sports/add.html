@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" enctype="multipart/form-data" th:object="${sports}" onsubmit="return addSports()">
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-futbol-o"></i> 종목 등록</h3>
+            </div>
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">종목</th>
+                    <td><input type="text" autofocus="autofocus" th:field="*{sportsName}" style="width: 500px;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">아이콘</th>
+                    <td><input type="file" name="file" id="file" style="width: 500px;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">노출여부</th>
+                    <td>
+                        <label><input type="radio" th:field="*{hidden}" th:value="false"/> 노출</label>
+                        <label><input type="radio" th:field="*{hidden}" th:value="true"/> 숨김</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn02" value="등록"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function addSports() {
+        if ($('#sportsName').val() == '') {
+            alert('종목을 입력 하세요.');
+            $('#sportsName').focus();
+            return false;
+        }
+        if ($('#file').val() == '') {
+            alert('아이콘을 선택하세요.');
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='member', lnb='history'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>회원 :</small>
+    접속 로그인 현황
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/member/history|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    <input type="text" class="cal" th:field="*{loginDate}" placeholder="접속일자"/>
+                    <a href="#" id="sp-reset-date" class="btn btn-cal">지움</a>
+                </label>
+                <label>
+                    아이디/닉네임 :
+                    <input type="text" th:field="*{username}"/>
+                    (일치 <input type="checkbox" th:field="*{match}" />)
+                </label>
+                <label>
+                    아이피 :
+                    <input type="text" th:field="*{ip}"/>
+                </label>
+                <label>
+                    디바이스 :
+                    <select th:field="*{device}">
+                        <option value="">전체</option>
+                        <option value="컴퓨터">컴퓨터</option>
+                        <option value="태블릿">태블릿</option>
+                        <option value="모바일">모바일</option>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/member/history|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                로그인 히스토리
+                <span class="total">( 검색된 회원수 : <span th:text="${tag.num(page.totalElements)}">100</span> 명 )</span>
+                <a class="btn btn03" onclick="member.excel();" style="width: 200px;"><i class="fa fa-download"></i> 전체회원 엑셀 다운로드</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col>
+                <col>
+				<col>
+				<col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col>
+                <col>
+                <col>
+                <col>
+				<col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+				<th>총본사</th>
+				<th>부본사</th>
+                <th>총판</th>
+                <th>매장</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>등급</th>
+                <th colspan="4">회원정보</th>
+                <th>아이피</th>
+                <th>도메인</th>
+                <th>디바이스</th>
+                <th>접속일시</th>
+				<th>지역</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total - num.count}">1</td>
+				<td th:text="${#strings.defaultString(m.agency4, '-')}">총판</td>
+				<td th:text="${#strings.defaultString(m.agency3, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency2, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency1, '-')}">대리점</td>
+                <td class="popup color03" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.userid}">아이디</td>
+                <td class="popup color02" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.nickname}">닉네임</td>
+                <td class="search" th:text="${m.role.group.name() eq 'USER' ? m.level : m.role.name}">등급</td>
+                <td class="popup color04" th:onclick="|popup.payment.money('${m.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                <td class="popup color04" th:onclick="|popup.payment.point('${m.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                <td class="popup color04" th:onclick="|popup.betting.list('${m.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                <td class="popup color04" th:onclick="|popup.customer.memo('${m.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                <td th:text="${m.ip}">아이피</td>
+                <td th:text="${m.domain}">도메인</td>
+                <td th:text="${m.device}">도메인</td>
+                <td th:utext="${tag.dayWeekTimes(m.loginDate)}">접속시간</td>
+				<td th:text="${tag.country(m.ip)}">아이피</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

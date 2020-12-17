@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='event', lnb='config'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>이벤트 :</small>
+    출석체크 설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${eventConfig}" onsubmit="return saveConfig();">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-cog"></i>
+                    출석체크 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>사이트 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">출석 충전금</th>
+                    <td>
+                        <input type="text" th:field="*{amount}"/>
+                        <span class="color01">(0 이면 사용하지 않음)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">연속출석</th>
+                    <td>
+                        <p>
+                            <label>
+                                <input type="text" class="color03 num" th:field="*{daily[0]}" style="width: 60px;" />일 연속
+                            </label>
+                            <label>
+                                <input type="text" class="num" th:field="*{money[0]}" />원 지급
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input type="text" class="color03 num" th:field="*{daily[1]}" style="width: 60px;" />일 연속
+                            </label>
+                            <label>
+                                <input type="text" class="num" th:field="*{money[1]}" />원 지급
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input type="text" class="color03 num" th:field="*{daily[2]}" style="width: 60px;" />일 연속
+                            </label>
+                            <label>
+                                <input type="text" class="num" th:field="*{money[2]}" />원 지급
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input type="text" class="color03 num" th:field="*{daily[3]}" style="width: 60px;" />일 연속
+                            </label>
+                            <label>
+                                <input type="text" class="num" th:field="*{money[3]}" />원 지급
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input type="text" class="color03 num" th:field="*{daily[4]}" style="width: 60px;" />일 연속
+                            </label>
+                            <label>
+                                <input type="text" class="num" th:field="*{money[4]}" />원 지급
+                            </label>
+                        </p>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    function saveConfig() {
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

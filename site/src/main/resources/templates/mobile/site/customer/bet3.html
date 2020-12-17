@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='customer', lnb='bet', title='베팅규정'">
+<body>
+<div layout:fragment="tab-menu" th:replace="fragments/mobile :: customer" th:if="true"></div>
+<main class="page" layout:fragment="page">
+    <div class="tab-menu2">
+        <a th:href="@{|${siteConfig.pathSite}/customer/guide/bet1|}">공통규정</a>
+        <a th:href="@{|${siteConfig.pathSite}/customer/guide/bet2|}">승무패</a>
+        <a th:href="@{|${siteConfig.pathSite}/customer/guide/bet3|}" class="on">핸디캡</a>
+        <a th:href="@{|${siteConfig.pathSite}/customer/guide/bet4|}">오버언더</a>
+        <a th:href="@{|${siteConfig.pathSite}/customer/guide/bet5|}">스페셜</a>
+    </div>
+    <div class="rule">
+        <h3>1. 축구</h3>
+        <ul>
+            <li>전/후반 90분 정규시간 경기를 적용 (연장전 및 승부차기 제외)</li>
+        </ul>
+
+        <br/>
+        <br/>
+        <h3>2. 야구</h3>
+        <ul>
+            <li>1회~9회까지의 정규이닝 결과 적용. 연장(승부치기)결과 제외.</li>
+            <li>더블헤더 경기 시에는 첫 번째 개최되는 경기를 대상경기로 적용.</li>
+            <li>콜드게임은 주최측의 규정에 의하여 결과적용 함.</li>
+            <li>우천 등(자연재해 및 폭동 등)으로 인해 경기가 중단되었을 경우 해당국가 경기단체의 규정에 준수합니다.</li>
+            <li>우천 등(자연재해 및 폭동 등)으로 경기가 취소 될 경우 적중특례 무효 처리됨. (기타의 경우도 포함됨)</li>
+            <li>우천 등(자연재해 및 폭동 등)으로 인하여 5이닝이 종료된 시점에 강우콜드로 경기가 종료될 시 당시 점수로 정상적으로 결과적용 함.</li>
+        </ul>
+        <h5>※ 선발 투수 변경 시 ※</h5>
+        <ol>
+            <li>선발투수 변경시 해외 해당흐름및 핸디캡 , 오버언더 기준점이 심하게 변동됩니다.</li>
+            <li>저희 [[${siteConfig.companyName}]] 운영진은 해외전문사이트를 바탕으로 각종 경기와 배당,기준점을 등록합니다.</li>
+            <li>이에 혹여나 선발투수 변경시 적중특례 처리가 되어질수 있습니다.</li>
+            <li>빠른 조치후 회원님들께 불편함을 드리지 않도록 많은 노력을 하겠습니다.</li>
+        </ol>
+
+        <br/>
+        <br/>
+        <h3>3. 농구</h3>
+        <ul>
+            <li>1~4쿼터를 정규시간, 연장전 제외</li>
+            <li>선수별다득점은 연장전 포함 선발출전과 상관없이 출장시에 결과 정상적용되며
+                단. 엔트리에 포함되어있으나 1초라도 출전하지 않을 시 무효(적중특례)처리됨
+            </li>
+        </ul>
+        <h5>※ 용병 및 주전선수 변경 시 ※</h5>
+        <ol>
+            <li>갑작스런 부상등으로 용병 및 주전선수가 변경될시 해외 해당흐름및 핸디캡 , 오버언더 기준점이 심하게 변동됩니다.</li>
+            <li>저희 [[${siteConfig.companyName}]] 운영진은 해외전문사이트를 바탕으로 각종 경기와 배당,기준점을 등록합니다.</li>
+            <li>이에 혹여나 갑작스런 용병및주전선수 변경시 적중특례 처리가 되어질수 있습니다.</li>
+            <li>빠른 조치후 회원님들께 불편함을 드리지 않도록 많은 노력을 하겠습니다.</li>
+        </ol>
+
+        <br/>
+        <br/>
+        <h3>4. 배구</h3>
+        <ul>
+            <li>정규세트(세트스코어는 협회 및 주최측 규정에 의함)</li>
+        </ul>
+        <h5>※ 용병 및 주전선수 변경 시 ※</h5>
+        <ol>
+            <li>갑작스런 부상등으로 용병 및 주전선수가 변경될시 해외 해당흐름및 핸디캡 , 오버언더 기준점이 심하게 변동됩니다.</li>
+            <li>저희 [[${siteConfig.companyName}]] 운영진은 해외전문사이트를 바탕으로 각종 경기와 배당,기준점을 등록합니다.</li>
+            <li>이에 혹여나 갑작스런 용병및주전선수 변경시 적중특례 처리가 되어질수 있습니다.</li>
+            <li>빠른 조치후 회원님들께 불편함을 드리지 않도록 많은 노력을 하겠습니다.</li>
+        </ol>
+
+        <br/>
+        <br/>
+        <h3>5. 아이스하키</h3>
+        <ul>
+            <li>1~3 period를 정규시간 연장전과 승부치기는 제외</li>
+        </ul>
+
+        <br/>
+        <br/>
+        <h3>6. NFL (미식축구)</h3>
+        <ul>
+            <li>연장전 경기 결과 반영 안함</li>
+        </ul>
+
+        <br/>
+        <br/>
+        <h3>7. 핸드볼</h3>
+        <ul>
+            <li>연장전 경기 결과 반영 안함</li>
+        </ul>
+
+        <br/>
+        <br/>
+        <h3>8. 기타종목</h3>
+        <ul>
+            <li>해당 경기단체 혹은 협회의 규정에 따라 적용</li>
+        </ul>
+    </div>
+
+</main>
+</body>
+</html>

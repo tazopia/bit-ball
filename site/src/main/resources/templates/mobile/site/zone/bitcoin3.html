@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/mobileLayout" th:with="main='zone', gnb='zone', lnb='bitcoin3', title='비트코인3분'" ng-cloak ng-app="app">
+<body ng-controller="gameCtrl">
+
+<main class="page" layout:fragment="page">
+	<h3>
+		<img ng-src="{{flag}}"/>
+		비트코인 3분
+		<span class="color03" th:text="'[제 {{config.round | number : 0}}회차]'">256회차</span>
+	</h3>
+	<div class="zone">
+		<div id="zoneBox">
+			<div>
+				<iframe style="width: 830px; height: 640px;" scrolling="no" th:src="@{${sysConfig.zone.bitcoin3Player}}"></iframe>
+			</div>
+		</div>
+		<div class="table-wrap">
+			<table class="table-game table-list">
+				<caption>사다리</caption>
+				<colgroup>
+
+				</colgroup>
+				<thead>
+				<tr>
+					<th rowspan="2">라운드</th>
+					<th colspan="2">고가</th>
+					<th colspan="2">저가</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="s in score">
+					<td>
+						{{::s.date}}
+						<span class="round">{{::s.time}}</span>
+					</td>
+					<td><img src="/images/bitcoin/{{::s.hiOe}}.png"/></td>
+					<td><img src="/images/bitcoin/{{::s.hiOu}}.png"/></td>
+					<td><img src="/images/bitcoin/{{::s.loOe}}.png"/></td>
+					<td><img src="/images/bitcoin/{{::s.loOu}}.png"/></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<br/>
+		<div class="timer" ng-cloak ng-show="config.enabled">
+			<em>베팅남은시간</em>
+			<div class="timer-box">
+				<div id="timer">
+					<div ng-bind="countdown[0]"></div>
+					<div ng-bind="countdown[1]"></div>
+					<span>:</span>
+					<div ng-bind="countdown[2]"></div>
+					<div ng-bind="countdown[3]"></div>
+				</div>
+			</div>
+		</div>
+		<div class="right">
+			<div class="powerball" ng-class="bet">
+				<div class="title"  ng-if="config.hi_oe || config.hi_ou">
+					{{config.round}} 회차 <span class="name">고가</span>  홀/짝 | 언더/오버<br/>
+					<span class="hd" style="padding-top:6px;display: block;">현재 진행회차가 아닌 다음 회차입니다.</span>
+				</div>
+				<div class="bet-wrap" ng-if="config.hi_oe">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>홀</p>
+							<em class="odds">{{config.odds[0] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_oe', 'home', 0, '고가 홀', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>짝</p>
+							<em class="odds">{{config.odds[1] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_oe', 'away', 1, '고가 짝', $event)"></a>
+					</div>
+				</div>
+				<div class="bet-wrap" ng-if="config.hi_ou">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>언더</p>
+							<em class="odds">{{config.odds[3] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_ou', 'away',3, '고가 언더', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>오버</p>
+							<em class="odds">{{config.odds[2] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_ou', 'home', 2, '고가 오버', $event)"></a>
+					</div>
+				</div>
+				<div class="title" ng-if="config.hi_oe_ou">
+					{{config.round}} 회차 <span class="name">고가 조합</span><br/>
+					<span class="hd" style="padding-top:6px;display: block;">현재 진행회차가 아닌 다음 회차입니다.</span>
+				</div>
+				<div class="bet-wrap" ng-if="config.hi_oe_ou">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>홀+언</span></p>
+							<em class="odds">{{config.odds[9] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_odd_ou', 'away', 9, '고가 홀/언더', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>홀+오</p>
+							<em class="odds">{{config.odds[8] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_odd_ou', 'home', 8, '고가 홀/오버', $event)"></a>
+					</div>
+				</div>
+				<div class="bet-wrap" ng-if="config.hi_oe_ou">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>짝+언</span></p>
+							<em class="odds">{{config.odds[11] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_even_ou', 'away', 11, '고가 짝/언더', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>짝+오</span></p>
+							<em class="odds">{{config.odds[10] | number: 2}}</em>
+						</div>
+						<a ng-click="add('hi_even_ou', 'home', 10, '고가 짝/오버', $event)"></a>
+					</div>
+				</div>
+
+				<div class="title"  ng-if="config.lo_oe || config.lo_ou">
+					{{config.round}} 회차 <span class="name">저가</span> - 홀/짝 | 언더/오버<br/>
+					<span class="hd" style="padding-top:6px;display: block;">현재 진행회차가 아닌 다음 회차입니다.</span>
+				</div>
+				<div class="bet-wrap" ng-if="config.lo_oe">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>홀</p>
+							<em class="odds">{{config.odds[4] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_oe', 'home', 4, '저가 홀', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>짝</p>
+							<em class="odds">{{config.odds[5] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_oe', 'away', 5, '저가 짝', $event)"></a>
+					</div>
+				</div>
+				<div class="bet-wrap" ng-if="config.lo_ou">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>언더</p>
+							<em class="odds">{{config.odds[7] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_ou', 'away',7, '저가 언더', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>오버</p>
+							<em class="odds">{{config.odds[6] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_ou', 'home', 6, '저가 오버', $event)"></a>
+					</div>
+				</div>
+				<div class="title" ng-if="config.lo_oe_ou">
+					{{config.round}} 회차 <span class="name">저가 조합</span><br/>
+					<span class="hd" style="padding-top:6px;display: block;">현재 진행회차가 아닌 다음회차 입니다.</span>
+				</div>
+				<div class="bet-wrap" ng-if="config.lo_oe_ou">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>홀+언</span></p>
+							<em class="odds">{{config.odds[13] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_odd_ou', 'away', 13, '저가 홀/언더', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>홀+오</p>
+							<em class="odds">{{config.odds[12] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_odd_ou', 'home', 12, '저가 홀/오버', $event)"></a>
+					</div>
+				</div>
+				<div class="bet-wrap" ng-if="config.lo_oe_ou">
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>짝+언</span></p>
+							<em class="odds">{{config.odds[15] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_even_ou', 'away', 15, '저가 짝/언더', $event)"></a>
+					</div>
+					<div class="bet-item bet">
+						<div class="bet-round">
+							<p>짝+오</span></p>
+							<em class="odds">{{config.odds[14] | number: 2}}</em>
+						</div>
+						<a ng-click="add('lo_even_ou', 'home', 14, '저가 짝/오버', $event)"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-cloak ng-if="betList.length > 0">
+			<br/><br/>
+			<table class="table-list bet">
+				<caption></caption>
+				<colgroup>
+					<col>
+					<col>
+					<col>
+					<col>
+				</colgroup>
+				<thead>
+				<tr>
+					<th>베팅내역</th>
+					<th>베팅금액</th>
+					<th>적중금액</th>
+					<th>결과</th>
+				</tr>
+				</thead>
+				<tbody class="betBody">
+				<tr ng-repeat="b in betList">
+					<td>
+						{{b.date}} {{b.time}}
+						<div class="team">{{betTeam(b.bet, b.hname, b.aname)}}</div>
+						<div class="odds">[{{b.odds | number: 2}}]</div>
+					</td>
+					<td>{{b.betMoney | number}}</td>
+					<td>{{b.hitMoney | number}}</td>
+					<td  ng-if="!b.cancel" class="{{b.className}}">{{b.result}}</td>
+					<td ng-if="b.cancel">
+						<button class="btn btn03" ng-click="cancel(b.id)">취소</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+</main>
+
+<script layout:fragment="script" th:if="true">
+
+	setTimeout(function () {
+    	iframeScale(830, 640);
+	}, 100);
+
+    $(window).on('orientationchange resize', function () {
+        $('')
+        iframeScale(830, 640);
+    });
+
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', '$timeout', function ($scope, $http, $interval, $timeout) {
+        $scope.parseFloat = window.parseFloat;
+        $scope.zone = true;
+        $scope.cart = [];
+        $scope.odds = 0.00;
+        $scope.money = 0;
+        $scope.flag = '/images/zone/flag-bitcoin3.png';
+        $scope.config = [(${config})];
+        $scope.milliseconds = [[${user.milliseconds}]];
+        $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+        $scope.name = $scope.config.round + '회 BTC 3분';
+        $scope.countdown = ['0', '0', '0', '0'];
+        $scope.score = [(${score})];
+        $scope.betList = [(${bet})];
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $interval(function () {
+            if ($scope.milliseconds <= $scope.config.gameDate) {
+                $scope.milliseconds += 1000;
+                if ($scope.config.betTime < 0) {
+                    $scope.countdowon = ['0', '0', '0', '0'];
+                    angular.element('.bet').removeClass('on');
+                    $scope.cart.length = 0;
+                    $scope.bet = 'off';
+                } else {
+                    var min = '0' + parseInt($scope.config.betTime / 60);
+                    min = min.substring(min.length - 2);
+                    var sec = '0' + $scope.config.betTime % 60;
+                    sec = sec.substring(sec.length - 2);
+                    $scope.countdown = [min.substring(0, 1), min.substring(1, 2), sec.substring(0, 1), sec.substring(1, 2)];
+                }
+                $scope.config.betTime--;
+            } else {
+                $scope.setConfig();
+                $scope.countdowon = ['0', '0', '0', '0'];
+                $timeout(function () {
+                    $scope.setScore();
+                    $scope.setBetList();
+                }, 2000);
+            }
+        }, 1000);
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.setConfig = function () {
+            $http({
+                url: path + '/zone/bitcoin3/config',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.config = response.data;
+                $scope.name = $scope.config.round + '회 BTC 3분';
+                $scope.bet = $scope.config.betTime > 0 ? 'on' : 'off';
+            });
+        };
+
+        $scope.setScore = function () {
+            $http({
+                url: path + '/zone/bitcoin3/score',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.score = response.data;
+            });
+        };
+
+        $scope.setBetList = function () {
+            $http({
+                url: path + '/zone/bitcoin3/bet',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.betList = response.data;
+            });
+        };
+
+        $scope.cancel = function (id) {
+            if (!confirm('취소를 하시면 되살릴 수 없습니다.\n\n취소를 하시겠습니까?'))
+                return false;
+
+            $http({
+                url: path + '/betting/zone/cancel',
+                method: 'POST',
+                data: {
+                    id: id
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.setBetList();
+                alert(response.data.message);
+            });
+        }
+
+        $scope.betTeam = function (pos, home, away) {
+            if (pos === 'home') return home;
+            if (pos === 'away') return away;
+        }
+
+
+        $scope.add = function (gameCode, betTeam, betZone, pos, event) {
+            if ($scope.bet === 'off') {
+                alert('현재 베팅이 중지 되었습니다.\n\n다음 게임을 베팅하시기 바랍니다.');
+                return;
+            }
+
+            var ele = angular.element(event.target).parent();
+
+            $scope.cart.length = 0;
+            if (ele.hasClass('on')) {
+                ele.removeClass('on');
+                $scope.odds = 0.00;
+            } else {
+                angular.element('.bet').removeClass('on');
+                ele.addClass('on');
+                var odds = $scope.config.odds[betZone];
+                $scope.cart.push({sdate: $scope.config.sdate, gameCode: gameCode, betTeam: betTeam, betZone: betZone, odds: odds, pos: pos});
+                $scope.odds = odds;
+            }
+        };
+
+        $scope.remove = function () {
+            angular.element('.bet').removeClass('on');
+            $scope.cart.length = 0;
+            $scope.odds = 0.00;
+        };
+
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) {
+                $scope.money = 0;
+            } else {
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / $scope.odds), $scope.config.max), $scope.config.money);
+            }
+        };
+
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.odds * $scope.money > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            // 베팅
+            $http({
+                url: path + '/zone/bitcoin3/betting',
+                method: 'POST',
+                data: {
+                    "betMoney": $scope.money,
+                    "sdate": $scope.cart[0].sdate,
+                    "gameCode": $scope.cart[0].gameCode,
+                    "betTeam": $scope.cart[0].betTeam,
+                    "betZone": $scope.cart[0].betZone,
+                    "odds": $scope.cart[0].odds
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                angular.element('.bet').removeClass('on');
+                if (!response.data.success) {
+                    alert(response.data.message);
+                }else {
+                    alert('배팅 완료되었습니다.');
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+                $scope.setBetList();
+            }, function error(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                angular.element('.bet').removeClass('on');
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                $scope.setInfo();
+                $scope.setConfig();
+                $scope.setBetList();
+            });
+        };
+    }]);
+</script>
+</body>
+</html>

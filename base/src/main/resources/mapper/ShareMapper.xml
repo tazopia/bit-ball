@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.ShareMapper">
+
+    <select id="sellerShare" resultType="spoon.seller.domain.Seller">
+        SELECT userid, nickname, role, agency2, agency1, agency3, agency4, rateCode, rateShare, rateSports, rateZone,
+        powerMin, powerMax, powerLadder, keno, kenoLadder, btc3Min, btc3Max, btc5Min, btc5Max,
+        (CASE
+        when role = 'AGENCY1' Then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency1 = member.userid AND bankingCode = 'IN' AND closing = 1 AND cancel = 0)
+        when role = 'AGENCY2' then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency2 = member.userid AND bankingCode = 'IN' AND closing = 1 AND cancel = 0)
+        when role = 'AGENCY3' then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency3 = member.userid AND bankingCode = 'IN' AND closing = 1 AND cancel = 0)
+        when role = 'AGENCY4' then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency4 = member.userid AND bankingCode = 'IN' AND closing = 1 AND cancel = 0)
+        End)
+        as inMoney,
+        (CASE
+        when role = 'AGENCY1' Then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency1 = member.userid AND bankingCode = 'OUT' AND closing = 1 AND cancel = 0)
+        when role = 'AGENCY2' then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency2 = member.userid AND bankingCode = 'OUT' AND closing = 1 AND cancel = 0)
+        when role = 'AGENCY3' then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency3 = member.userid AND bankingCode = 'OUT' AND closing = 1 AND cancel = 0)
+        when role = 'AGENCY4' then
+        (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency4 = member.userid AND bankingCode = 'OUT' AND closing = 1 AND cancel = 0)
+        End)
+        as outMoney,
+        (CASE
+        when role = 'AGENCY1' Then
+        (SELECT count(*) FROM MEMBER m WHERE m.agency1 = member.userid AND m.role = 'USER')
+        when role = 'AGENCY2' then
+        (SELECT count(*) FROM MEMBER m WHERE m.agency2 = member.userid AND m.role = 'USER')
+        when role = 'AGENCY3' then
+        (SELECT count(*) FROM MEMBER m WHERE m.agency3 = member.userid AND m.role = 'USER')
+        when role = 'AGENCY4' then
+        (SELECT count(*) FROM MEMBER m WHERE m.agency4 = member.userid AND m.role = 'USER')
+        End)
+        as regMember,
+        (CASE when role = 'AGENCY1' Then
+        (SELECT count(*) FROM MEMBER m WHERE m.agency1 = member.userid AND m.role = 'USER' AND m.enabled = 1 AND m.secession = 0)
+        when role = 'AGENCY2' then
+        (SELECT count(*) FROM MEMBER m WHERE m.agency2 = member.userid AND m.role = 'USER' AND m.enabled = 1 AND m.secession = 0)
+        End)
+        as joinMember,
+        (CASE
+        when role = 'AGENCY1' Then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency1 = member.userid AND b.role != 'DUMMY' AND b.menuCode IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        when role = 'AGENCY2' then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency2 = member.userid AND b.role != 'DUMMY' AND b.menuCode IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        when role = 'AGENCY3' then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency3 = member.userid AND b.role != 'DUMMY' AND b.menuCode IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        when role = 'AGENCY4' then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency4 = member.userid AND b.role != 'DUMMY' AND b.menuCode IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        End)
+        as betSports,
+        (CASE
+        when role = 'AGENCY1' Then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency1 = member.userid AND b.role != 'DUMMY' AND b.menuCode NOT IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        when role = 'AGENCY2' then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency2 = member.userid AND b.role != 'DUMMY' AND b.menuCode NOT IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        when role = 'AGENCY3' then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency3 = member.userid AND b.role != 'DUMMY' AND b.menuCode NOT IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        when role = 'AGENCY4' then
+        (SELECT isNull(SUM(b.betMoney), 0) FROM BET b WHERE b.agency4 = member.userid AND b.role != 'DUMMY' AND b.menuCode NOT IN('MATCH', 'HANDICAP', 'CROSS', 'SPECIAL', 'LIVE', 'SPORTS') AND b.closing = 1 AND b.cancel = 0)
+        End)
+        as betZone
+        FROM MEMBER WHERE role IN ('AGENCY1', 'AGENCY2', 'AGENCY3', 'AGENCY4') AND secession = 0
+        <if test="command.agency4 != null and command.agency4 != ''">
+            AND agency4 = #{command.agency4}
+        </if>
+        <if test="command.agency3 != null and command.agency3 != ''">
+            AND agency3 = #{command.agency3}
+        </if>
+        <if test="command.agency2 != null and command.agency2 != ''">
+            AND agency2 = #{command.agency2}
+        </if>
+        <if test="command.agency1 != null and command.agency1 != ''">
+            AND agency1 = #{command.agency1}
+        </if>
+        ORDER BY agency4, agency3, agency2, agency1
+    </select>
+
+    <update id="updateRateCode" parameterType="String">
+        UPDATE MEMBER SET rateCode = #{update.rateCode} WHERE agency4 = #{update.userid} AND role IN ('AGENCY3', 'AGENCY2', 'AGENCY1')
+    </update>
+
+    <select id="currentSale" resultType="spoon.sale.entity.SaleItem">
+        SELECT
+            (CASE
+                WHEN c.role = 'AGENCY1' THEN
+                (SELECT count(*) FROM MEMBER WHERE agency1 = c.agency1 AND role != 'DUMMY' AND enabled = 1 AND secession = 0)
+                WHEN c.role = 'AGENCY2' THEN
+                (SELECT count(*) FROM MEMBER WHERE agency2 = c.agency2 AND role != 'DUMMY' AND enabled = 1 AND secession = 0)
+                WHEN c.role = 'AGENCY3' THEN
+                (SELECT count(*) FROM MEMBER WHERE agency3 = c.agency3 AND role != 'DUMMY' AND enabled = 1 AND secession = 0)
+                WHEN c.role = 'AGENCY4' THEN
+                (SELECT count(*) FROM MEMBER WHERE agency4 = c.agency4 AND role != 'DUMMY' AND enabled = 1 AND secession = 0)
+            END) as users,
+            (CASE
+                WHEN c.role = 'AGENCY1' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency1 = c.agency1 AND bankingCode = 'IN' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+                WHEN c.role = 'AGENCY2' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency2 = c.agency2 AND bankingCode = 'IN' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+                WHEN c.role = 'AGENCY3' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency3 = c.agency3 AND bankingCode = 'IN' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+                WHEN c.role = 'AGENCY4' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency4 = c.agency4 AND bankingCode = 'IN' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+            END) as inMoney,
+            (CASE WHEN c.role = 'AGENCY1' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency1 = c.agency1 AND bankingCode = 'OUT' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+                WHEN c.role = 'AGENCY2' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency2 = c.agency2 AND bankingCode = 'OUT' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+                WHEN c.role = 'AGENCY3' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency3 = c.agency3 AND bankingCode = 'OUT' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+                WHEN c.role = 'AGENCY4' THEN
+                (SELECT ISNULL(SUM(amount), 0) FROM BANKING WHERE regDate &gt; c.regDate AND agency4 = c.agency4 AND bankingCode = 'OUT' AND role != 'DUMMY' AND closing = 1 AND cancel = 0)
+            END) as outMoney,
+            (CASE WHEN c.role = 'AGENCY1' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency1 = c.agency1 AND menuCode IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+                WHEN c.role = 'AGENCY2' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency2 = c.agency2 AND menuCode IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+                WHEN c.role = 'AGENCY3' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency3 = c.agency3 AND menuCode IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+                WHEN c.role = 'AGENCY4' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency4 = c.agency4 AND menuCode IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+            END) as betSports,
+            (CASE WHEN c.role = 'AGENCY1' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency1 = c.agency1 AND menuCode NOT IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+                WHEN c.role = 'AGENCY2' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency2 = c.agency2 AND menuCode NOT IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+                WHEN c.role = 'AGENCY3' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency3 = c.agency3 AND menuCode NOT IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+                WHEN c.role = 'AGENCY4' THEN
+                (SELECT ISNULL(SUM(betMoney), 0) FROM BET WHERE startDate &gt; c.regDate AND startDate &lt;= getDate() AND agency4 = c.agency4 AND menuCode NOT IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE') AND role != 'DUMMY' AND cancel = 0)
+            END) as betZone,
+            c.userid, c.agency4, c.agency3, c.agency2, c.agency1, c.role, c.rateCode, c.rateShare, c.rateSports, c.rateZone, c.regDate,
+            c.lastMoney, c.totalMoney
+        FROM
+        (
+            SELECT
+                a.userid, a.agency4, a.agency3, a.agency2, a.agency1, a.role, a.rateCode, a.rateShare, a.rateSports, a.rateZone,
+                ISNULL(b.regDate, a.joinDate) as regDate, b.lastMoney, b.totalMoney
+            FROM MEMBER a LEFT OUTER JOIN SALE_ITEM b
+            ON a.userid = b.userid AND b.id = (SELECT MAX(id) FROM SALE_ITEM WHERE userid = a.userid)
+            WHERE a.role IN ('AGENCY1', 'AGENCY2', 'AGENCY3', 'AGENCY4') AND a.enabled = 1 AND a.secession = 0
+            <if test="command.agency4 != null and command.agency4 != ''">
+                AND a.agency4 = #{command.agency4}
+            </if>
+            <if test="command.agency3 != null and command.agency3 != ''">
+                AND a.agency3 = #{command.agency3}
+            </if>
+            <if test="command.agency2 != null and command.agency2 != ''">
+                AND a.agency2 = #{command.agency2}
+            </if>
+            <if test="command.agency1 != null and command.agency1 != ''">
+                AND a.agency1 = #{command.agency1}
+            </if>
+        ) c
+        ORDER BY c.agency4, c.agency3, c.agency2, c.agency1
+    </select>
+
+</mapper>

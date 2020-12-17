@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/adminLayout" th:with="gnb='inplay', lnb='inplay'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+	<small>인플레이 :</small>
+	인플레이
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+				<i class="bul fa fa-flag"></i>
+                인플레이 진행중인 경기
+                <span class="total">( 검색된 경기 : <span th:text="${#numbers.formatInteger(#arrays.length(list), 0, 'DEFAULT')}">100</span> 경기 )</span>
+                <span>- 리그및 팀명 수정은 더블클릭을 하세요.</span>
+				<a class="btn btn03" onclick="popupOdds();" style="width: 160px;"><i class="fa fa-plus-circle"></i> 인플레이보기</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>종목</th>
+				<th>경기정보</th>
+                <th>상태</th>
+                <th>홈팀</th>
+                <th>원정팀</th>
+				<th>마켓</th>
+                <th>스코어</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="g:${list}" th:id="${g.fixtureId}">
+				<td class="cursor popup" th:onclick="|popupSports('${g.sname}');|">
+					<img th:src="@{|/images/inplay/sports/${g.sportsFlag}|}" class="flag-sport"/>
+					<p th:text="${g.sportsName}">축구</p>
+				</td>
+				<td class="cursor popup" th:onclick="|popupLeague('${g.league}');|">
+					<p><img th:src="@{|/images/inplay/league/${g.leagueFlag}|}" class="flag-sport"/> <span th:text="${g.leagueName}"></span></p>
+					<p th:utext="${tag.fullDate(g.sdate)}"></p>
+				</td>
+				<td>
+					<th:block th:switch="${g.status}">
+						<p th:case="2">진행중</p>
+						<p th:case="9">시작전</p>
+					</th:block>
+					<th:block th:switch="${g.sname}" th:if="${g.status eq 2}">
+						<p th:case="'Baseball'" th:text="${g.scoreData.scoreBoard.currentPeriod} + '회'">진행중</p>
+						<p th:case="E-Games" th:text="${g.scoreData.scoreBoard.currentPeriod} + '세트'"></p>
+						<p th:case="'Football'">
+							<span th:if="${g.scoreData.scoreBoard.currentPeriod eq 10}">전반</span>
+							<span th:if="${g.scoreData.scoreBoard.currentPeriod eq 20}">후반</span>
+							<span th:if="${g.scoreData.scoreBoard.currentPeriod eq 30}">연장전반</span>
+							<span th:if="${g.scoreData.scoreBoard.currentPeriod eq 35}">연장후반</span>
+							<span th:if="${g.scoreData.scoreBoard.currentPeriod eq 50}">승부차기</span>
+							<span class="color03" th:text="${g.scoreData.scoreBoard.time / 60}"></span>
+						</p>
+						<p th:case="*" th:text="${g.scoreData.scoreBoard.currentPeriod}"></p>
+					</th:block>
+				</td>
+				<td class="cursor popup" th:onclick="|popupTeam('${g.hname}');|">
+					<span th:text="${g.teamHome}">홈팀</span>
+				</td>
+				<td class="cursor popup" th:onclick="|popupTeam('${g.aname}');|">
+					<span th:text="${g.teamAway}">원정팀</span>
+				</td>
+				<td class="color03 popup" th:text="${g.odds}" th:onclick="|popupOdds(${g.fixtureId});|"></td>
+				<td th:if="${g.scoreData.scoreBoard.results}">
+					<span th:text="${g.scoreData.scoreBoard.results?.get(0).value}">0</span> :
+					<span th:text="${g.scoreData.scoreBoard.results?.get(1).value}">0</span>
+				</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+	function popupSports(sports) {
+        window.open(path + '/inplay/sports/update?name=' + sports, 'inplay-sports-update', 'width=800, height=340');
+    }
+
+    function popupLeague(league) {
+        window.open(path + '/inplay/league/update?name=' + league, 'inplay-league-update', 'width=800, height=400');
+    }
+
+    function popupTeam(team) {
+        window.open(path + '/inplay/team/popup?name=' + team, 'inplay-team-update', 'width=800, height=340');
+    }
+
+    function popupOdds() {
+        window.open(path + '/inplay/odds', 'inplay-game-odds', 'width=1400, height=1000');
+    }
+</script>
+</body>
+</html>

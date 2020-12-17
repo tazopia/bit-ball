@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" enctype="multipart/form-data" th:action="|${siteConfig.pathAdmin}/customer/popup/update|" th:object="${popup}" onsubmit="return update()">
+        <input type="hidden" th:field="*{id}" />
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-futbol-o"></i> 팝업 수정</h3>
+            </div>
+            <table class="table-read">
+                <caption>팝업 수정</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">설명</th>
+                    <td><input type="text" autofocus="autofocus" th:field="*{summary}" style="width: 500px;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">팝업</th>
+                    <td>
+                        <img th:src="@{|/images/notice/${popup.image}?sdate=${popup.sdate}|}" />
+                        <span>(이미지를 수정하실려면 파일을 다시 등록하세요.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">아이콘</th>
+                    <td><input type="file" name="image" id="image" style="width: 500px;"/></td>
+                </tr>
+                <tr>
+                    <th class="required">순서</th>
+                    <td><input type="text" th:field="*{sort}"/> <span>숫자만 가능</span></td>
+                </tr>
+                <tr>
+                    <th class="required">노출여부</th>
+                    <td>
+                        <label><input type="radio" th:field="*{enabled}" th:value="true" /> 노출</label>
+                        <label><input type="radio" th:field="*{enabled}" th:value="false" /> 숨김</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn04" value="수정" />
+                <button th:onclick="|deletePopup(${popup.id});|" class="btn btn02">삭제</button>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    $('#sort').onlyNum();
+
+    if ('[[${closing}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function deletePopup(id) {
+        if (!confirm('삭제를 하시면 되살릴 수 없습니다.')) {
+            return false;
+        }
+
+        $.post(path + '/customer/popup/delete', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                popup.reloadClose();
+            }
+        })
+    }
+</script>
+</body>
+</html>

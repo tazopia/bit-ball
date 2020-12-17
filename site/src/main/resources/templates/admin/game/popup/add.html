@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <div class="panel-header">
+            <h3><i class="bul fa fa-recycle"></i> 스포츠 등록</h3>
+        </div>
+        <form id="frm" method="post" th:action="@{|${siteConfig.pathAdmin}/game/popup/add|}" onsubmit="return addGame();">
+            <table class="table-read">
+                <caption>스포츠 등록</caption>
+                <colgroup>
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">
+                        엑셀에 게임을 등록하여 아래칸에 복사 하세요.
+                        <a href="/images/game/game.zip" class="color03">엑셀 타운로드</a>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="color02">
+                        <p>
+                            모든 경기는 날짜, 시간, 종목, 리그, 홈팀, 원정팀이 동일하면 동일조합으로 인식합니다.<br/>
+                            크로스일 경우 추가사항은 엑셀 L(홈 추가), M(원정 추가) 에 따로 적어 주세요.<br/>
+                            스페셜일 경우 홈팀, 원정팀에 추가사항을 묶고자 하는 경기와 동일하게 적어 주세요.
+                        </p>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea id="gameText" name="gameText" style="width:100%;height:380px;"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button type="submit" class="btn btn02">등록</button>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </form>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    function addGame() {
+        if (!confirm("게임을 등록 하시겠습니까?")) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

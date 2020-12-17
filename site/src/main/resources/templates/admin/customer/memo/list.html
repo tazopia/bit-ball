@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='customer', lnb='memo'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>고객응대 :</small>
+    쪽지확인
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/customer/memo|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    <input type="text" class="cal" th:field="*{regDate}" placeholder="등록일자"/>
+                    <a href="#" id="sp-reset-date" class="btn btn-cal">지움</a>
+                </label>
+                <label>
+                    <select th:field="*{checked}">
+                        <option value="">전체 쪽지</option>
+                        <option value="Y">확인 쪽지</option>
+                        <option value="N">미확인 쪽지</option>
+                    </select>
+                </label>
+                <label>
+					<label id="label4">
+						총본사 :
+						<select th:field="*{agency4}">
+							<option value="">선택하세요.</option>
+						</select>
+					</label>
+					<label id="label3">
+						부본사 :
+						<select th:field="*{agency3}">
+							<option value="">선택하세요.</option>
+						</select>
+					</label>
+                    <label id="label2">
+                        총판 :
+                        <select th:field="*{agency2}">
+                            <option value="">선택하세요.</option>
+                        </select>
+                    </label>
+                    <label id="label1">
+                        매장 :
+                        <select th:field="*{agency1}">
+                            <option value="">선택하세요.</option>
+                        </select>
+                    </label>
+                </label>
+                <label>
+                    아이디/닉네임 :
+                    <input type="text" th:field="*{username}"/>
+                    (일치 <input type="checkbox" th:field="*{match}"/>)
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/customer/memo|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-envelope"></i>
+                쪽지확인
+                <span class="total">( 검색된 게시물 : <span th:text="${tag.num(page.totalElements)}">100</span>)</span>
+                <a class="btn btn02" onclick="memoDelete();" style="width: 160px;"><i class="fa fa-minus-circle"></i> 선택항목 삭제</a>
+                <a th:href="@{|${siteConfig.pathAdmin}/customer/memo/memo|}" class="btn btn03">등록</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>쪽지확인</caption>
+            <colgroup>
+                <col style="width: 80px;">
+                <col style="width: 400px;">
+                <col style="width: 150px;">
+                <col>
+                <col>
+                <col>
+				<col>
+				<col>
+                <col>
+                <col>
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>등록일</th>
+                <th>총본사</th>
+				<th>부본사</th>
+				<th>총판</th>
+                <th>매장</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>등급</th>
+                <th colspan="4">회원정보</th>
+                <th>확인</th>
+                <th>삭제</th>
+                <th id="sp-select" class="cmd" onclick="selectId();" data-selected="false">선택</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="q, num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <tr>
+                    <td rowspan="2" th:text="${total - num.count}">1</td>
+                    <td class="title"><a class="color01 ellipsis" th:utext="${tag.colorBr(q.title)}" style="width: 380px;"></a></td>
+                    <td th:utext="${tag.dayWeekTimes(q.regDate)}">2014.1.0</td>
+					<td th:text="${#strings.defaultString(q.agency4, '-')}">총판</td>
+					<td th:text="${#strings.defaultString(q.agency3, '-')}">총판</td>
+                    <td th:text="${#strings.defaultString(q.agency2, '-')}">총판</td>
+                    <td th:text="${#strings.defaultString(q.agency1, '-')}">대리점</td>
+                    <td th:onclick="|popup.member.info('${q.userid}');|" class="color03 popup" th:text="${q.userid}">아이디</td>
+                    <td th:onclick="|popup.member.info('${q.userid}');|" class="color02 popup" th:text="${q.nickname}">닉네임</td>
+                    <td th:text="${q.level}">레벨</td>
+                    <td class="popup color04" th:onclick="|popup.payment.money('${q.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                    <td class="popup color04" th:onclick="|popup.payment.point('${q.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                    <td class="popup color04" th:onclick="|popup.betting.list('${q.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                    <td class="popup color04" th:onclick="|popup.customer.memo('${q.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                    <td th:class="${q.checked} ? 'color02'" th:text="${q.checked ? '확인' : '-'}"></td>
+                    <td th:class="${q.hidden} ? 'color03'" th:text="${q.hidden ? '삭제' : '-'}"></td>
+                    <td>
+                        <input type="checkbox" name="memoId" th:value="${q.id}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="16" style="text-align: left; padding: 10px 20px;" th:utext="${tag.colorBr(q.contents)}"></td>
+                </tr>
+            </th:block>
+            <tr th:if="${page.totalElements eq 0}">
+                <td colspan="17" style="height: 300px;">
+                    검색된 쪽지가 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+                <div class="command">
+                    <a th:href="@{|${siteConfig.pathAdmin}/customer/memo/memo|}" class="btn btn03">등록</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var agencies = [(${agencies})];
+    var agency4 = '';
+    agencies.forEach(function (agency) {
+        if (agency4 !== agency.agency4) {
+            $('#agency4').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            agency4 = agency.agency4;
+        }
+    });
+
+    $('#agency4').on('change', function () {
+        var agency4 = $('#agency4').val();
+        var agency3 = '';
+        $('#agency3').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency4 === agency.agency4 && agency.agency3 != null && agency.agency3 !== '' && agency3 !== agency.agency3) {
+                $('#agency3').append('<option value="' + agency.agency3 + '">' + agency.agency3 + '</option>');
+            }
+            agency3 = agency.agency3;
+        });
+        $('#agency3').change();
+    });
+
+    $('#agency3').on('change', function () {
+        var agency3 = $('#agency3').val();
+        var agency2 = '';
+        $('#agency2').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency3 === agency.agency3 && agency.agency2 != null && agency.agency2 !== '' && agency2 !== agency.agency2) {
+                $('#agency2').append('<option value="' + agency.agency2 + '">' + agency.agency2 + '</option>');
+            }
+            agency2 = agency.agency2;
+        });
+        $('#agency2').change();
+    });
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        var agency1 = '';
+        $('#agency1').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency2 == agency.agency2 && agency.agency1 != null && agency.agency1 !== '' && agency1 !== agency.agency1) {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+            agency1 = agency.agency1;
+        });
+        $('#agency1').change();
+    });
+
+    $('#agency4').val('[[${command.agency4}]]').change();
+    $('#agency3').val('[[${command.agency3}]]').change();
+    $('#agency2').val('[[${command.agency2}]]').change();
+    $('#agency1').val('[[${command.agency1}]]');
+
+    function selectId() {
+        var selected = $('#sp-select').data().selected;
+        if (selected) {
+            $('input[name="memoId"]').each(function () {
+                $(this).prop('checked', '');
+            });
+            $('#sp-select').data().selected = false;
+        } else {
+            $('input[name="memoId"]').each(function () {
+                $(this).prop('checked', 'checked');
+            });
+            $('#sp-select').data().selected = true;
+        }
+    }
+    
+    function memoDelete() {
+        var obj = $('input[name="memoId"]:checked');
+        var cnt = obj.length, memoIds = [];
+        if (cnt == 0) {
+            alert(String.format('삭제할 쪽지를 선택하세요.'));
+            return false;
+        }
+
+        if (!confirm(String.format('선택하신 쪽지를 삭제하시겠습니까?'))) {
+            return false;
+        }
+
+        obj.each(function () {
+            memoIds.push($(this).val());
+        });
+
+        $.post(path + '/customer/memo/delete', {
+            memoIds: memoIds
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

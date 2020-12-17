@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org" th:with="tag = ${T(spoon.support.web.CustomTag)}">
+<head th:replace="fragments/sellerFragment :: head">
+    <meta charset="UTF-8"/>
+    <title>Best of Stella</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico?v=${siteConfig.version}|}}"/>
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.theme.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.admin.css}"/>
+    <script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
+    <script th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+</head>
+<body>
+<div class="page-wrap" layout:fragment="page">
+    <header>
+        <h1 th:text="${user.role.name} + ' 페이지'">routine1</h1>
+        <nav>
+            <ul class="gnb seller">
+                <li th:class="${gnb eq 'sale'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/daily|}">매출관리</a></li>
+                <li th:class="${gnb eq 'accounting'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/share|}">정산 관리</a></li>
+                <li th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/member|}">회원관리</a></li>
+				<li><a class="color01" th:href="@{|${siteConfig.pathSite}/main|}" target="_blank">사이트바로가기</a></li>
+            </ul>
+            <a th:href="@{/logout}" class="btn">로그아웃</a>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <aside class="side">
+                <div class="side-wrap">
+                    <div class="side-scroll">
+                        <div class="side-welcome">
+                            <span th:text="${user.userid}"></span>님 환영합니다.
+                            <br/><br/>
+							보유 머니 : <span class="color01" th:text="${tag.num(user.money)}"></span> 원
+							<br/><br/>
+                            보유 포인트 : <span class="color01" th:text="${tag.num(user.point)}"></span> P
+                        </div>
+                        <ul class="lnb" th:replace="fragments/sellerFragment :: lnb"></ul>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div class="main-wrap">
+            <h2 layout:fragment="title">
+                <small>대메뉴 |</small>
+                <span>중메뉴</span>
+            </h2>
+            <div class="container" layout:fragment="content">
+                <section>
+                    여기에 내용이 들어 갑니다.
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        Copyright © [[${siteConfig.since}]] <span th:text="${siteConfig.companyName} + '.'">Stella Solution.</span> All Right Reserved.
+        <div class="btn-top"><i class="fa fa-angle-up"></i></div>
+    </footer>
+</div>
+<div id="flashMessage">
+    <div th:text="${message}"></div>
+</div>
+<div th:replace="fragments/adminFragment :: javascript"></div>
+<script layout:fragment="script" th:if="false"></script>
+</body>
+</html>

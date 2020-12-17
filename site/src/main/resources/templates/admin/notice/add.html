@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${add}" onsubmit="return addNotice()">
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-futbol-o"></i> 게임 상단 공지 등록</h3>
+            </div>
+            <table class="table-read">
+                <caption>팝업 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">내용</th>
+                    <td><textarea th:field="*{title}" style="width: 100%;height:100px;"></textarea></td>
+                </tr>
+                <tr>
+                    <th class="required">등록일</th>
+                    <td>
+                        <input th:field="*{date}" class="cal">
+                        <select th:field="*{hour}">
+                            <option th:each="h:${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(h, 2)}" th:text="${#numbers.formatInteger(h, 2)}"></option>
+                        </select>시
+                        <select th:field="*{minute}">
+                            <option th:each="m:${#numbers.sequence(0, 59)}" th:value="${#numbers.formatInteger(m, 2)}" th:text="${#numbers.formatInteger(m, 2)}"></option>
+                        </select>분
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">사용유무</th>
+                    <td>
+                        <label>
+                            <input type="radio" th:field="*{enabled}" th:value="true"> 사용
+                        </label>
+                        <label>
+                            <input type="radio" th:field="*{enabled}" th:value="false"> 미사용
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="등록"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+    function addNotice() {
+        if ($('#title').val() == '') {
+            alert('내용을 입력 하세요.');
+            $('#title').focus();
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

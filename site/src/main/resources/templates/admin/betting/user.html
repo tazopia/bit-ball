@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='betting', lnb='user'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>베팅 :</small>
+    개인별 베팅 분석
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/betting/user|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    기간별 베팅 분석 :
+                    <input type="text" class="cal" th:field="*{sdate}" /> ~
+                    <input type="text" class="cal" th:field="*{edate}" />
+                </label>
+                <label>
+                    아이디/닉네임 :
+                    <input type="text" th:field="*{username}" placeholder="아이디/닉네임"/>
+                    (일치 <input type="checkbox" th:field="*{match}" />)
+                </label>
+                <label>
+                    정렬 :
+                    <select th:field="*{orderBy}">
+                        <option value="">전체 베팅금액</option>
+                        <option value="sports">스포츠 베팅금액</option>
+                        <option value="zone">게임존 베팅금액</option>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/accounting/daily|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                개인별 베팅 분석
+                <span class="total">( 검색된 베팅내역 : <span th:text="${tag.num(page.totalElements)}">100</span> 건 )</span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th rowspan="2">총판</th>
+                <th rowspan="2">대리점</th>
+                <th rowspan="2">아이디</th>
+                <th rowspan="2">닉네임</th>
+                <th rowspan="2">등급</th>
+                <th colspan="4" rowspan="2">회원정보</th>
+                <th colspan="3">스포츠</th>
+                <th colspan="3">실시간</th>
+                <th rowspan="2">합계</th>
+                <th colspan="2">분석</th>
+            </tr>
+            <tr>
+                <th>금액</th>
+                <th>횟수</th>
+                <th>적중</th>
+                <th>금액</th>
+                <th>횟수</th>
+                <th>적중</th>
+                <th>스포츠</th>
+                <th>실시간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${page.content}">
+                <td th:text="${#strings.defaultString(m.agency2, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency1, '-')}">대리점</td>
+                <td class="popup color03" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.userid}">아이디</td>
+                <td class="popup color02" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.nickname}">닉네임</td>
+                <td th:text="${m.level}">등급</td>
+                <td class="popup color04" th:onclick="|popup.payment.money('${m.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                <td class="popup color04" th:onclick="|popup.payment.point('${m.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                <td class="popup color04" th:onclick="|popup.betting.list('${m.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                <td class="popup color04" th:onclick="|popup.customer.memo('${m.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                <td class="num color01" th:text="${tag.num(m.betSports)}"></td>
+                <td class="num color04" th:text="${tag.num(m.cntSports)}"></td>
+                <td class="num color03" th:text="${tag.num(m.hitSports)}"></td>
+                <td class="num color01" th:text="${tag.num(m.betZone)}"></td>
+                <td class="num color04" th:text="${tag.num(m.cntZone)}"></td>
+                <td class="num color03" th:text="${tag.num(m.hitZone)}"></td>
+                <td class="num color02" th:text="${tag.num(m.betSum)}"></td>
+                <td class="num color01" th:text="${m.rateSports}"></td>
+                <td class="num color03" th:text="${m.rateZone}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

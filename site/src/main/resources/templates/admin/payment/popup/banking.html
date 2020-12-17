@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+	<form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/payment/banking/${member.userid}|}" method="get">
+		<input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+
+		<section>
+			<div class="panel-search">
+				<label>
+					기간 :
+					<input type="text" class="cal" th:field="*{sdate}"/>
+					~
+					<input type="text" class="cal" th:field="*{edate}"/>
+				</label>
+				<label>
+					입금 :
+					<em class="color01" th:text="${tag.num(money.deposit)}">100</em>
+				</label>
+				<label>
+					출금 :
+					<em class="color01" th:text="${tag.num(money.withdraw)}">100</em>
+				</label>
+				<div class="command">
+					<button class="btn btn03">검색</button>
+				</div>
+			</div>
+		</section>
+	</form>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-cog"></i>
+                <label>
+                    <em class="color03" th:text="${member.userid}">아이디</em>
+                    <em class="color02" th:text="'(' + ${member.nickname} + ')'">닉네임</em>
+                    님의
+                </label>
+                <label>
+                    현재 머니 : <em class="color01" th:text="${tag.num(member.money)}"></em>
+                </label>
+                현재 포인트 : <em class="color02" th:text="${tag.num(member.point)}"></em>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>입출금 내역</caption>
+            <colgroup>
+
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>신청시간</th>
+                <th>입출금</th>
+                <th>기존머니</th>
+                <th>기존포인트</th>
+                <th>예금주</th>
+                <th>입출금액</th>
+                <th>비고</th>
+                <th>작업자</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody id="money-body">
+            <tr th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td th:utext="${tag.dayWeekTimes(b.regDate)}"></td>
+                <td th:class="${b.bankingCode.name() eq 'IN'} ? 'color01' : 'color03'" th:text="${b.bankingCode.name}">0</td>
+                <td class="num" th:text="${tag.num(b.money)}"></td>
+                <td class="num" th:text="${tag.num(b.point)}"></td>
+                <td class="color02" th:text="${b.depositor}"></td>
+                <td th:class="${b.bankingCode.name() eq 'IN'} ? 'color01 num' : 'color03 num'" th:text="${tag.num(b.amount)}">0</td>
+                <td class="num color0">
+                    <span th:if="${b.bankingCode.name() eq 'IN'}" th:text="${b.bonusPoint gt 0} ? ${'추가머니 :' + tag.num(b.bonusPoint)}" th:remove="tag"></span>
+                    <span th:if="${b.bankingCode.name() eq 'OUT'}" th:text="${b.fees gt 0} ? ${'수수료 :' + tag.num(b.fees)}" th:remove="tag"></span>
+                </td>
+                <td th:text="${b.worker}"></td>
+                <td>
+                    <div th:if="${!b.closing and !b.cancel}">
+                        대기
+                    </div>
+                    <div th:if="${b.cancel}">
+                        <span class="color05">취소</span>
+                    </div>
+                    <div th:if="${b.closing and !b.cancel}">
+                        <span class="color02">완료</span>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="paging">
+            <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+        </div>
+        <div class="panel-footer">
+            <a onclick="popup.close();return false;" class="btn">창닫기</a>
+        </div>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

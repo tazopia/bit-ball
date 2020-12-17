@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/siteLayout" th:with="mode='main'">
+<body>
+<main class="main" layout:fragment="main">
+	<figure>
+		<div class="container">
+			<video autoplay muted loop src="/images/video.mp4"></video>
+			<div class="video-bg"></div>
+		</div>
+	</figure>
+	<div class="content container">
+		<section class="main-wrap">
+			<article class="game" th:if="false">
+				<h3><span th:text="${siteConfig.companyName}">Soul</span> 최근 경기 목록</h3>
+				<ul>
+					<li th:each="list : ${gameList}">
+						<span class="date" th:utext="${tag.dayWeekTime(list.gameDate)}">03.12(월) 23:00</span>
+						<span class="home" th:text="${list.teamHome}">Dyn. Moscow</span>
+						<span class="vs">VS</span>
+						<span class="away" th:text="${list.teamAway}">SKA St. Petersburg</span>
+					</li>
+				</ul>
+			</article>
+			<article class="powerball">
+				<h3><span th:text="${siteConfig.companyName}">Soul</span> 파워볼 결과</h3>
+				<ul>
+					<li th:each="list : ${powerball}">
+						<span class="date" th:text="${list.date}">03.12(월) 23:00</span>
+						<span class="times"><span th:text="${tag.num(list.times[0])} + ','"></span><span class="color02" th:text="${list.times[1]}"></span></span>
+						<span class="balls">
+							<img th:each="b : ${list.balls}" th:src="@{|/images/powerball/p${b}.png|}" style="padding: 0 2px;"/>
+						</span>
+						<span class="round"><img th:src="@{|/images/powerball/pb${list.pb}.png|}" style="padding: 0 2px;"/></span>
+						<span class="pb" th:text="${list.sum}"></span>
+					</li>
+				</ul>
+			</article>
+			<article class="event">
+				<h3><span th:text="${siteConfig.companyName}">Soul</span> 이벤트</h3>
+				<ul>
+					<li th:each="list : ${eventList}">
+						<a th:href="@{|${siteConfig.pathSite}/board/event/${list.id}|}" th:utext="${tag.color(list.title)}"></a>
+					</li>
+				</ul>
+			</article>
+			<article class="notice">
+				<h3><span th:text="${siteConfig.companyName}">Soul</span> 공지사항</h3>
+				<ul>
+					<li th:each="list : ${noticeList}">
+						<a th:href="@{|${siteConfig.pathSite}/board/notice/${list.id}|}" th:utext="${tag.color(list.title)}"></a>
+					</li>
+				</ul>
+			</article>
+		</section>
+	</div>
+</main>
+<div layout:fragment="popup" th:if="${#arrays.length(popup) gt 0}">
+	<div id="layout-wrap"></div>
+	<div id="layout-box">
+		<th:block th:each="p : ${popup}">
+			<img th:src="@{|/images/notice/${p.image}?sdate=${p.sdate}|}" th:usemap="${'#' + p.id}" th:id="'popup' + ${p.id}" style="display: none;"/>
+			<script>
+                var _banner = 'popup[[${p.id}]]';
+                if ($.cookie(_banner) !== 'hide') {
+                    $('#' + _banner).show();
+                }
+			</script>
+			<map th:name="${p.id}">
+				<area shape="rect" coords="0,520,158,546" href="#" th:onclick="|hideImage('popup${p.id}', true);return false;|"/>
+				<area shape="rect" coords="320,520,380,546" href="#" th:onclick="|hideImage('popup${p.id}', false);return false;|"/>
+			</map>
+		</th:block>
+	</div>
+</div>
+<script layout:fragment="script" th:if="true">
+    if ($('#layout-box img:visible').length === 0) {
+        $('#layout-wrap, #layout-box').hide();
+    }
+
+    function hideImage(id, cook) {
+        if (cook) {
+            $.cookie(id, 'hide');
+        }
+
+        $('#' + id).slideUp(function () {
+            if ($('#layout-box img:visible').length === 0) {
+                $('#layout-wrap').fadeOut(function () {
+                    $('#layout-wrap, #layout-box').hide();
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

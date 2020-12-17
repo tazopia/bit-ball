@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='game', gnb=${menu}, title=${title}" ng-app="app">
+<body ng-controller="gameCtrl">
+<div layout:fragment="popup" th:if="true">
+    <div id="layout-wrap"></div>
+    <div id="layout-load" class="loading"></div>
+    <div ng-cloak id="league" class="ng-cloak">
+        <div>
+            <p class="title">리그검색</p>
+            <a id="league-btn-close"></a>
+        </div>
+        <div>
+            <p class="top" ng-click="changeLeague('')">
+                <span>전체보기</span>
+                <span class="cnt" th:text="${tag.num(gameCnt)}"></span>
+            </p>
+        </div>
+        <div ng-repeat="league in leagueList">
+            <p class="sports" ng-click="changeLeague(league.sportsName, '')" ng-if="league.show">
+                <img ng-src="/images/sports/{{league.sportsFlag}}"/>
+                <span>{{league.sportsName}}</span>
+                <span class="cnt">{{league.total}}</span>
+            </p>
+            <ul id="{{league.sportsName.replaceAll(' ', '_')}}">
+                <li>
+                    <p class="league" ng-click="changeLeague(league.sportsName, league.leagueName)">
+                        <span class="flag"><img ng-src="/images/league/{{league.leagueFlag}}"/></span>
+                        <span class="name">{{league.leagueName}}</span>
+                        <span class="cnt">{{league.cnt}}</span>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<main class="page" layout:fragment="page">
+    <h3>
+		<div class="clock"><span>0</span><span>0</span><em>:</em><span>0</span><span>0</span><em>:</em><span>0</span><span>0</span></div>
+        <p class="btn-box league">
+            <a href="#" ng-click="reloadGame();" class="btn reload">새로고침</a>
+            <a href="#" id="league-btn" class="btn search">경기종목</a>
+        </p>
+    </h3>
+
+    <div class="box" th:if="${#lists.size(notice) gt 0}">
+        <p th:each="n : ${notice}" th:utext="${tag.color(n.title)}"></p>
+    </div>
+
+    <div class="table-wrap game">
+        <table class="table-game">
+            <caption>스포츠</caption>
+            <colgroup>
+                <col>
+                <col style="width: 60px;">
+                <col>
+            </colgroup>
+            <tbody ng-clack class="ng-cloak">
+            <tr ng-repeat-start="g in gameList | filter : filters : true" ng-if="g.s == 0">
+                <th class="league" colspan="3">
+                    <p>
+                        <img ng-src="/images/sports/{{::g.sf}}"/>
+                        <img ng-src="/images/league/{{::g.lf}}"/> {{::g.ln}}
+<!--                        <span class="color01" ng-if="::g.sp != '' && g.mc == 'SPECIAL' && g.sc == '1xBet'">[{{::g.sp}}]</span>-->
+                        <em class="date">{{::g.gdn}} <span>{{::g.gtn}}</span></em>
+                    </p>
+                    <a id="btn{{::g.id}}" ng-if="g.btn" ng-class="show.indexOf(g.id) > -1 ? 'btn' : 'btn btn03'" ng-click="toggleGame(g.ln, g.gd, g.id, $event)">
+                        <em>+ {{::g.cnt}}</em>
+                    </a>
+                </th>
+            </tr>
+            <tr ng-repeat-end id="{{::g.id}}" ng-if="g.sh">
+                <td class="{{::g.bh && g.bt != '진행중' ? 'bet home' : 'home'}}">
+                    <p class="ellipses">
+                        {{::g.hn}}
+                        <span ng-if="::g.sp != '' && g.sc != '본사'" class="color01">[{{::g.sp}}]</span>
+						<span ng-if="::g.sp != '' && g.sc == '본사'" class="color01">[{{::g.sp.split('|')[0]}}]</span>
+                    </p>
+                    <span class="odds">
+                        <span ng-if="g.gc == 'HANDICAP'" class="handy">[핸디캡]</span>
+                        <span ng-if="g.gc == 'OVER_UNDER'" class="over">[오버]</span>
+                        {{::g.oh | number : 2}}
+                    </span>
+                    <a ng-click="::g.bh && add(g.id, 'home', $event)"></a>
+                </td>
+                <td class="{{::g.gc == 'MATCH' ? (g.bd && g.bt != '진행중' ? 'draw bet' : 'draw vs') : (g.gc == 'OVER_UNDER' ? 'draw ou' : 'draw handicap')}}">
+                    {{::g.gc == 'MATCH' ? (g.bd ? (g.od | number : 2) : 'VS') : (g.ah | number : 1)}}
+                    <a ng-click="::g.bd && add(g.id, 'draw', $event)"></a>
+                </td>
+                <td class="{{::g.ba && g.bt != '진행중' ? 'bet away' : 'away'}}">
+                    <p class="ellipses">
+                        <span ng-if="::g.sp != '' && g.sc != '본사'" class="color01">[{{::g.sp}}]</span>
+						<span ng-if="::g.sp != '' && g.sc == '본사'" class="color01">[{{::g.sp.split('|')[1]}}]</span>
+                        {{::g.an}}
+                    </p>
+                    <span class="odds">
+                        {{::g.oa | number : 2}}
+                        <span ng-if="g.gc == 'HANDICAP'" class="handy">[핸디캡]</span>
+                        <span ng-if="g.gc == 'OVER_UNDER'" class="under">[언더]</span>
+                    </span>
+                    <a ng-click="::g.ba && add(g.id, 'away', $event)"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+
+    $('#league-btn').on('click', function () {
+        $('#league').addClass('on');
+    });
+
+    $('#league-btn-close').on('click', function () {
+        $('#league').removeClass('on');
+    });
+
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', '$timeout', function ($scope, $http, $interval, $timeout) {
+        $scope.parseFloat = window.parseFloat;
+        $scope.sports = true;
+        $scope.cart = [];
+        $scope.show = [];
+        $scope.bonus = null;
+        $scope.filters = {};
+        $scope.odds = 1.00;
+        $scope.money = 0;
+        $scope.config = [(${config})];
+        $scope.leagueList = [(${league})];
+        $scope.gameList = [(${gameList})];
+        $scope.force = true;
+
+        $scope.$watch('$viewContentLoaded', function () {
+            $timeout(function () {
+                $('#layout-wrap, #layout-load').fadeOut(function () {
+                    $('#layout-wrap, #layout-load').hide();
+                });
+            })
+        });
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.reloadGame = function () {
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+            $scope.show.length = 0;
+            $scope.cart.length = 0;
+            $scope.odds = 1;
+            $scope.money = 0;
+            $scope.setInfo();
+
+            $http({
+                url: location.href,
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.gameList = response.data;
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+                $scope.gameList = response.data;
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+            });
+        };
+
+        $scope.add = function (id, pos, event) {
+            var ele = angular.element(event.target).parent();
+            var game;
+            var canBet = true;
+            var block = false;
+            var resultOdds = $scope.odds;
+
+            angular.forEach($scope.gameList, function (g) {
+                if (g.id === id) {
+                    game = g;
+                    return false;
+                }
+            });
+
+            angular.forEach($scope.cart, function (c) {
+                if (c.id === id) {
+                    $scope.cart.splice($scope.cart.indexOf(c), 1);
+                    var odds = c.pos === 'home' ? c.game.oh : (c.pos === 'away' ? c.game.oa : c.game.od);
+                    resultOdds = parseFloat($scope.odds / odds);
+                    return false;
+                }
+
+                // 조합이 있다.
+                if (c.id !== game.id && c.game.gid === game.gid && ((c.game.sc === '본사' && c.game.sn !== '야구') || c.game.hn === game.hn) ) {
+                    // console.log(game.gc + ' = ' + c.game.gc);
+                    // console.log(pos + ' - ' + c.pos);
+
+                    // 같은 종류는 베팅 불허
+                    if (c.game.gc === game.gc) {
+                        canBet = false;
+                        return false;
+                    }
+
+                    switch (c.game.gc) {
+                        case 'MATCH':
+                            if (game.gc === 'HANDICAP') {
+                                if ($scope.matchHandicap(game.sn)) {
+                                    block = true;
+                                    return false;
+                                }
+                                if ($scope.drawHandicap(game.sn) && c.pos === 'draw') {
+                                    block = true;
+                                    return false;
+                                }
+                            }
+                            if (game.gc === 'OVER_UNDER') {
+                                if ($scope.matchOverUnder(game.sn)) {
+                                    block = true;
+                                    return false;
+                                }
+                                if ($scope.drawOverUnder(game.sn) && c.pos === 'draw') {
+                                    block = true;
+                                    return false;
+                                }
+                            }
+                            break;
+                        case 'HANDICAP':
+                            if (game.gc === 'MATCH') {
+                                if ($scope.matchHandicap(game.sn)) {
+                                    block = true;
+                                    return false;
+                                }
+                                if ($scope.drawHandicap(game.sn) && pos === 'draw') {
+                                    block = true;
+                                    return false;
+                                }
+                            }
+                            if (game.gc === 'OVER_UNDER') {
+                                if ($scope.handicapOverUnder(game.sn)) {
+                                    block = true;
+                                    return false;
+                                }
+                            }
+                            break;
+                        case 'OVER_UNDER':
+                            if (game.gc === 'HANDICAP') {
+                                if ($scope.handicapOverUnder(game.sn)) {
+                                    block = true;
+                                    return false;
+                                }
+                            }
+                            if (game.gc === 'MATCH') {
+                                if ($scope.matchOverUnder(game.sn)) {
+                                    block = true;
+                                    return false;
+                                }
+                                if ($scope.drawOverUnder(game.sn) && pos === 'draw') {
+                                    block = true;
+                                    return false;
+                                }
+                            }
+                            break;
+                    }
+                }
+            });
+
+            // 동일경기 동일 조합
+            if (!canBet) {
+                alert(game.sn + ' - 같은 경기의 조합은 구분당 한경기만 베팅 가능 합니다.');
+                return;
+            }
+
+            // 조합베팅 불가
+            if (block) {
+                alert(game.sn + ' - 조합베팅 규정안내!\n\n동일경기 조합은 불가능 합니다.');
+                return;
+            }
+
+            if (ele.hasClass('on')) {
+                ele.removeClass('on');
+            } else {
+                // 최대 조합 체크
+                if ($scope.cart.length >= $scope.config.sportsMaxFolder) {
+                    alert(String.format('최대 베팅 조합은 {0}폴더 입니다.', $scope.config.sportsMaxFolder));
+                    return;
+                }
+                // 최대 배당율
+                var odds = pos === 'home' ? game.oh : (pos === 'away' ? game.oa : game.od);
+                if ($scope.config.sportsMaxOdds > 0 && parseFloat(resultOdds * odds) > $scope.config.sportsMaxOdds) {
+                    alert(String.format('조합 최대 배당율은 {0}배 이하 입니다.', $scope.config.sportsMaxOdds));
+                    return;
+                }
+
+                ele.parent().find('.bet').removeClass('on');
+                ele.addClass('on');
+
+
+                $scope.cart.push({id: id, pos: pos, game: game});
+            }
+            $scope.calcMoney();
+        };
+        $scope.remove = function (id) {
+            angular.element('#' + id).find('.bet').removeClass('on');
+            angular.forEach($scope.cart, function (c) {
+                if (c.id === id) $scope.cart.splice($scope.cart.indexOf(c), 1);
+            });
+            $scope.calcMoney();
+        };
+        $scope.calcMoney = function () {
+            var odds = 1.0;
+            var isMin = false;
+            var minOdd = $scope.config.minOdd;
+            angular.forEach($scope.cart, function (c) {
+                switch (c.pos) {
+                    case 'home':
+                        odds = parseFloat(odds * c.game.oh);
+                        if (minOdd > 1.0 && c.game.oh < $scope.config.minOdd) isMin = true;
+                        break;
+                    case 'draw':
+                        odds = parseFloat(odds * c.game.od);
+                        if (minOdd > 1.0 && c.game.od < $scope.config.minOdd) isMin = true;
+                        break;
+                    case 'away':
+                        odds = parseFloat(odds * c.game.oa);
+                        if (minOdd > 1.0 && c.game.oa < $scope.config.minOdd) isMin = true;
+                        break;
+                }
+            });
+            if ($scope.config.bonusOdds[$scope.cart.length] > 0) {
+                $scope.bonus = {odds: $scope.config.bonusOdds[$scope.cart.length], folder: $scope.cart.length, isMin: isMin, minOdd: $scope.config.minOdd };
+                if (!isMin) {
+                    odds = parseFloat(odds * $scope.config.bonusOdds[$scope.cart.length]);
+                }
+            } else {
+                $scope.bonus = null;
+            }
+            $scope.odds = Math.floor(odds * 100) / 100;
+        };
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) { // 선택이 없음
+                $scope.money = 0;
+            } else if ($scope.cart.length === 1) { // 1폴더
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.oneWin / $scope.odds), $scope.config.oneMax), $scope.config.money);
+            } else { // 다폴더
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / $scope.odds), $scope.config.max), $scope.config.money);
+            }
+        };
+        $scope.changeLeague = function (sports, league) {
+            if (sports === '') {
+                $scope.filters = {};
+            } else if (league === '') {
+                angular.element('#' + sports.replaceAll(' ', '_')).toggleClass('on');
+                if (angular.element('#' + sports.replaceAll(' ', '_')).hasClass('on')) {
+                    $scope.filters.sn = sports;
+                    delete $scope.filters.ln;
+                }
+            } else {
+                $scope.filters.sn = sports;
+                $scope.filters.ln = league;
+            }
+
+            setTimeout(function () {
+                angular.element('.bet').removeClass('on');
+                angular.element('.container > section').css('min-height', angular.element('#left-league').height() + 100);
+                angular.forEach($scope.cart, function (c) {
+                    switch (c.pos) {
+                        case 'home':
+                            angular.element('#' + c.id).find('.bet.home').addClass('on');
+                            break;
+                        case 'draw':
+                            angular.element('#' + c.id).find('.bet.draw').addClass('on');
+                            break;
+                        case 'away':
+                            angular.element('#' + c.id).find('.bet.away').addClass('on');
+                            break;
+                    }
+                });
+            }, 10);
+        };
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.cart.length === 1 && !$scope.config.one) {
+                alert('단폴더 베팅은 불가능 합니다.');
+                return;
+            }
+            if ($scope.cart.length === 1 && $scope.money < $scope.config.oneMin) {
+                alert(String.format('단폴더 최소 베팅 금액은 {0}원 입니다.', $scope.config.oneMin.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.cart.length > 1 && $scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.cart.length === 1 && $scope.money > $scope.config.oneMax) {
+                alert(String.format('단폴더 최대 베팅 금액은 {0}원 입니다.', $scope.config.oneMax.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.cart.length > 1 && $scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.cart.length === 1 && Math.floor($scope.odds * $scope.money) > $scope.config.oneWin) {
+                alert(String.format('단폴더 적중 상한 금액은 {0}원 입니다.', $scope.config.oneWin.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.cart.length > 1 && Math.floor($scope.odds * $scope.money) > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            var ids = [];
+            var bets = [];
+            var odds = [];
+            angular.forEach($scope.cart, function (c) {
+                ids.push(c.id);
+                bets.push(c.pos);
+                switch (c.pos) {
+                    case 'home':
+                        odds.push(c.game.oh);
+                        break;
+                    case 'draw':
+                        odds.push(c.game.od);
+                        break;
+                    case 'away':
+                        odds.push(c.game.oa);
+                        break;
+                }
+            });
+
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            // 베팅
+            $http({
+                url: path + '/game/[[${menu}]]/betting',
+                method: 'POST',
+                data: {
+                    "betMoney": $scope.money,
+                    "ids": ids,
+                    "bets": bets,
+                    "odds": odds,
+                    "force": $scope.force
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                if (response.data.success) {
+                    if (response.data.value === 'one') {
+                        alert(String.format('단폴더 베팅으로 배당이 {0} 하락하였습니다.', $scope.config.bonusOne));
+                    }
+                } else {
+                    alert(response.data.message);
+                }
+                $scope.reloadGame();
+            }, function error(response) {
+                angular.element('#cart-wrap').removeClass('on');
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+                $scope.reloadGame();
+            });
+        };
+
+        $scope.toggleGame = function (ln, gd, id) {
+            var ele = angular.element('#btn' + id);
+            var idx = $scope.show.indexOf(id);
+            if (idx > -1) {
+                $scope.show.splice(idx, 1);
+            } else {
+                $scope.show.push(id);
+            }
+
+            angular.forEach($scope.gameList, function (g) {
+                if (g.ln === ln && g.gd === gd) {
+                    g.sh = !(idx > -1 && g.s > 1);
+                }
+            });
+            ele.toggleClass('btn03');
+        };
+
+        // 승무패, 핸디캡 조합
+        $scope.matchHandicap = function (game) {
+            switch (game) {
+                case '축구':
+                    return $scope.config.cbSoccer.matchHandicap;
+                case '농구':
+                    return $scope.config.cbBasketball.matchHandicap;
+                case '배구':
+                    return $scope.config.cbVolleyball.matchHandicap;
+                case '아이스하키':
+                    return $scope.config.cbHockey.matchHandicap;
+                default:
+                    return $scope.config.cbDefault.matchHandicap;
+            }
+        };
+        // 무, 핸디캡 조합
+        $scope.drawHandicap = function (game) {
+            switch (game) {
+                case '축구':
+                    return $scope.config.cbSoccer.drawHandicap;
+                case '농구':
+                    return $scope.config.cbBasketball.drawHandicap;
+                case '배구':
+                    return $scope.config.cbVolleyball.drawHandicap;
+                case '아이스하키':
+                    return $scope.config.cbHockey.drawHandicap;
+                default:
+                    return $scope.config.cbDefault.drawHandicap;
+            }
+        };
+        // 승무패, 오버언더 조합
+        $scope.matchOverUnder = function (game) {
+            switch (game) {
+                case '축구':
+                    return $scope.config.cbSoccer.matchOverUnder;
+                case '농구':
+                    return $scope.config.cbBasketball.matchOverUnder;
+                case '배구':
+                    return $scope.config.cbVolleyball.matchOverUnder;
+                case '아이스하키':
+                    return $scope.config.cbHockey.matchOverUnder;
+                default:
+                    return $scope.config.cbDefault.matchOverUnder;
+            }
+        };
+        // 무, 오버언더 조합
+        $scope.drawOverUnder = function (game) {
+            switch (game) {
+                case '축구':
+                    return $scope.config.cbSoccer.drawOverUnder;
+                case '농구':
+                    return $scope.config.cbBasketball.drawOverUnder;
+                case '배구':
+                    return $scope.config.cbVolleyball.drawOverUnder;
+                case '아이스하키':
+                    return $scope.config.cbHockey.drawOverUnder;
+                default:
+                    return $scope.config.cbDefault.drawOverUnder;
+            }
+        };
+        // 핸디캡, 오버언더 조합
+        $scope.handicapOverUnder = function (game) {
+            switch (game) {
+                case '축구':
+                    return $scope.config.cbSoccer.handicapOverUnder;
+                case '농구':
+                    return $scope.config.cbBasketball.handicapOverUnder;
+                case '배구':
+                    return $scope.config.cbVolleyball.handicapOverUnder;
+                case '아이스하키':
+                    return $scope.config.cbHockey.handicapOverUnder;
+                default:
+                    return $scope.config.cbDefault.handicapOverUnder;
+            }
+        }
+    }]);
+</script>
+</body>
+</html>

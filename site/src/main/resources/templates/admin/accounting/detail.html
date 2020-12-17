@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='accounting', lnb='detail'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>정산 :</small>
+    상세 정산
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/accounting/detail|}" method="get">
+                <label>
+                    검색기간 :
+                    <input type="text" class="cal" th:field="*{sdate}" /> ~
+                    <input type="text" class="cal" th:field="*{edate}" />
+                </label>
+				<label>
+					총본사 :
+					<select th:field="*{agency4}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+				<label>
+					부본사 :
+					<select th:field="*{agency3}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+				<label>
+					총판 :
+					<select th:field="*{agency2}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+				<label>
+					매장 :
+					<select th:field="*{agency1}">
+						<option value="">선택하세요.</option>
+					</select>
+				</label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/accounting/detail|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-calendar"></i>
+                상세 정산
+            </h3>
+        </div>
+        <table class="table-list" style="table-layout: fixed;">
+            <caption>상세 정산</caption>
+            <thead>
+            <tr>
+                <th>충전 금액</th>
+                <th>포인트 전환</th>
+                <th>포인트 획득</th>
+                <th>환전 금액</th>
+                <th>회원 머니</th>
+                <th>회원 포인트</th>
+            </tr>
+            <tr>
+                <td class="color01 accounting num" th:text="${tag.num(#aggregates.sum(money.?[code == 'DEPOSIT' || code == 'DEPOSIT_ROLLBACK'].![amount]))}"></td>
+                <td class="color02 accounting num" th:text="${tag.num(#aggregates.sum(money.?[code == 'EXCHANGE'].![amount]))}"></td>
+                <td class="color02 accounting num" th:text="${tag.num(#aggregates.sum(point.![amount]))}"></td>
+                <td class="color01 accounting num" th:text="${tag.num(#aggregates.sum(money.?[code == 'WITHDRAW' || code == 'WITHDRAW_ROLLBACK'].![amount]))}"></td>
+                <td class="color03 accounting num" th:text="${tag.num(amount.money)}"></td>
+                <td class="color03 accounting num" th:text="${tag.num(amount.point)}"></td>
+            </tr>
+            <tr>
+                <th>종목</th>
+                <th>베팅금</th>
+                <th>당첨금</th>
+                <th>낙첨금</th>
+                <th>정산금</th>
+                <th>진행중</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="g : ${list}">
+                <td th:text="${g.menuName}"></td>
+                <td class="num" th:text="${tag.num(g.betMoney)}"></td>
+                <td class="num" th:text="${tag.num(g.winMoney)}"></td>
+                <td class="num" th:text="${tag.num(g.loseMoney)}"></td>
+                <td th:class="${g.betMoney - g.winMoney < 0} ? 'num color03' : 'num color02'" th:text="${tag.num(g.betMoney - g.winMoney)}"></td>
+                <td class="num" th:text="${tag.num(g.ingMoney)}"></td>
+            </tr>
+            </tbody>
+            <thead>
+            <tr>
+                <th class="accounting">합계</th>
+                <th class="color04 accounting num" th:text="${tag.num(#aggregates.sum(list.![betMoney]))}"></th>
+                <th class="color04 accounting num" th:text="${tag.num(#aggregates.sum(list.![winMoney]))}"></th>
+                <th class="color04 accounting num" th:text="${tag.num(#aggregates.sum(list.![loseMoney]))}"></th>
+                <th class="color04 accounting num" th:text="${tag.num(#aggregates.sum(list.![betMoney - winMoney]))}"></th>
+                <th class="color04 accounting num" th:text="${tag.num(#aggregates.sum(list.![ingMoney]))}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>관리자 지급 / 회수 머니</td>
+                <td>
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(money.?[code == 'ADD'].![amount]))}"></span> /
+                    <span class="color02" th:text="${tag.num(#aggregates.sum(money.?[code == 'REMOVE'].![amount]))}"></span>
+                </td>
+                <td>관리자 지급 / 회수 포인트</td>
+                <td>
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'ADD'].![amount]))}"></span> /
+                    <span class="color02" th:text="${tag.num(#aggregates.sum(point.?[code == 'REMOVE'].![amount]))}"></span>
+                </td>
+                <td>충전 보너스 / 총판 배당 포인트</td>
+                <td>
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'DEPOSIT'].![amount]))}"></span> /
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'SALE'].![amount]))}"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>미적중 / 추천인 포인트</td>
+                <td>
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(money.?[code == 'LOSE'].![amount]))}"></span> /
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(money.?[code == 'RECOMM'].![amount]))}"></span>
+                </td>
+                <td>가입 / 로그인 / 이벤트 포인트</td>
+                <td>
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'JOIN'].![amount]))}"></span> /
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'LOGIN'].![amount]))}"></span> /
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'EVENT'].![amount]))}"></span>
+                </td>
+                <td>게시글 / 댓글 포인트</td>
+                <td>
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'BOARD'].![amount]))}"></span> /
+                    <span class="color03" th:text="${tag.num(#aggregates.sum(point.?[code == 'COMMENT'].![amount]))}"></span>
+                </td>
+            </tr>
+            </tbody>
+            <thead>
+            <tr>
+                <th>입출금</th>
+                <th colspan="5">
+                    입금 : <em th:text="${tag.num(#aggregates.sum(money.?[code == 'DEPOSIT' || code == 'DEPOSIT_ROLLBACK'].![amount]))}"></em>
+                    -
+                    출금 : <em th:text="${tag.num(0 - tag.numVal(#aggregates.sum(money.?[code == 'WITHDRAW' || code == 'WITHDRAW_ROLLBACK'].![amount])))}"></em>
+                    -
+                    수수료 : <em th:text="${tag.num(fees)}"></em>
+                    =
+                    <em class="color02" th:text="${tag.num(tag.numVal(#aggregates.sum(money.?[code == 'DEPOSIT' || code == 'DEPOSIT_ROLLBACK' || code == 'WITHDRAW' || code == 'WITHDRAW_ROLLBACK'].![amount])) - fees)}"></em>
+                </th>
+            </tr>
+            <tr>
+                <th>실정산</th>
+                <th colspan="5">
+                    입출금내역 : <em th:text="${tag.num(#aggregates.sum(money.?[code == 'DEPOSIT' || code == 'DEPOSIT_ROLLBACK' || code == 'WITHDRAW' || code == 'WITHDRAW_ROLLBACK'].![amount]))}"></em>
+                    -
+                    머니변동내역 : <em th:text="${tag.num(#aggregates.sum(money.![amount]))}"></em>
+                    -
+                    포인트변동내역 : <em th:text="${tag.num(#aggregates.sum(point.![amount]))}"></em>
+                    -
+                    수수료 : <em th:text="${tag.num(fees)}"></em>
+                    =
+                    <em class="color02" th:text="${tag.num(tag.numVal(#aggregates.sum(money.?[code == 'DEPOSIT' || code == 'DEPOSIT_ROLLBACK' || code == 'WITHDRAW' || code == 'WITHDRAW_ROLLBACK'].![amount])) - tag.numVal(#aggregates.sum(money.![amount])) - tag.numVal(#aggregates.sum(point.![amount])) - fees)}"></em>
+                </th>
+            </tr>
+            </thead>
+        </table>
+
+        <div class="panel-footer">
+
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var agencies = [(${agencies})];
+    agency1 = '[[${command.agency1}]]', agency2 = '[[${command.agency2}]]', agency3 = '[[${command.agency3}]]', agency4= '[[${command.agency4}]]';
+    var _agency4 = '';
+    agencies.forEach(function (agency) {
+        if (_agency4 !== agency.agency4) {
+            $('#agency4').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            _agency4 = agency.agency4;
+        }
+    });
+
+    $('#agency4').on('change', function () {
+        var agency4 = $('#agency4').val();
+        var agency3 = '';
+        $('#agency3').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency4 === agency.agency4 && agency.agency3 != null && agency.agency3 !== '' && agency3 !== agency.agency3) {
+                $('#agency3').append('<option value="' + agency.agency3 + '">' + agency.agency3 + '</option>');
+            }
+            agency3 = agency.agency3;
+        });
+        $('#agency3').change();
+    });
+
+    $('#agency3').on('change', function () {
+        var agency3 = $('#agency3').val();
+        var agency2 = '';
+        $('#agency2').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency3 === agency.agency3 && agency.agency2 != null && agency.agency2 !== '' && agency2 !== agency.agency2) {
+                $('#agency2').append('<option value="' + agency.agency2 + '">' + agency.agency2 + '</option>');
+            }
+            agency2 = agency.agency2;
+        });
+        $('#agency2').change();
+    });
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        var agency1 = '';
+        $('#agency1').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency2 == agency.agency2 && agency.agency1 != null && agency.agency1 !== '' && agency1 !== agency.agency1) {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+            agency1 = agency.agency1;
+        });
+        $('#agency1').change();
+    });
+
+    $('#agency4').val(agency4).change();
+    $('#agency3').val(agency3).change();
+    $('#agency2').val(agency2).change();
+    $('#agency1').val(agency1);
+</script>
+</body>
+</html>

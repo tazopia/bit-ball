@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<title>Best of Stella</title>
+	<link rel="shortcut icon" href="/images/favicon.ico"/>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/dark-hive/jquery-ui.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="/css/style.admin.css"/>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+</head>
+<body id="login" ng-app="app">
+<div class="login-wrap">
+	<h1><span>Stella</span> ADMIN</h1>
+	<div class="login-form" ng-controller="loginController">
+		<form>
+			<label class="label-top">
+				<input type="text" id="username" name="username" placeholder="userid" autofocus="autofocus"/>
+				<span><i class="fa fa-user" aria-hidden="true"></i></span>
+			</label>
+			<label class="label-bottom">
+				<input type="password" id="password" name="password" placeholder="password"/>
+				<span><i class="fa fa-unlock-alt" aria-hidden="true"></i></span>
+			</label>
+			<input type="submit" class="btn-login" value="Log in" ng-click="login()"/>
+		</form>
+		<div class="copyright">
+			Copyright &copy; 2016 <span>Stella Solution.</span> All Right Reserved.
+		</div>
+	</div>
+</div>
+<script>
+	var app = angular.module('app', []);
+	app.controller('loginController', function ($scope) {
+		$scope.login = function () {
+			alert('');
+		}
+	})
+</script>
+</body>
+</html>

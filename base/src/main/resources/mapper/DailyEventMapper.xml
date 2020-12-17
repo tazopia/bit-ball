@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.DailyEventMapper">
+
+    <select id="todayCash" parameterType="String" resultType="Long">
+        select IsNull(SUM(amount), 0) from BANKING
+        where userid = #{userid} and bankingCode = 'IN' and closing = 1 and cancel = 0
+        and regDate between convert(datetime, #{start}) and convert(datetime, #{end})
+    </select>
+
+    <select id="hasCheckDaily" resultType="Long">
+        SELECT count(*) FROM daily WHERE userid = #{userid} AND sdate = #{sdate}
+    </select>
+
+    <select id="getYesterday" resultType="Integer">
+        SELECT daily FROM daily WHERE userid = #{userid} AND sdate = #{sdate}
+    </select>
+
+    <insert id="addDaily">
+        INSERT INTO daily (userid, nickname, sdate, daily) VALUES (#{userid}, #{nickname}, #{sdate}, #{daily});
+    </insert>
+
+    <select id="calendar" resultType="spoon.event.domain.DailyCalendar">
+        SELECT
+            b.daily, a.dt as sdate
+        from d_date a
+        LEFT JOIN daily b
+        ON a.dt = b.sdate and b.userid = #{userid}
+        WHERE a.dt LIKE #{month} + '%'
+        order by a.dt
+    </select>
+
+</mapper>

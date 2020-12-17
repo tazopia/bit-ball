@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/mobileLayout" th:with="mode='main', title=${siteConfig.companyName}">
+<body>
+<main class="main" layout:fragment="page">
+	<div class="marquee">
+		<marquee th:utext="${tag.color(rolling)}">이곳에 뉴스가 들어갑니다. 뉴스가 들어갑니다. 뉴스가 들어갑니다.</marquee>
+	</div>
+	<div class="main-menu">
+		<a th:href="@{|${siteConfig.pathSite}/payment/deposit|}"><img src="/images/m/m-deposit.png"/>충 전</a>
+		<a th:href="@{|${siteConfig.pathSite}/payment/withdraw|}"><img src="/images/m/m-withdraw.png"/>환 전</a>
+<!--		<a th:href="@{|${siteConfig.pathSite}/game/cross|}"><img src="/images/m/m-cross.png"/>크로스</a>-->
+<!--		<a th:href="@{|${siteConfig.pathSite}/game/special|}"><img src="/images/m/m-special.png"/>스페셜</a>-->
+<!--		<a href="#" onclick="alert('준비중입니다.');"><img src="/images/m/m-inplay.png"/>라이브</a>-->
+<!--		<a th:if="${sysConfig.sports.canInplay}" th:href="@{|${siteConfig.pathSite}/inplay|}"><img src="/images/m/m-inplay.png"/>인플레이</a>-->
+<!--		<a th:href="@{|${siteConfig.pathSite}/sun|}"><img src="/images/m/m-slot.png"/>슬롯머신</a>-->
+<!--		<a th:href="@{|${siteConfig.pathSite}/sun|}"><img src="/images/m/m-casino.png"/>카지노</a>-->
+		<th:block th:if="${!sysConfig.zone.gnb.empty}">
+			<a th:if="${sysConfig.zone.ladder}" th:href="@{|${siteConfig.pathSite}/zone/ladder|}"><img src="/images/m/m-sadari.png"/>사다리</a>
+			<a th:if="${sysConfig.zone.dari}" th:href="@{|${siteConfig.pathSite}/zone/dari|}"><img src="/images/m/m-dari.png"/>다리다리</a>
+			<a th:if="${sysConfig.zone.snail}" th:href="@{|${siteConfig.pathSite}/zone/snail|}"><img src="/images/m/m-dal.png"/>달팽이</a>
+			<a th:if="${sysConfig.zone.newSnail}" th:href="@{|${siteConfig.pathSite}/zone/new_snail|}"><img src="/images/m/m-dal.png"/>달팽이</a>
+			<a th:if="${sysConfig.zone.power}" th:href="@{|${siteConfig.pathSite}/zone/power|}"><img src="/images/m/m-power.png"/>파워볼</a>
+			<a th:if="${sysConfig.zone.powerLadder}" th:href="@{|${siteConfig.pathSite}/zone/power_ladder|}"><img src="/images/m/m-keno-ladder.png"/>파워사다리</a>
+			<a th:if="${sysConfig.zone.kenoLadder}" th:href="@{|${siteConfig.pathSite}/zone/keno_ladder|}"><img src="/images/m/m-power-ladder.png"/>키노사다리</a>
+			<a th:if="${sysConfig.zone.keno}" th:href="@{|${siteConfig.pathSite}/zone/keno|}"><img src="/images/m/m-keno.png"/>스피드키노</a>
+
+			<a th:if="${sysConfig.zone.bitcoin1}" th:href="@{|${siteConfig.pathSite}/zone/bitcoin1|}"><img src="/images/m/m-btc.png"/>BTC 1분</a>
+			<a th:if="${sysConfig.zone.bitcoin3}" th:href="@{|${siteConfig.pathSite}/zone/bitcoin3|}"><img src="/images/m/m-btc.png"/>BTC 3분</a>
+			<a th:if="${sysConfig.zone.bitcoin5}" th:href="@{|${siteConfig.pathSite}/zone/bitcoin5|}"><img src="/images/m/m-btc.png"/>BTC 5분</a>
+
+			<a th:if="${sysConfig.zone.aladdin}" th:href="@{|${siteConfig.pathSite}/zone/aladdin|}"><img src="/images/m/m-alradin.png"/>알라딘</a>
+			<a th:if="${sysConfig.zone.lowhi}" th:href="@{|${siteConfig.pathSite}/zone/lowhi|}"><img src="/images/m/m-lowhigh.png"/>로하이</a>
+
+			<a th:if="${sysConfig.zone.crownOddeven}" th:href="@{|${siteConfig.pathSite}/zone/cw_oddeven|}"><img src="/images/m/m-oddeven.png"/>홀짝</a></a>
+			<a th:if="${sysConfig.zone.crownBaccarat}" th:href="@{|${siteConfig.pathSite}/zone/cw_baccarat|}"><img src="/images/m/m-baccarat.png"/>바카라</a></a>
+			<a th:if="${sysConfig.zone.crownSutda}" th:href="@{|${siteConfig.pathSite}/zone/cw_sutda|}"><img src="/images/m/m-sutda.png"/>섯다</a></a>
+
+			<a th:if="${sysConfig.zone.oddeven}" th:href="@{|${siteConfig.pathSite}/zone/oddeven|}"><img src="/images/m/m-oddeven.png"/>OZ홀짝</a>
+			<a th:if="${sysConfig.zone.baccarat}" th:href="@{|${siteConfig.pathSite}/zone/baccarat|}"><img src="/images/m/m-baccarat.png"/>OZ바카라</a>
+			<a th:if="${sysConfig.zone.soccer}" th:href="@{|${siteConfig.pathSite}/zone/soccer|}"><img src="/images/m/m-soccer.png"/>가상축구</a>
+			<a th:if="${sysConfig.zone.dog}" th:href="@{|${siteConfig.pathSite}/zone/dog|}"><img src="/images/m/m-dog.png"/>개경주</a>
+			<a th:if="${sysConfig.zone.luck}" th:href="@{|${siteConfig.pathSite}/zone/luck|}"><img src="/images/m/m-luck.png"/>세븐럭</a>
+		</th:block>
+		<a th:href="@{|${siteConfig.pathSite}/score/cross|}"><img src="/images/m/m-result.png"/>경기결과</a>
+		<a th:href="@{|${siteConfig.pathSite}/betting|}"><img src="/images/m/m-betlist.png"/>베팅내역</a>
+		<a th:href="@{|${siteConfig.pathSite}/board/free|}"><img src="/images/m/m-freeboard.png"/>자유게시판</a>
+		<a th:href="@{|${siteConfig.pathSite}/board/notice|}"><img src="/images/m/m-notice.png"/>공지사항</a>
+		<a th:href="@{|${siteConfig.pathSite}/board/event|}"><img src="/images/m/m-event.png"/>이벤트</a>
+		<a th:href="@{|${siteConfig.pathSite}/customer/qna|}"><img src="/images/m/m-customer.png"/>고객상담</a>
+		<a th:if="${sysConfig.event.daily}" th:href="@{|${siteConfig.pathSite}/event/daily|}"><img src="/images/m/m-daily.png"/>출석체크</a>
+	</div>
+	<div class="payment">
+		<a href="#" onclick="payment.account();return false;" class="btn payment">입금계좌 요청</a><br/>
+		<img src="/images/kakao.png" style="margin-top:10px;"/><br/>
+		<img src="/images/telegram.png" style="margin-top:10px;"/>
+	</div>
+</main>
+<div layout:fragment="popup" th:if="${#arrays.length(popup) gt 0}">
+	<div id="layout-wrap"></div>
+	<div id="layout-box">
+		<th:block th:each="p : ${popup}">
+			<img th:src="@{|/images/notice/${p.image}?sdate=${p.sdate}|}" th:usemap="${'#' + p.id}" th:id="'popup' + ${p.id}" style="display: none;"/>
+			<script>
+                var _banner = 'popup[[${p.id}]]';
+                if ($.cookie(_banner) !== 'hide') {
+                    $('#' + _banner).show();
+                }
+			</script>
+			<map th:name="${p.id}">
+				<area shape="rect" coords="0,520,158,546" href="#" th:onclick="|hideImage('popup${p.id}', true);return false;|"/>
+				<area shape="rect" coords="320,520,380,546" href="#" th:onclick="|hideImage('popup${p.id}', false);return false;|"/>
+			</map>
+		</th:block>
+	</div>
+</div>
+<script layout:fragment="script" th:if="${#arrays.length(popup) gt 0}">
+    if ($('#layout-box img:visible').length === 0) {
+        $('#layout-wrap, #layout-box').hide();
+    }
+
+    function hideImage(id, cook) {
+        if (cook) {
+            $.cookie(id, 'hide');
+        }
+
+        $('#' + id).slideUp(function () {
+            if ($('#layout-box img:visible').length === 0) {
+                $('#layout-wrap').fadeOut(function () {
+                    $('#layout-wrap, #layout-box').hide();
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

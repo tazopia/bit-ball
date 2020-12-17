@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='sale', lnb='banking'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>정산관리 :</small>
+    입출금 내역
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathSeller}/sale/banking|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    입출금 내역 :
+                    <select th:field="*{bankingCode}">
+                        <option th:value="''">전체보기</option>
+                        <option th:value="'IN'">입금</option>
+                        <option th:value="'OUT'">출금</option>
+                    </select>
+                </label>
+                <label>
+                    아이디/닉네임
+                    <input type="text" th:field="*{username}" />
+                    (일치 <input type="checkbox" th:field="*{match}"/>)
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathSeller}/sale/banking|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-calendar"></i>
+                입출금 내역
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>입출금 내역</caption>
+            <colgroup>
+
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>대리점</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>신청시간</th>
+                <th>입출금</th>
+                <th>머니</th>
+                <th>포인트</th>
+                <th>입출금액</th>
+                <th>비고</th>
+            </tr>
+            </thead>
+            <tbody id="money-body">
+            <tr th:each="b,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td th:text="${b.agency1}"></td>
+                <td class="color03" th:text="${b.userid}"></td>
+                <td class="color02" th:text="${b.nickname}"></td>
+                <td th:utext="${tag.dayWeekTimes(b.regDate)}"></td>
+                <td th:class="${b.bankingCode.name() eq 'IN'} ? 'color01' : 'color03'" th:text="${b.bankingCode.name}">0</td>
+                <td class="color01 num" th:text="${tag.num(b.money)}"></td>
+                <td class="color02 num" th:text="${tag.num(b.point)}"></td>
+                <td th:class="${b.bankingCode.name() eq 'IN'} ? 'color01 num' : 'color03 num'" th:text="${tag.num(b.amount)}">0</td>
+                <td class="num">
+                    <th:block th:if="${b.bonusPoint gt 0}">
+                        <span class="color02" th:text="${b.bonus}"></span> :
+                        <span th:text="${tag.num(b.bonusPoint)}"></span>
+                    </th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

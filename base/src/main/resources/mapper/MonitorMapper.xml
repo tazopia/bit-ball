@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.MonitorMapper">
+
+    <select id="getAmount" resultType="spoon.monitor.domain.MonitorDto$Amount">
+        SELECT IsNull(SUM(money), 0) as money, IsNull(SUM(point), 0) as point
+        FROM member
+        WHERE role != 'DUMMY' AND enabled = 1 AND secession = 0
+    </select>
+
+    <select id="getBank" resultType="spoon.monitor.domain.MonitorDto$Bank">
+        SELECT
+	        (SELECT IsNull(sum(amount), 0) from BANKING where bankingCode = 'IN' and regDate between #{start} and #{end} and closing = 1 and cancel = 0) as inAmount,
+	        (SELECT IsNull(sum(amount), 0) from BANKING where bankingCode = 'OUT' and regDate between #{start} and #{end} and closing = 1 and cancel = 0) as outAmount
+    </select>
+
+    <select id="getBet" resultType="spoon.monitor.domain.MonitorDto$Bet">
+        SELECT menuCode, IsNull(SUM(betMoney), 0) as betMoney from BET
+        WHERE betDate &gt; DateAdd(day, -1, betDate) and role != 'DUMMY' and closing = 0 and cancel = 0
+        GROUP BY menuCode
+    </select>
+
+    <select id="getBetEnd" resultType="spoon.monitor.domain.MonitorDto$Bet">
+        SELECT menuCode, IsNull(SUM(betMoney), 0) as betMoney, IsNull(SUM(hitMoney), 0) as hitMoney from BET
+        WHERE betDate between #{start} and #{end} and role != 'DUMMY' and closing = 1 and cancel = 0
+        GROUP BY menuCode
+    </select>
+
+    <select id="getInplay" resultType="Long">
+        SELECT IsNull(SUM(betMoney), 0) from INPLAY_BET
+        WHERE betDate &gt; DateAdd(day, -1, betDate) AND role != 'DUMMY' and closing = 0 and cancel = 0 and enabled = 1
+    </select>
+
+    <select id="getInplayEnd" resultType="Long">
+        SELECT IsNull(SUM(betMoney), 0) - IsNull(SUM(hitMoney), 0) from INPLAY_BET
+        WHERE betDate between #{start} AND #{end} AND role != 'DUMMY' and closing = 1 and cancel = 0 and enabled = 1
+    </select>
+
+    <select id="getSun" resultType="Long">
+        SELECT IsNull(SUM(amount), 0) from MONEY
+        WHERE moneyCode = 'SUN_OUT' AND regDate between #{start} AND #{end} AND role != 'DUMMY' and cancel = 0
+    </select>
+
+    <select id="getSunEnd" resultType="Long">
+        SELECT IsNull(SUM(amount), 0) from MONEY
+        WHERE moneyCode = 'SUN_IN' AND regDate between #{start} AND #{end} AND role != 'DUMMY' and cancel = 0
+    </select>
+
+</mapper>

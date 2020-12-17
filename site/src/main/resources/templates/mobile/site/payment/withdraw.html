@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page',gnb='page',title='환전신청'">
+<body>
+<main class="page" layout:fragment="page">
+
+    <div class="box">
+        <h4>주의사항 안내</h4>
+        <p>
+            24시간 자유롭게 환전이 가능하며 최장 3~5분이 소요 됩니다. (단 23시 ~ 0시 30분까지는 타행이체가 불가능 합니다.)<br/>
+            환전은 신청즉시 보유머니에서 차감 됩니다.<br/>
+            10분이상 입금이 지연된 경우에는 회원님의 입금계좌정보를 잘못 기입한 경우가 많습니다. 그럴경우 <span class="color01">고객센터</span>로 계좌번호를 정확하게 보내 주세요.<br/>
+            <span class="color03">가입등록된 예금주 외의 계좌로는 환전이 불가능</span> 합니다.<br/>
+            충전 및 베팅내역이 없으신분은 환전하실 수 없습니다.<br/>
+            환전신청 최소금액은 <span class="color02" th:text="${tag.num(siteConfig.point.withdrawMin) + '원'}">10,000원</span> 부터
+            <span class="color01" th:text="${tag.num(siteConfig.point.withdrawUnit) + '원'}">10,000원</span> 단위로 가능합니다.<br/>
+            환전신청 버튼을 클릭하시면 환전이 완료 됩니다.
+        </p>
+		<p th:if="${siteConfig.point.blockWithdraw}" class="color01" style="font-size:16px; text-align:center; padding: 20px 0;">
+			현재 환전을 하실 수 없습니다. 잠시 후 이용하시기 바랍니다.
+		</p>
+    </div>
+
+    <div class="wrap">
+        <label>
+            <span>출금은행</span>
+            <input type="text" th:value="${member.bank}" readonly="readonly"/>
+        </label>
+        <label>
+            <span>계좌번호</span>
+            <input type="text" th:value="${member.account}" readonly="readonly"/>
+        </label>
+        <label>
+            <span>비밀번호</span>
+            <input type="password" id="bankPassword"/>
+        </label>
+        <label>
+            <span>환전금액</span>
+            <input type="num" class="num" id="amount" autofocus="autofocus"/>
+        </label>
+    </div>
+    <div class="amount">
+		<a class="btn" onclick="setAmount(10000);">10,000</a>
+		<a class="btn" onclick="setAmount(30000);">30,000</a>
+		<a class="btn" onclick="setAmount(50000);">50,000</a>
+		<a class="btn" onclick="setAmount(100000);">100,000</a>
+		<a class="btn" onclick="setAmount(300000);">300,000</a>
+		<a class="btn" onclick="setAmount(500000);">500,000</a>
+		<a class="btn" onclick="setAmount(1000000);">1,000,000</a>
+        <a class="btn btn02" onclick="resetAmount();">정정</a>
+    </div>
+    <div class="command">
+        <button class="btn-big btn03" th:if="${!siteConfig.point.blockWithdraw}" onclick="withdraw();">환전신청</button>
+    </div>
+
+    <div class="table-wrap" th:if="${not #lists.isEmpty(list)}">
+        <table class="table-game table-list">
+            <caption>환전신청</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width: 60px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>예금주</th>
+                <th>환전금액</th>
+                <th>신청시간</th>
+                <th>처리상태</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b, num : ${list}" th:with="total=${#lists.size(list)}">
+                <td th:text="${b.depositor}">입금인</td>
+                <td class="num color02" th:text="${tag.num(b.amount)}">신청금액</td>
+                <td th:text="${tag.dayWeek(b.regDate)}">신청시간</td>
+                <td th:class="${b.cancel ? 'color03' : (b.closing ? 'color01' : '')}" th:text="${b.cancel ? '취소' : (b.closing ? '완료' : '대기')}">진행상태</td>
+                <td th:if="${b.closing}"><a class="btn btn02" th:onclick="|goDelete('${b.id}')|">삭제</a></td>
+                <td th:if="${!b.closing}">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+	<div class="banking">
+		<h4>은행 점검 시간</h4>
+		<div class="bank-list">
+			<div>
+				<div class="bank">신한은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">하나은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">경남은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">전북은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">제주은행</div>
+				<div class="time">23:50 ~ 00:20</div>
+			</div>
+			<div>
+				<div class="bank">광주은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">부산은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">대구은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">SC제일은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">우리은행</div>
+				<div class="time">23:50 ~ 00:15</div>
+			</div>
+			<div>
+				<div class="bank">농협은행</div>
+				<div class="time">23:50 ~ 00:30</div>
+			</div>
+			<div>
+				<div class="bank">수협은행</div>
+				<div class="time">23:30 ~ 00:30</div>
+			</div>
+			<div>
+				<div class="bank">국민은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">IBK기업은행</div>
+				<div class="time">23:50 ~ 00:10</div>
+			</div>
+			<div>
+				<div class="bank">산업은행</div>
+				<div class="time">23:50 ~ 00:30</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    var config = [(${zoneAmount})];
+    var money = parseInt([[${user.money}]] || 0, 10);
+    var account = '[[${member.account}]]';
+    var betting = '[[${betting.betting}]]';
+
+    $('#amount').on('change, keyup', function () {
+        var amount = $(this).val().num() || 0;
+        $(this).val(amount.toString().money());
+        $('#amountKor').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    });
+
+    function setAmount(amt) {
+        var amount = $('#amount').val().num() || 0;
+        amount = parseInt(amount, 10) + parseInt(amt, 10);
+        $('#amount').val(amount.toString().num().money());
+        $('#amountKor').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    }
+
+    function resetAmount() {
+        $('#amount').val('');
+        $('#amountKor').text('');
+    }
+
+    function withdraw() {
+        var amount = parseInt($('#amount').val().num() || 0, 10);
+
+        if (config.min > amount) {
+            alert(String.format('최소 환전 금액은 {0}원 이상 입니다.', config.min.toString().money()));
+            return false;
+        }
+
+        if ($('#bankPassword').val() == '') {
+            alert('환전 비밀번호를 입력하세요.');
+            $('#bankPassword').focus();
+            return false;
+        }
+
+        if (amount > money) {
+            alert('환전 신청 금액이 보유하신 머니보다 많습니다.');
+            $('#amount').val('');
+            return false;
+        }
+
+        if (config.unit > 0) {
+            var mod = amount % config.unit;
+            if (mod != 0) {
+                if (!confirm(String.format('환전 금액은 {0}원 단위로 가능합니다.\n\n{1}원으로 신청 금액을 맞추겠습니까?', config.unit.toString().money(), (amount - mod).toString().money()))) {
+                    return false
+                }
+                amount = amount - mod;
+            }
+        }
+
+        var message = '';
+        if (betting === 'false') {
+            message = '현재 입금 보너스 수령후 입금액을 모두 소진하지 않아\n환전신청 금액에서 차감후 진행될 예정입니다.\n\n';
+        }
+
+        if (!confirm(message + String.format('환전금액 {0}원\n출금계좌 {1}\n\n환전신청을 진행하시겠습니까?', amount.toString().money(), account))) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/payment/withdraw',
+            method: 'post',
+            data: {
+                amount: amount,
+                bankPassword: $('#bankPassword').val()
+            }
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            } else {
+                $('#amount').val('');
+                $('#bankPassword').val('');
+            }
+        });
+    }
+
+    function goDelete(id) {
+        if (confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/payment/withdraw/delete',
+                method: 'post',
+                data: {
+                    id: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

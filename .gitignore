@@ -1,0 +1,5 @@
+.gradle
+.idea
+out
+build
+node_modules

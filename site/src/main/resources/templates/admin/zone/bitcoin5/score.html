@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${score}" onsubmit="return setScore();">
+        <input type="hidden" th:field="*{sdate}"/>
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-bars"></i> 비트코인 5분 종료처리</h3>
+            </div>
+
+			<div class="panel-body line">
+				<div style="margin: 0 auto; width: 830px; height: 646px; overflow: hidden;position: relative;">
+					<iframe id="zoneBox" style="position: absolute; width: 830px; height: 640px;top: 0px;" scrolling="no" th:src="@{${sysConfig.zone.bitcoin5Player}}"></iframe>
+				</div>
+			</div>
+
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임일시</th>
+                    <td>
+                        <span th:utext="${tag.dayWeekTime(score.gameDate)}"></span>
+                        <span class="color03" th:text="${#numbers.formatInteger(score.round, 3, 'DEFAULT') + ' 회차'}"></span>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">고가</th>
+					<td>
+						<input type="text" th:field="*{high}" />
+					</td>
+				</tr>
+				<tr>
+					<th class="required">저가</th>
+					<td>
+						<input type="text" th:field="*{low}" />
+					</td>
+				</tr>
+				<tr>
+					<th class="required">종가</th>
+					<td>
+						<input type="text" th:field="*{close}" />
+					</td>
+				</tr>
+                <tr>
+                    <th class="required">시가</th>
+                    <td>
+                        <input type="text" th:field="*{open}" />
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">매수/매도</th>
+					<td>
+						<label><input type="radio" th:field="*{bs}" th:value="'SELL'" /> 매수</label>
+						<label><input type="radio" th:field="*{bs}" th:value="'BUY'" /> 매도</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">적특처리</th>
+					<td class="color01">
+						<label><input type="checkbox" th:field="*{cancel}"/> 현재회차 적특처리</label>
+					</td>
+				</tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="결과입력"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function setScore() {
+        if (!$('input:checkbox[name=cancel]').is(':checked')) {
+
+            if ($('#open').val() === '') {
+                alert('시작가 결과처리를 하세요.');
+                return false;
+            }
+
+            if ($('#close').val() === '') {
+                alert('종료가 결과처리를 하세요.');
+                return false;
+            }
+
+            if ($('#high').val() === '') {
+                alert('고가 결과처리를 하세요.');
+                return false;
+            }
+
+            if ($('#low').val() === '') {
+                alert('저가 결과처리를 하세요.');
+                return false;
+            }
+
+            if (!$('input:radio[name=bs]').is(':checked')) {
+                alert('매수/매도 결과처리를 하세요.');
+                return false;
+            }
+        }
+    }
+</script>
+</body>
+</html>

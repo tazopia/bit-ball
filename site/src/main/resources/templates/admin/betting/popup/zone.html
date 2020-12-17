@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<head></head>
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-list"></i>
+                베팅내역
+                <span class="total">( 검색된 베팅내역 : <span th:text="${#numbers.formatInteger(#arrays.length(list), 0, 'DEFAULT')}">100</span> 건 )</span>
+                <a class="btn btn03" onclick="toggleAll();" style="width: 180px;"><i class="fa fa-toggle-on" aria-hidden="true"></i> 전체 베팅내역 열고/닫기</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>베팅 내역</caption>
+            <colgroup>
+                <col style="width: 60px;">
+                <col>
+                <col>
+                <col>
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width: 80px;">
+                <col style="width: 100px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>등급</th>
+                <th colspan="4">회원정보</th>
+                <th>베팅시간</th>
+                <th>IP</th>
+                <th>배당</th>
+                <th>베팅금액</th>
+                <th>예상금액</th>
+                <th>게임코드</th>
+                <th>베팅상세</th>
+                <th>폴더</th>
+                <th>적중금액</th>
+                <th>결과</th>
+                <th>내역</th>
+            </tr>
+            </thead>
+            <tbody class="bet" th:each="item,num : ${list}" th:with="total=${#arrays.length(list) + 1}, b=${item.bet}">
+            <tr class="betting">
+                <td th:text="${total - num.count}">1</td>
+                <td th:onclick="|popup.member.info('${b.userid}');|" class="color03 popup" th:text="${b.userid}">아이디</td>
+                <td th:onclick="|popup.member.info('${b.userid}');|" class="color02 popup" th:text="${b.nickname}">닉네임</td>
+                <td class="color0" th:text="${b.level}">레벨</td>
+                <td class="popup color04" th:onclick="|popup.payment.money('${b.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                <td class="popup color04" th:onclick="|popup.payment.point('${b.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                <td class="popup color04" th:onclick="|popup.betting.list('${b.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                <td class="popup color04" th:onclick="|popup.customer.memo('${b.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                <td th:utext="${tag.betDate(b.betDate)}">베팅시간</td>
+                <td class="cmd color02" th:text="${b.ip}">127.0.0.1</td>
+                <td class="num color04" th:text="${#numbers.formatDecimal(b.betOdds, 1, 2)}">배당</td>
+                <td class="num color03" th:text="${tag.num(b.betMoney)}">베팅금액</td>
+                <td class="num color02" th:text="${tag.num(b.expMoney)}">예상금액</td>
+                <td th:text="${b.menuCode.name}">코드</td>
+                <td class="color02 search" th:onclick="|toggleItem('${b.id}');|">
+                    <ul class="item">
+                        <li th:each="item : ${b.betItems}">
+                            <span class="color02" th:if="${item.result eq '대기'}"><i class="fa fa-hourglass-start"></i></span>
+                            <span class="color04" th:if="${item.result eq '적중'}"><i class="fa fa-thumbs-o-up"></i></span>
+                            <span class="color03" th:if="${item.result eq '미적중'}"><i class="fa fa-thumbs-o-down"></i></span>
+                            <span class="color01" th:if="${item.result eq '적특'}"><i class="fa fa-plus"></i></span>
+                            <span class="color01" th:if="${item.result eq '취소' or item.result eq '베팅취소' or item.result eq '경기취소' or item.result eq '진행중취소'}"><i class="fa fa-times"></i></span>
+                        </li>
+                    </ul>
+                </td>
+                <td th:text="${b.betCount}">폴더</td>
+                <td class="num color01" th:text="${tag.num(b.hitMoney)}">적중금액</td>
+                <td th:class="${b.resultStringCss}" th:text="${b.resultString}">결과</td>
+                <td th:if="${!b.start && !b.cancel}" th:onclick="|betting.cancel.bet(${b.id});|"><a class="btn btn04">전체취소</a></td>
+                <td th:if="${b.start || b.cancel}">-</td>
+            </tr>
+            <tr th:id="${b.id}" class="betItem" style="display: none;">
+                <td colspan="19" style="border:none; padding:0;">
+                    <table class="table-bet" style="margin:-1px 0;">
+                        <caption>베팅 경기</caption>
+                        <colgroup>
+                            <col style="width: 150px;">
+                            <col style="width: 80px;">
+                            <col style="width: 36px;">
+                            <col style="width: 396px">
+                            <col style="width: 54px;">
+                            <col style="width: 60px;">
+                            <col style="width: 54px;">
+                            <col>
+                            <col style="width: 36px;">
+                            <col style="width: 70px;">
+                        </colgroup>
+                        <tbody>
+                        <tr th:each="item : ${b.betItems}">
+                            <td class="info memo">
+                                <img th:src="@{${tag.sportsFlag(item)}}" />
+                                <em th:utext="${tag.dayWeekTime(item.gameDate)}"></em>
+                                <span class="league" th:text="${item.league}"></span>
+                            </td>
+                            <td th:text="${item.gameCode.name}" th:class="${item.menuCode.name() eq 'SPECIAL'} ? 'color01'">승무패</td>
+                            <td class="over" th:text="${item.gameCode.name() eq 'OVER_UNDER' ? 'O' : 'H'}">H</td>
+                            <td th:class="${'home' + (item.betTeam eq 'home' ? ' on' : '') + (item.gameResult.name() eq 'HOME' ? ' hit' : '')}">
+                                <span th:remove="tag" th:text="${item.teamHome}">홈팀</span>
+                                <span th:if="${!item.special.empty and item.menuCode.name() eq 'SPECIAL'}" class="color02" th:text="'[' + ${item.special} + ']'">스페셜</span>
+                                <span class="odds" th:text="${tag.odds(item.oddsHome)}">0.01</span>
+                            </td>
+                            <td class="score" th:text="${item.scoreHome eq null ? '-' : item.scoreHome}">0</td>
+                            <td th:if="${item.gameCode.name() eq 'MATCH' or item.gameCode.name() eq 'ZONE'}"
+                                th:class="${'draw' + (item.betTeam eq 'draw' ? ' on' : '') + (item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' or item.gameResult.name() eq 'DRAW_HIT' ? ' hit' : '') + (item.oddsDraw gt 0 ? ' odds' : '')}"
+                                th:text="${tag.odds(item.oddsDraw, item.handicap)}">
+                                무
+                            </td>
+                            <td th:if="${item.gameCode.name() eq 'HANDICAP' or item.gameCode.name() eq 'OVER_UNDER'}" th:class="${item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' or item.gameResult.name() eq 'DRAW_HIT' ? 'draw hit' : 'draw'}" th:text="${#numbers.formatDecimal(item.handicap, 1, 1)}">무</td>
+                            <td class="score" th:text="${item.scoreAway eq null ? '-' : item.scoreAway}">0</td>
+                            <td th:class="${'away' + (item.betTeam eq 'away' ? ' on' : '') + (item.gameResult.name() eq 'AWAY' ? ' hit' : '')}">
+                                <span class="odds" th:text="${tag.odds(item.oddsAway)}">0.01</span>
+                                <span th:if="${!item.special.empty and item.menuCode.name() eq 'SPECIAL'}" class="color02" th:text="'[' + ${item.special} + ']'">스페셜</span>
+                                <span th:remove="tag" th:text="${item.teamAway}">홈팀</span>
+                            </td>
+                            <td class="under" th:text="${item.gameCode.name() eq 'OVER_UNDER' ? 'U' : 'A'}">H</td>
+                            <td th:class="${'result ' + item.resultStringCss}" th:text="${item.resultString}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <a onclick="popup.close();return false;" class="btn">창닫기</a>
+        </div>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    var toggle = false;
+    function toggleAll() {
+        if (toggle) {
+            $('.betItem').hide();
+            $('.bet').removeClass('on');
+            toggle = false;
+        } else {
+            $('.betItem').show();
+            $('.bet').addClass('on');
+            toggle = true;
+        }
+    }
+
+    function toggleItem(id) {
+        var obj = $('#' + id);
+        obj.toggle();
+        if (obj.is(':visible')) {
+            obj.parent().addClass('on');
+        } else {
+            obj.parent().removeClass('on');
+        }
+    }
+</script>
+</body>
+</html>

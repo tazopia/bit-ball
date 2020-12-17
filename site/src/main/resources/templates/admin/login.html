@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="mode='login'">
+<body id="login">
+<div class="login-wrap" layout:fragment="page">
+    <div class="spinner"></div>
+    <h1><span th:text="${#strings.toUpperCase(siteConfig.companyName)}">Stella</span> ADMIN</h1>
+    <div class="login-form">
+        <form id="frm" onsubmit="return goLogin();">
+            <label class="label-top">
+                <input type="text" id="username" name="username" placeholder="userid" required autofocus/>
+                <span><i class="fa fa-user" aria-hidden="true"></i></span>
+            </label>
+            <label class="label-bottom">
+                <input type="password" id="password" name="password" placeholder="password" required/>
+                <span><i class="fa fa-unlock-alt" aria-hidden="true"></i></span>
+            </label>
+            <button class="btn btn-login">LOG IN</button>
+            <div class="copyright">
+                Copyright &copy; [[${siteConfig.since}]] <span th:text="|${siteConfig.companyName}.|">Stella Solution.</span> All Right Reserved.
+            </div>
+        </form>
+    </div>
+</div>
+<script layout:fragment="script" th:if="true">
+    var message = '[[${message}]]';
+    if (message !== '') {
+        setTimeout(function () {
+            alert(message);
+        }, 10);
+    }
+
+    function goLogin() {
+        if ($('#username').val() == '') {
+            alert('아이디를 입력 하세요.');
+            $('#username').focus();
+            return false;
+        }
+        if ($('#password').val() == '') {
+            alert('비밀번호를 입력 하세요.');
+            $('#password').focus();
+            return false;
+        }
+        $.ajax({
+            url: '/login',
+            type: 'post',
+            data: {
+                username: $('#username').val(),
+                password: $('#password').val(),
+                role: 'admin'
+            }
+        }).done(function (data) {
+            if (data.success) {
+                location.href = data.url;
+            } else {
+                $('#username').val('');
+                $('#password').val('');
+                $('#username').focus();
+            }
+        });
+        return false;
+    }
+
+    var showMessage = errorMessage = function (message) {
+        alert(message);
+    }
+</script>
+</body>
+</html>

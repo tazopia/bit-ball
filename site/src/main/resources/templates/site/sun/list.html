@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/siteLayout" th:with="main='page', gnb='sun'" ng-app="app">
+<body ng-controller="gameCtrl">
+<div layout:fragment="popup" th:if="true">
+	<div id="layout-wrap"></div>
+	<div id="layout-load" class="loading"></div>
+</div>
+
+<section layout:fragment="section">
+	<h3>슬롯카지노 게임머니 전환</h3>
+	<div class="box">
+		<h4 class="color02">이동 신청 전 확인해 주세요.</h4>
+		<p>이동하실 게임과 금액을 선택하시고 이동하신후 게임을 이용하시면 됩니다.</p>
+		<p>즉시 이동된 금액은 보유금액으로 언제나 이동 가능하십니다.</p>
+		<div class="command">
+			<button class="btn btn01" ng-click="balanceAll();" style="width:160px; margin-left:20px;">나의 게임머니 확인</button>
+		</div>
+	</div>
+	<br/><br/>
+
+	<div class="sun-balance" ng-if="balance">
+		<div class="balance-item" ng-repeat="b in balance">
+			<div class="balance-reload" ng-click="balanceGame(b.gameNo)"><img src="/images/icon-reload.png"/></div>
+			<div class="balance-flag"><img ng-src="/images/sun/{{b.flag}}"/></div>
+			<div class="balance-money" ng-if="b.code == '000'">
+				<button ng-click="receive(b.gameNo, b.money);" ng-if="b.money > 0" class="btn btn02">전환</button>
+				<span>{{b.money}}원</span>
+			</div>
+			<div class="balance-error" ng-if="b.code != '000'">Checking Server!</div>
+		</div>
+	</div>
+
+	<h3>게임머니 전환</h3>
+	<table class="banking">
+		<caption>충전 신청</caption>
+		<colgroup>
+			<col style="width: 200px;">
+			<col>
+		</colgroup>
+		<tbody>
+		<tr>
+			<th>게임 선택</th>
+			<td>
+				<select id="gameNo">
+					<option value="">게임선택</option>
+					<th:block th:each="g : ${game}">
+						<option th:value="${g.gameNo}" th:text="'[' + ${g.group} + '] ' + ${g.value}">게임머니로 이동</option>
+					</th:block>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th rowspan="2">금액선택</th>
+			<td>
+				<input type="text" class="num" ng-model="amount" ng-change="changeAmount()"/> 원
+				<span id="amountKor" class="color02" style="margin-left: 40px;"></span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a class="btn" ng-click="setAmount(10000);">만원</a>
+				<a class="btn" ng-click="setAmount(30000);">삼만원</a>
+				<a class="btn" ng-click="setAmount(50000);">오만원</a>
+				<a class="btn" ng-click="setAmount(70000);">칠만원</a>
+				<a class="btn" ng-click="setAmount(100000);">십만원</a>
+				<a class="btn" ng-click="setAmount(300000);">삼십만원</a>
+				<a class="btn" ng-click="setAmount(500000);">오십만원</a>
+				<a class="btn" ng-click="setAmount(700000);">칠십만원</a>
+				<a class="btn" ng-click="setAmount(1000000);">백만원</a>
+				<a class="btn btn02" ng-click="resetAmount();">정정</a>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<div class="command">
+		<button class="btn btn01" ng-click="send();">이동신청</button>
+	</div>
+
+	<div class="slotTitle" th:if="${gnum eq ''}">◎ 현재 게임을 이용하실 수 없습니다 ◎</div>
+
+	<div class="slotTitle" th:if="${gnum ne ''}">◎ Global Casino Games ◎</div>
+	<iframe name="my-iframe" th:if="${gnum ne ''}" style="width:100%;height:560px;" th:src="${live}" frameborder="0" framespacing="0" scrolling="yes"></iframe>
+	<br/><br/><br/>
+
+	<div class="slotTitle" th:if="${gnum ne ''}">◎ Global Slot Games ◎</div>
+	<iframe name="my-iframe" th:if="${gnum ne ''}" style="width:100%;height:860px;" th:src="${slot}" frameborder="0" framespacing="0" scrolling="yes"></iframe>
+	<br/><br/><br/>
+
+	<div id="sun-wrap">
+		<div id="sun-balance">
+
+		</div>
+	</div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', '$timeout', function ($scope, $http, $interval, $timeout) {
+        $scope.money = 0;
+        $scope.amount = 0;
+        $scope.balance = [];
+
+        $scope.$watch('$viewContentLoaded', function () {
+            $timeout(function () {
+                $('#layout-wrap, #layout-load').fadeOut(function () {
+                    $('#layout-wrap, #layout-load').hide();
+                });
+            })
+        });
+
+        $interval(function () {
+            $scope.setInfo();
+        }, 5000);
+
+        $scope.balanceAll = function () {
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            $http({
+                url: path + '/sun/balance',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+
+                $scope.balance = response.data;
+            });
+        }
+
+        $scope.balanceGame = function (gameNo) {
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            $http({
+                url: path + '/sun/balance/' + gameNo,
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+
+                console.log(response.data);
+
+                if ($scope.balance.length === 0) {
+                    $scope.balance.push(response.data);
+                } else {
+                    angular.forEach($scope.balance, function (b) {
+                        if (b.gameNo === response.data.gameNo) {
+                            b.money = response.data.money;
+                        }
+                    });
+                }
+                console.log($scope.balance);
+            }, function error(response) {
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+            });
+        }
+
+        $scope.setInfo = function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.money = response.data.money;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        };
+
+        $scope.send = function () {
+            if (angular.element('#gameNo').val() === '') {
+                alert('게임을 선택하여 주세요.');
+                return;
+            }
+
+            if ($scope.amount < 10000) {
+                alert('최소 전환 머니는 10,000원 이상입니다.');
+                return;
+            }
+
+            if ($scope.amount > $scope.money) {
+                alert('전환할수 있는 최대 보유머니는 ' + $scope.money.toString().money() + '원 입니다.');
+                return;
+            }
+
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            $http({
+                url: path + '/sun/send',
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                },
+                data: {
+                    "money": $scope.amount,
+                    "gameNo": parseInt($('#gameNo').val(), 10)
+                }
+            }).then(function success(response) {
+                if (response.data.success) {
+                    $scope.balanceGame($('#gameNo').val());
+                    alert(response.data.message);
+                } else {
+                    alert('머니 이동에 실패하였습니다.\n\n잠시 후 다시 이용하세요.')
+                    angular.element('#layout-wrap').css('display', 'none');
+                    angular.element('#layout-load').css('display', 'none');
+                }
+                $scope.amount = 0;
+            }, function error(response) {
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+            });
+        }
+
+        $scope.receive = function (gameNo, amount) {
+            if (amount === 0) {
+                alert('환전할 머니가 없습니다.');
+                return;
+            }
+
+            angular.element('#layout-wrap').css('display', 'block');
+            angular.element('#layout-load').css('display', 'block');
+
+            $http({
+                url: path + '/sun/receive',
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                },
+                data: {
+                    "money": amount,
+                    "gameNo": gameNo
+                }
+            }).then(function success(response) {
+                if (response.data.success) {
+                    $scope.balanceGame(gameNo);
+                    alert(response.data.message);
+                } else {
+                    alert('머니 전환에 실패하였습니다.\n\n잠시 후 다시 이용하세요.')
+                    angular.element('#layout-wrap').css('display', 'none');
+                    angular.element('#layout-load').css('display', 'none');
+                }
+            }, function error(response) {
+                angular.element('#layout-wrap').css('display', 'none');
+                angular.element('#layout-load').css('display', 'none');
+            });
+        }
+
+        $scope.setAmount = function (amount) {
+            $scope.amount += amount;
+            angular.element('#amountKor').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+        }
+
+        $scope.resetAmount = function () {
+            $scope.amount = 0;
+            angular.element('#amountKor').text('');
+        }
+
+        $scope.changeAmount = function () {
+            angular.element('#amountKor').text($scope.amount <= 0 ? '' : '(' + $.num2han($scope.amount) + ' 원)');
+        }
+
+    }]);
+
+
+</script>
+</body>
+</html>

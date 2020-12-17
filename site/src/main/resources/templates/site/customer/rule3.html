@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='customer', lnb='rule'">
+<body>
+
+<section layout:fragment="section">
+    <h3>게임규칙</h3>
+
+	<div class="tab-menu">
+		<a th:href="@{|${siteConfig.pathSite}/customer/guide/rule1|}" class="tab-menu-item">승무패</a>
+		<a th:href="@{|${siteConfig.pathSite}/customer/guide/rule2|}" class="tab-menu-item">핸디캡</a>
+		<a th:href="@{|${siteConfig.pathSite}/customer/guide/rule3|}" class="tab-menu-item on">오버언더</a>
+	</div>
+    <div class="box">
+        <h3>오버언더 규정</h3>
+        <ul>
+            <li>오버언더 경기는 양팀의 득점력을 예상하고 분석하여 베팅을 하는 것으로 경기를 보다 재미있고 박진감 있게 즐길 수 있도록 만들어진 베팅방법입니다.</li>
+            <li>항상 홈팀이 오버(Over), 원정팀이 언더(Under)가 됩니다</li>
+        </ul>
+
+        <br/>
+        <br/>
+        <h3>오버언더 용어설명</h3>
+        <ul>
+            <li>오버(Over) : 양팀의 점수 합이 기준점수 보다 높게 나는 경우를 의미합니다.</li>
+            <li>언더(Under) : 양팀의 점수 합이 기준점수 보다 낮게 나는 경우를 의미합니다.</li>
+        </ul>
+
+        <br/>
+        <br/>
+        <h3>오버언더 경기설명</h3>
+        <ul>
+            <li>내용 : 기준점 : 2.5, 한국 2:0 일본 (한국과 일본의 점수합이 2점으로 기준점수보다 작음)</li>
+            <li>결과 : 언더로 일본승리</li>
+            <li>내용 : 기준점 : 2.5, 한국 2:1 일본 (한국과 일본의 점수합이 3점으로 기준점수보다 크므로)</li>
+            <li>결과 : 오버로 한국승리</li>
+        </ul>
+    </div>
+
+</section>
+</body>
+</html>

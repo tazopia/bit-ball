@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='cw_sutda'">
+<body>
+
+<section layout:fragment="section">
+    <h3>섯다 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/cw_sutda/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>사다리</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th>일자</th>
+            <th>회차</th>
+            <th>KOREA</th>
+			<th>JAPAN</th>
+            <th>결과</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td class="color0" th:text="${tag.round(g.round, 4)} + ' 회'"></td>
+            <td class="sutda">
+				<img th:src="@{/images/zone/sutda/{p}.png(p=${g.k1})}" />
+				<img th:src="@{/images/zone/sutda/{p}.png(p=${g.k2})}" />
+				<p th:text="${g.korea}"></p>
+            </td>
+			<td class="sutda">
+				<img th:src="@{/images/zone/sutda/{p}.png(p=${g.j1})}" />
+				<img th:src="@{/images/zone/sutda/{p}.png(p=${g.j2})}" />
+				<br/>
+				<p th:text="${g.japan}"></p>
+			</td>
+            <td>
+                <span th:if="${g.result eq 'K'}" class="color01">KOREA</span>
+                <span th:if="${g.result eq 'J'}" class="color02">JAPAN</span>
+                <span th:if="${g.result eq 'T'}" class="color04">TIE</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

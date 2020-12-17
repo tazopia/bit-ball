@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+	<section>
+		<form id="frm" th:object="${member}" onsubmit="return updateMember();">
+			<div class="panel-header">
+				<h3><i class="bul fa fa-user"></i> 회원 기본정보</h3>
+			</div>
+			<table class="table-read">
+				<caption>회원 기본정보</caption>
+				<colgroup>
+					<col style="width: 140px;">
+					<col style="width: 350px;">
+					<col style="width: 140px;">
+					<col>
+				</colgroup>
+				<tbody>
+				<tr>
+					<th class="required">아이디</th>
+					<td>
+						<input type="text" th:field="*{userid}" readonly="readonly"/>
+						<span class="color03" th:text="${member.sunid}">카지노아이디</span>
+					</td>
+					<th class="required">비밀번호</th>
+					<td>
+						<input type="password" th:field="*{password}" placeholder="비밀번호"/>
+						<span th:text="${member.pass}"></span>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">닉네임</th>
+					<td>
+						<input type="text" th:field="*{nickname}"/>
+						<span id="enableNickname" class="bul fa fa-check color04"></span>
+						<span id="disableNickname" class="bul fa fa-ban color03" style="display: none;"></span>
+					</td>
+					<th class="required">회원등급</th>
+					<td>
+						<input type="text" readonly="readonly" th:value="${member.role.name}" style="width: 110px;"/>
+						<input type="hidden" th:field="*{level}" th:if="${member.role.group.name() eq 'AGENCY'}"/>
+						<select th:field="*{level}" th:if="${member.role.group.name() eq 'USER'}">
+							<option th:each="level : ${#numbers.sequence(1, 10)}" th:value="${level}" th:text="${level + '등급'}"></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>회원상태</th>
+					<td colspan="3">
+						<label>회원승인 : <input type="checkbox" th:field="*{enabled}" th:value="true"/></label>
+						<label>블랙회원 : <input type="checkbox" th:field="*{black}" th:value="true"/></label>
+						<label>게시물작성금지 : <input type="checkbox" th:field="*{block}" th:value="true"/></label>
+						<label class="color01" style="float: right;">회원탈퇴 : <input type="checkbox" th:field="*{secession}" th:value="true"/></label>
+					</td>
+				</tr>
+				<tr>
+					<th>연락처</th>
+					<td>
+						<input type="text" th:field="*{phone}" />
+					</td>
+					<th>추천인</th>
+					<td>
+						<input type="text" th:field="*{recommender}"/>
+					</td>
+				</tr>
+				<tr th:if="${member.role.name eq '회원'}">
+					<th>총판정보</th>
+					<td colspan="3">
+						<label>
+							총본사 :
+							<select th:field="*{agency4}">
+								<option value="">선택하세요.</option>
+							</select>
+						</label>
+						<label>
+							부본사 :
+							<select th:field="*{agency3}">
+								<option value="">선택하세요.</option>
+							</select>
+						</label>
+						<label>
+							총판 :
+							<select th:field="*{agency2}">
+								<option value="">선택하세요.</option>
+							</select>
+						</label>
+						<label>
+							매장 :
+							<select th:field="*{agency1}">
+								<option value="">선택하세요.</option>
+							</select>
+						</label>
+					</td>
+				</tr>
+				<tr th:if="${member.role.name() eq 'USER'}">
+					<th rowspan="2">요율</th>
+					<td colspan="3">
+						<label>
+							파워볼 로우/하이 :
+							<input type="text" name="powerMin" th:value="${member.powerMin}" style="width: 60px; text-align: right;"/> /
+							<input type="text" name="powerMax" th:value="${member.powerMax}" style="width: 60px; text-align: right;"/>
+						</label>
+						<label>
+							파다리 :
+							<input type="text" name="powerLadder" th:value="${member.powerLadder}" style="width: 60px; text-align: right;"/>%
+						</label>
+						<label>
+							키노 :
+							<input type="text" name="keno" th:value="${member.keno}" style="width: 60px; text-align: right;"/>%
+						</label>
+						<label>
+							키다리 :
+							<input type="text" name="kenoLadder" th:value="${member.kenoLadder}" style="width: 60px; text-align: right;"/>%
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<label>
+							비트코인 3분 로우/하이 :
+							<input type="text" name="btc3Min" th:value="${member.btc3Min}" style="width: 60px; text-align: right;"/> /
+							<input type="text" name="btc3Max" th:value="${member.btc3Max}" style="width: 60px; text-align: right;"/>
+						</label>
+						<label>
+							비트코인 5분 로우/하이 :
+							<input type="text" name="btc5Min" th:value="${member.btc5Min}" style="width: 60px; text-align: right;"/> /
+							<input type="text" name="btc5Max" th:value="${member.btc5Max}" style="width: 60px; text-align: right;"/>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th>메모</th>
+					<td colspan="3">
+						<textarea th:field="*{memo}" style="width: 760px;height: 100px;"></textarea>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="panel-body">
+				<h3><i class="bul fa fa-user"></i> 계좌정보</h3>
+			</div>
+			<table class="table-read">
+				<caption>계좌정보</caption>
+				<colgroup>
+					<col style="width: 140px;">
+					<col style="width: 350px;">
+					<col style="width: 140px;">
+					<col>
+				</colgroup>
+				<tbody>
+				<tr>
+					<th>은행명</th>
+					<td>
+						<select th:field="*{bank}">
+							<option value="">선택하세요.</option>
+							<option th:each="bank : ${banks}" th:value="${bank}" th:text="${bank}">은행</option>
+						</select>
+					</td>
+					<th>계좌번호</th>
+					<td><input type="text" th:field="*{account}"/></td>
+				</tr>
+				<tr>
+					<th>예금주</th>
+					<td><input type="text" th:field="*{depositor}"/></td>
+					<th>출금 비밀번호</th>
+					<td><input type="text" th:field="*{bankPassword}"/></td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="panel-body" style="text-align: center;">
+				<button class="btn btn03">수정</button>
+				<a onclick="popup.close();return false;" class="btn">창닫기</a>
+			</div>
+			<div class="panel-body">
+				<h3><i class="bul fa fa-user"></i> 머니 / 포인트 정보</h3>
+			</div>
+			<table class="table-read">
+				<caption>머니 / 포인트 정보</caption>
+				<colgroup>
+					<col style="width: 140px;">
+					<col style="width: 350px;">
+					<col style="width: 140px;">
+					<col>
+				</colgroup>
+				<tbody>
+				<tr>
+					<th>입금</th>
+					<td class="color03 popup" th:onclick="|popup.payment.banking('${member.userid}');|" th:text="${tag.num(member.deposit)}"></td>
+					<th>출금</th>
+					<td class="color03 popup" th:onclick="|popup.payment.banking('${member.userid}');|" th:text="${tag.num(member.withdraw)}"></td>
+				</tr>
+				<tr>
+					<th>보유머니</th>
+					<td class="color01 popup" th:onclick="|popup.payment.money('${member.userid}');|" th:text="${tag.num(member.money)}"></td>
+					<th>포인트</th>
+					<td class="color02 popup" th:onclick="|popup.payment.point('${member.userid}');|" th:text="${tag.num(member.point)}"></td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="panel-body">
+				<h3><i class="bul fa fa-user"></i> 베팅 정보 <span class="color02">(실시간 상황으로 리스트의 누적 합계와 다를 수 있습니다.)</span></h3>
+			</div>
+			<table class="table-read">
+				<caption>베팅 정보</caption>
+				<colgroup>
+					<col style="width: 140px;">
+					<col>
+					<col>
+					<col>
+					<col>
+					<col>
+				</colgroup>
+				<tbody>
+				<tr>
+					<td></td>
+					<th colspan="2" style="text-align: center;">베팅</th>
+					<th style="text-align: center;">적중</th>
+					<th style="text-align: center;">차액</th>
+					<th style="text-align: center;">최종베팅</th>
+				</tr>
+				<tr>
+					<th>스포츠</th>
+					<td class="popup color01 num" th:onclick="|popup.betting.list('${member.userid}');|" th:text="${tag.num(betInfo.betSports)}"></td>
+					<td class="num" th:text="${tag.num(betInfo.cntSports)} + ' 회'"></td>
+					<td class="color03 num" th:text="${tag.num(betInfo.hitSports)}"></td>
+					<td class="color04 num" th:text="${tag.num(betInfo.betSports - betInfo.hitSports)}"></td>
+					<td class="center" th:utext="${tag.dayWeekTimes(betInfo.dateSports)}"></td>
+				</tr>
+				<tr>
+					<th>실시간</th>
+					<td class="popup color01 num" th:onclick="|popup.betting.list('${member.userid}');|" th:text="${tag.num(betInfo.betZone)}"></td>
+					<td class="num" th:text="${tag.num(betInfo.cntZone)} + ' 회'"></td>
+					<td class="color03 num" th:text="${tag.num(betInfo.hitZone)}"></td>
+					<td class="color04 num" th:text="${tag.num(betInfo.betZone - betInfo.hitZone)}"></td>
+					<td class="center" th:utext="${tag.dayWeekTimes(betInfo.dateZone)}"></td>
+				</tr>
+				<tr>
+					<td colspan="6">게임별 상세내역</td>
+				</tr>
+				<tr th:each="zone : ${zoneMenu}" th:with="z = ${betInfo.betting[__${zone}__]}">
+					<th th:text="${zone.name}"></th>
+					<td class="popup num color01" th:onclick="|popup.betting.list('${member.userid}');|" th:text="${tag.num(z.betMoney)}"></td>
+					<td class="num" th:text="${tag.num(z.cnt)} + ' 회'"></td>
+					<td class="color03 num" th:text="${tag.num(z.hitMoney)}"></td>
+					<td class="color04 num" th:text="${tag.num(z.betMoney - z.hitMoney)}"></td>
+					<td class="center" th:utext="${tag.dayWeekTimes(z.betDate)}"></td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="panel-body">
+				<h3><i class="bul fa fa-user"></i> 기타정보</h3>
+			</div>
+			<table class="table-read">
+				<caption>기타정보</caption>
+				<colgroup>
+					<col style="width: 140px;">
+					<col style="width: 350px;">
+					<col style="width: 140px;">
+					<col>
+				</colgroup>
+				<tbody>
+				<tr>
+					<th>가입일</th>
+					<td>
+						<em th:utext="${tag.fullDate(member.joinDate)}">가입일</em>
+					</td>
+					<th>접속일</th>
+					<td>
+						<em th:utext="${tag.fullDate(member.loginDate)}">접속일</em>
+						<span class="color02" th:text="'(로그인 : ' + ${tag.num(member.loginCnt)} + '회)'"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>가입IP</th>
+					<td>
+						<em th:text="${member.joinIp}">가입IP</em>
+						<span class="color02" th:text="'(' + ${tag.country(member.joinIp)} + ')'"></span>
+					</td>
+					<th>접속IP</th>
+					<td>
+						<em th:text="${member.loginIp}">접속IP</em>
+						<span class="color02" th:text="'(' + ${tag.country(member.loginIp)} + ')'"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>가입 도메인</th>
+					<td th:text="${member.joinDomain}"></td>
+					<th>접속 도메인</th>
+					<td th:text="${member.loginDomain}"></td>
+				</tr>
+				</tbody>
+			</table>
+			<th:block th:if="${member.role.name eq '회원' and !recommList.empty}">
+				<div class="panel-body">
+					<h3><i class="bul fa fa-user"></i> 추천인 리스트</h3>
+				</div>
+				<table class="table-list">
+					<caption>추천인 리스트</caption>
+					<thead>
+					<tr>
+						<th>아이디</th>
+						<th>닉네임</th>
+						<th>등급</th>
+						<th>머니</th>
+						<th>포인트</th>
+						<th>입금</th>
+						<th>출금</th>
+						<th>차액</th>
+						<th>베팅</th>
+						<th>가입일</th>
+						<th>접속일</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="m : ${recommList}">
+						<td class="color03" th:text="${m.userid}">아이디</td>
+						<td class="color02" th:text="${m.nickname}">닉네임</td>
+						<td th:text="${m.level}">레벨</td>
+						<td class="num color01" th:text="${tag.num(m.money)}">머니</td>
+						<td class="num color02" th:text="${tag.num(m.point)}">포인트</td>
+						<td class="num color04" th:text="${tag.num(m.deposit)}">입금</td>
+						<td class="num color03" th:text="${tag.num(m.withdraw)}">출금</td>
+						<td class="num" th:text="${tag.num(m.deposit - m.withdraw)}">차액</td>
+						<td class="num color04" th:text="${tag.num(m.betCntTotal)}">총베팅금</td>
+						<td th:text="${tag.dayWeek(m.joinDate)}"></td>
+						<td th:text="${tag.dayWeek(m.loginDate)}"></td>
+					</tr>
+					</tbody>
+				</table>
+			</th:block>
+			<div class="panel-footer">
+				<button class="btn btn03">수정</button>
+				<a onclick="popup.close();return false;" class="btn">창닫기</a>
+			</div>
+		</form>
+	</section>
+</main>
+<script layout:fragment="script" th:if="true">
+    var agencies = [(${agencies})];
+    var nickname = '[[${member.nickname}]]', agency1 = '[[${member.agency1}]]', agency2 = '[[${member.agency2}]]', agency3 = '[[${member.agency3}]]', agency4 = '[[${member.agency4}]]';
+    var checkNickname = true;
+    var _agency4 = '';
+    agencies.forEach(function (agency) {
+        if (_agency4 !== agency.agency4) {
+            $('#agency4').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            _agency4 = agency.agency4;
+        }
+    });
+
+    $('#agency4').on('change', function () {
+        var agency4 = $('#agency4').val();
+        var agency3 = '';
+        $('#agency3').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency4 === agency.agency4 && agency.agency3 != null && agency.agency3 !== '' && agency3 !== agency.agency3) {
+                $('#agency3').append('<option value="' + agency.agency3 + '">' + agency.agency3 + '</option>');
+            }
+            agency3 = agency.agency3;
+        });
+        $('#agency3').change();
+    });
+
+    $('#agency3').on('change', function () {
+        var agency3 = $('#agency3').val();
+        var agency2 = '';
+        $('#agency2').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency3 === agency.agency3 && agency.agency2 != null && agency.agency2 !== '' && agency2 !== agency.agency2) {
+                $('#agency2').append('<option value="' + agency.agency2 + '">' + agency.agency2 + '</option>');
+            }
+            agency2 = agency.agency2;
+        });
+        $('#agency2').change();
+    });
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        var agency1 = '';
+        $('#agency1').html('').append('<option value="">선택하세요.</option>');
+        agencies.forEach(function (agency) {
+            if (agency2 == agency.agency2 && agency.agency1 != null && agency.agency1 !== '' && agency1 !== agency.agency1) {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+            agency1 = agency.agency1;
+        });
+        $('#agency1').change();
+    });
+
+    $('#nickname').on('blur', function () {
+        $.post('[[${pathJoin}]]/nickname', {nickname: $('#nickname').val()}).done(function (data) {
+            if ((data.success || ($('#nickname').val() == nickname) && $('#nickname').val().length > 1)) {
+                $('#enableNickname').show();
+                $('#disableNickname').hide();
+                checkNickname = true;
+            } else {
+                $('#enableNickname').hide();
+                $('#disableNickname').show();
+                checkNickname = false;
+            }
+        });
+    }).on('focus', function () {
+        checkNickname = false;
+    });
+
+    // 초기화 작업
+    $('#cash, #point').onlyNum();
+    $('#agency4').val(agency4).change();
+    $('#agency3').val(agency3).change();
+    $('#agency2').val(agency2).change();
+    $('#agency1').val(agency1);
+
+    function updateMember() {
+        if ($('#password').val() != '' && $('#password').val().length < 4) {
+            alert('비밀번호는 4자리 이상입니다.');
+            $('#password').focus();
+            return false;
+        }
+        if (!checkNickname) {
+            alert('사용가능한 닉네임이 아닙니다.');
+            $('#nickname').focus();
+            return false;
+        }
+        $.post(path + '/member/update', $('#frm').serialize()).done(function (data) {
+            if (data.success) {
+                try {
+                    opener.location.reload();
+                } catch (e) {
+                }
+                setTimeout(function () {
+                    self.close();
+                }, 1000);
+                return false;
+            } else {
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+                return false;
+                return false;
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

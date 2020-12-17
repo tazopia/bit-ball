@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='score', lnb='dari', title='다리다리 경기결과'">
+<body>
+
+<div layout:fragment="tab-menu" th:replace="fragments/mobile :: score" th:if="true"></div>
+<main class="page" layout:fragment="page">
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/dari/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <div class="table-wrap">
+        <table class="table-game table-list">
+            <caption>사다리</caption>
+            <colgroup>
+
+            </colgroup>
+            <thead>
+            <tr>
+                <th>일자</th>
+                <th>회차</th>
+                <th>방향</th>
+                <th>줄수</th>
+                <th>홀짝</th>
+                <th>결과</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="g : ${page.content}">
+                <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+                <td class="color03" th:text="${tag.round(g.round, 3)}"></td>
+                <td>
+                    <span th:if="${g.start eq 'LEFT'}" class="color01">좌</span>
+                    <span th:if="${g.start eq 'RIGHT'}" class="color02">우</span>
+                    <span th:if="${g.start ne 'LEFT' and g.start ne 'RIGHT'}">-</span>
+                </td>
+                <td>
+                    <span th:if="${g.line eq '3'}" class="color01">3줄</span>
+                    <span th:if="${g.line eq '4'}" class="color02">4줄</span>
+                    <span th:if="${g.line ne '3' and g.line ne '4'}">-</span>
+                </td>
+                <td>
+                    <span th:if="${g.oddeven eq 'ODD'}" class="color01">홀</span>
+                    <span th:if="${g.oddeven eq 'EVEN'}" class="color02">짝</span>
+                    <span th:if="${g.oddeven ne 'ODD' and g.oddeven ne 'EVEN'}">-</span>
+                </td>
+                <td>
+                    <span th:if="${g.line eq '3' and g.oddeven eq 'EVEN'}" class="ladder-result s1"></span>
+                    <span th:if="${g.line eq '4' and g.oddeven eq 'ODD'}" class="ladder-result s2"></span>
+                    <span th:if="${g.line eq '3' and g.oddeven eq 'ODD'}" class="ladder-result s3"></span>
+                    <span th:if="${g.line eq '4' and g.oddeven eq 'EVEN'}" class="ladder-result s4"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="paging">
+        <ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

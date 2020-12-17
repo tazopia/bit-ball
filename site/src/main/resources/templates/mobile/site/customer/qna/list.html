@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='customer', lnb='qna', title='고객상담'">
+<body>
+<div layout:fragment="tab-menu" th:replace="fragments/mobile :: customer" th:if="true"></div>
+<main class="page" layout:fragment="page">
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/customer/qna|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+    <h3>
+        <p class="btn-box">
+			<a href="#" onclick="payment.account();return false;" class="btn payment">계좌요청</a>
+            <a th:href="|${siteConfig.pathSite}/customer/qna/add|" class="btn write">문의하기</a>
+        </p>
+    </h3>
+    <div class="table-wrap">
+        <ul class="board qna">
+            <th:block th:each="q, num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <li th:onclick="|viewQna(${q.id});return false;|">
+                    <p class="title">
+                        <a th:text="${q.title}"></a>
+                    </p>
+                    <p class="info">
+                        <span th:class="${q.re} ? 'reply lv' : 'ready lv'" th:text="${q.re} ? '답변' : '대기'"></span>
+                        <span th:class="${q.checked} ? 'checked show lv' : 'show lv'" th:text="${q.checked} ? '확인' : '미확인'"></span>
+                        <span class="date" th:utext="${tag.dayWeekTimes(q.regDate)}"></span>
+                    </p>
+                <li th:id="${q.id}" class="contents">
+                    <div>
+
+						<table class="table-game table-bet">
+							<caption>스포츠</caption>
+							<colgroup>
+								<col>
+								<col style="width: 40px;">
+								<col style="width: 40px;">
+								<col>
+							</colgroup>
+							<tbody class="betBody" th:each="b : ${q.bets}">
+							<tr>
+								<th class="betTitle" colspan="4">
+									<span class="code" th:text="${b.menuCode.name}"></span>
+									<span class="time" th:utext="${tag.dayWeekTime(b.betDate)}"></span>
+								</th>
+							</tr>
+							<th:block th:each="item : ${b.betItems}">
+								<tr>
+									<th class="league" colspan="4">
+										<img th:src="@{|${tag.sportsFlag(item)}|}"/>
+										<img th:src="@{|${tag.leagueFlag(item)}|}"/>
+										<span th:text="${item.league}"></span>
+										<span class="date" th:utext="${tag.dayWeekTime(item.gameDate)}">06/21(금)</span>
+									</th>
+								</tr>
+								<tr class="item">
+									<td rowspan="2" th:class="${(item.betTeam eq 'home' ? 'bet home on' : 'bet home') + (item.gameResult.name() eq 'HOME' or item.gameResult.name() eq 'OVER' ? ' hit' : '')}">
+										<p class="ellipses">
+											<em th:text="${item.teamHome}" th:remove="tag"></em>
+											<span class="color01" th:if="${item.menuCode.name() eq 'SPECIAL' and item.special eq '전반'}" th:text="${'[' + item.special + ']'}"></span>
+										</p>
+										<span class="odds">
+						<span th:if="${item.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+							<span th:if="${item.gameCode.name() eq 'OVER_UNDER'}" class="over">[오버]</span>
+							<em th:text="${tag.odds(item.oddsHome)}" th:remove="tag"></em>
+						</span>
+									</td>
+									<td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'MATCH' or item.gameCode.name() eq 'ZONE'}"
+										th:with="odds=${tag.odds(item.oddsDraw)}"
+										th:class="${(item.betTeam eq 'draw' ? 'draw on' : 'draw') + (item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' ? ' hit' : '') + (odds eq '0.00' ? '' : ' odds')}"
+										th:text="${odds eq '0.00' ? 'VS' : odds}">
+										무
+									</td>
+									<td style="padding:0;height:33px" colspan="2" th:if="${item.gameCode.name() eq 'HANDICAP' or item.gameCode.name() eq 'OVER_UNDER'}" th:class="${item.gameResult.name() eq 'DRAW' or item.gameResult.name() eq 'HIT' ? 'draw hit' : 'draw'}" th:text="${tag.handicap(item.handicap)}">무</td>
+									<td rowspan="2" th:class="${(item.betTeam eq 'away' ? 'bet away on' : 'bet away') + (item.gameResult.name() eq 'AWAY' or item.gameResult.name() eq 'UNDER' ? ' hit' : '')}">
+										<p class="ellipses">
+											<span class="color01" th:if="${item.menuCode.name() eq 'SPECIAL' and item.special eq '전반'}" th:text="${'[' + item.special + ']'}"></span>
+											<em th:text="${item.teamAway}" th:remove="tag"></em>
+										</p>
+										<span class="odds">
+							<em th:text="${tag.odds(item.oddsAway)}" th:remove="tag"></em>
+							<span th:if="${item.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+							<span th:if="${item.gameCode.name() eq 'OVER_UNDER'}" class="under">[언더]</span>
+						</span>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding:0;height:33px" class="score" th:text="${item.scoreHome eq null ? '-' : item.scoreHome}"></td>
+									<td style="padding:0;height:33px" class="score" th:text="${item.scoreAway eq null ? '-' : item.scoreAway}"></td>
+								</tr>
+							</th:block>
+							<tr>
+								<td class="betInfo" colspan="4">
+									<em class="betMoney">
+										베팅금액 : <span th:text="${tag.num(b.betMoney)}">1,000</span>원
+									</em>
+									<em class="rate">
+										배당율 : <span th:text="${tag.odds(b.betOdds)}">1,000</span>배
+									</em>
+									<em class="expMoney">
+										예상금액 : <span th:text="${tag.num(b.expMoney)}">1,000</span>원
+									</em>
+									<em class="hitMoney" th:if="${b.closing}">
+										적중금액 : <span class="hit" th:text="${tag.num(b.hitMoney)}">1,000</span>원
+									</em>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+
+                        <p>
+                            <a href="#" th:onclick="|deleteQna(${q.id});return false;|" class="icon_delete"></a>
+                            <span th:utext="${tag.onlyBr(q.contents)}" th:remove="tag"></span>
+                        </p>
+                        <h5 th:if="${q.re}" th:utext="${tag.colorBr(q.reTitle)}">답변</h5>
+                        <p th:if="${q.re}" th:utext="${tag.colorBr(q.reply)}"></p>
+                    </div>
+                </li>
+            </th:block>
+            <ul th:if="${page.numberOfElements eq 0}">
+                <li style="height: 300px;line-height: 300px; text-align: center; padding:0;">등록된 문의가 없습니다.</li>
+            </ul>
+        </ul>
+    </div>
+    <div class="paging">
+        <ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    function viewQna(id) {
+        if ($('#' + id).is(':visible')) {
+            $('#' + id).hide();
+        } else {
+            $('.contents').hide();
+            $('#' + id).show();
+            showQna(id);
+        }
+    }
+
+    function showQna(id) {
+        $.post(path + '/customer/qna/view', {
+            id: id
+        }).done(function success(data) {
+            if (data.value === 'true') {
+                $('#' + id).prev().find('.show').text('확인').addClass('checked');
+            }
+        });
+    }
+
+    function deleteQna(id) {
+        $.post(path + '/customer/qna/delete', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

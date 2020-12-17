@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='oddeven'">
+<body>
+
+<section layout:fragment="section">
+    <h3>홀짝 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/oddeven/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>사다리</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th>일자</th>
+            <th>회차</th>
+            <th>히든카드</th>
+            <th>오픈카드</th>
+            <th>홀짝</th>
+            <th>히든 오버언더</th>
+            <th>히든 무늬</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td class="color0" th:text="${tag.round(g.round, 4)} + ' 회'"></td>
+            <td><span th:class="'card_result card_' + ${g.card1}"></span></td>
+            <td><span th:class="'card_result card_' + ${g.card2}"></span></td>
+            <td>
+                <span th:if="${g.oddeven eq 'O'}" class="color01">홀</span>
+                <span th:if="${g.oddeven eq 'E'}" class="color02">짝</span>
+                <span th:if="${g.oddeven ne 'O' and g.oddeven ne 'E'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.overunder eq 'OVER'}" class="color01">오버</span>
+                <span th:if="${g.overunder eq 'UNDER'}" class="color02">언더</span>
+                <span th:if="${g.overunder ne 'OVER' and g.overunder ne 'UNDER'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.pattern eq '스페이드'}" class="color0">♠</span>
+                <span th:if="${g.pattern eq '스페이드'}">(스페이드)</span>
+                <span th:if="${g.pattern eq '다이아'}" class="color02">◆</span>
+                <span th:if="${g.pattern eq '다이아'}">(다이아)</span>
+                <span th:if="${g.pattern eq '하트'}" class="color02">♥</span>
+                <span th:if="${g.pattern eq '하트'}">(하트)</span>
+                <span th:if="${g.pattern eq '크로바'}" class="color0">♣</span>
+                <span th:if="${g.pattern eq '크로바'}">(크로바)</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

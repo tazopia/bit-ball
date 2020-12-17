@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='member', lnb=${lnb}">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>회원 :</small>
+    회원 관리
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/member/list|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    <select th:field="*{mode}">
+                        <option value="all">전체회원</option>
+                        <option value="">정상회원</option>
+                        <option value="dummy">게시판 작업용</option>
+                        <option value="agency">총판회원</option>
+                        <option value="admin">관리자</option>
+                        <option value="disabled">승인대기</option>
+                        <option value="secession">탈퇴/졸업회원</option>
+                        <option value="profile">블랙 회원</option>
+                        <option value="block">게시물 블럭회원</option>
+                        <option value="profile">메모 입력회원</option>
+                        <option value="7.login">7일간 미접속 회원</option>
+                        <option value="15.login">15일간 미접속 회원</option>
+                        <option value="30.login">30일간 미접속 회원</option>
+                        <option value="7.betting">7일간 미베팅 회원</option>
+                        <option value="15.betting">15일간 미베팅 회원</option>
+                        <option value="30.betting">30일간 미베팅 회원</option>
+                    </select>
+                    <select th:field="*{level}">
+                        <option value="">전체등급</option>
+                        <option th:each="level : ${#numbers.sequence(1, 10)}" th:value="${level}" th:text="${level + '등급'}"></option>
+                    </select>
+                </label>
+                <label>
+                    <select th:field="*{searchType}">
+                        <option value="agency">총판/대리점</option>
+                        <option value="recommender">추천인</option>
+                        <option value="phone">연락처</option>
+                        <option value="depositor">예금주</option>
+                        <option value="code">가입코드</option>
+                        <option value="ip">가입/접속 IP</option>
+                    </select>
+                    <input type="text" th:field="*{searchValue}"/>
+                </label>
+                <label>
+                    <input type="text" th:field="*{username}" placeholder="아이디/닉네임" />
+                    (일치 <input type="checkbox" th:field="*{match}"/>)
+                </label>
+                <label>
+                    <select th:field="*{sort}">
+                        <option value="">최근 등록날짜로 정렬</option>
+                        <option value="login">최근 로그인날짜로 정렬</option>
+                        <option value="deposit">전체 입금순 정렬</option>
+                        <option value="withdraw">전체 출금순 정렬</option>
+                        <option value="change">차액 순서로 정렬</option>
+                        <option value="betting">전체 베팅 순서로 정렬</option>
+                        <option value="sports">스포츠 베팅 순서로 정렬</option>
+                        <option value="zone">실시간 베팅 순서로 정렬</option>
+                        <option value="money">머니 많은 순서로 정렬</option>
+                        <option value="money.asc">머니 작은 순서로 정렬</option>
+                        <option value="point">포인트 많은 순서로 정렬</option>
+                        <option value="point.asc">포인트 작은 순서로 정렬</option>
+                        <option value="recommended">추천인수 순서로 정렬</option>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/member/list|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                회원리스트
+                <span class="total">( 검색된 회원수 : <span th:text="${tag.num(page.totalElements)}">100</span> 명 )</span>
+                <a th:if="${user.role.name() eq 'SUPER' or user.role.name() eq 'GOD'}" th:href="@{|${siteConfig.pathAdmin}/excel/member|}" class="btn btn03" style="width: 200px;"><i class="fa fa-download"></i> 전체회원 엑셀 다운로드</a>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <thead>
+            <tr>
+                <th th:if="false">번호</th>
+				<th>총본사</th>
+				<th>부본사</th>
+                <th>총판</th>
+                <th>매장</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>등급</th>
+                <th>머니</th>
+                <th>포인트</th>
+                <th>입금</th>
+                <th>출금</th>
+                <th>차액</th>
+                <th colspan="3">베팅</th>
+                <th>접속</th>
+                <th colspan="2">상태</th>
+                <th>쪽지</th>
+                <th>메모</th>
+				<th th:if="${command.mode eq 'agency'}">하위생성</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+                <td th:if="false" th:text="${total - num.count}">1</td>
+				<td th:text="${#strings.defaultString(m.agency4, '-')}">총본사</td>
+				<td th:text="${#strings.defaultString(m.agency3, '-')}">부본사</td>
+                <td th:text="${#strings.defaultString(m.agency2, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency1, '-')}">매장</td>
+                <td class="popup color03" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.userid}">아이디</td>
+                <td class="popup color02" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.nickname}">닉네임</td>
+                <td class="search" th:text="${m.role.group.name() eq 'USER' ? m.level : m.role.name}">등급</td>
+                <td class="popup num color01" th:onclick="|popup.payment.money('${m.userid}');|" th:text="${tag.num(m.money)}">머니</td>
+                <td class="popup num color02" th:onclick="|popup.payment.point('${m.userid}');|" th:text="${tag.num(m.point)}">포인트</td>
+                <td class="popup num color04" th:onclick="|popup.payment.banking('${m.userid}');|" th:text="${tag.num(m.deposit)}">입금</td>
+                <td class="popup num color03" th:onclick="|popup.payment.banking('${m.userid}');|" th:text="${tag.num(m.withdraw)}">출금</td>
+                <td class="num" th:text="${tag.num(m.deposit - m.withdraw)}">차액</td>
+
+                <td class="popup num color02" th:onclick="|popup.betting.list('${m.userid}');|" th:text="${tag.num(m.betCntTotal)}">베팅금</td>
+                <td class="popup num color04" th:onclick="|popup.betting.list('${m.userid}');|" th:text="${tag.num(m.betTotal)}">베팅금</td>
+                <td th:text="${tag.dayWeek(m.betDate)}">최종베팅</td>
+
+<!--                <td class="popup color02" th:onclick="|popup.member.login('${m.userid}');|" th:text="${#strings.defaultString(m.loginIp, '-')}">192.168.0.1</td>-->
+<!--                <td class="popup color04" th:onclick="|popup.member.login('${m.userid}');|" th:text="${#strings.defaultString(m.loginDomain, '-')}">localhost</td>-->
+                <td th:text="${tag.dayWeek(m.loginDate)}">로그인</td>
+                <td th:class="${m.enabled ? 'color04 cmd' : 'color03 cmd'}" th:onclick="|member.enabled('${m.userid}', this);|">
+                    <i th:class="${m.enabled} ? 'fa fa-thumbs-o-up' : 'fa fa-thumbs-o-down'"></i>
+                </td>
+                <td th:class="${m.black ? 'color03 cmd' : 'cmd'}" th:onclick="|member.black('${m.userid}', this);|">
+                    <i th:class="${m.black} ? 'fa fa-volume-up' : 'fa fa-volume-up'"></i>
+                </td>
+                <td class="color02 popup" th:onclick="|popup.customer.memo('${m.userid}');|"><i class="fa fa-envelope-o"></i></td>
+                <td class="memo" th:class="${#strings.isEmpty(m.memo) ? 'memo' : 'memo color01'}">
+                    <i class="fa fa-pencil-square-o"></i>
+                    <span th:utext="${tag.onlyBr(m.memo)}">우리나라 대한민국입니다. 하하하 어쩌고 저쩌고</span>
+                </td>
+				<td th:if="${command.mode eq 'agency'}">
+					<button class="btn btn02" th:onclick="|popup.agency.add('${m.userid}');|">하위생성</button>
+				</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

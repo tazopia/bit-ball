@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${score}" onsubmit="return setScore();">
+        <input type="hidden" th:field="*{id}"/>
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-bars"></i> 섯다 종료처리</h3>
+            </div>
+
+            <div class="panel-body line">
+                <div style="margin: 0 auto; width:920px; height: 589px; overflow: hidden;position: relative;">
+                    <iframe id="zoneBox" style="position: absolute; width: 920px; height: 589px; position: absolute; top: 0px; left: 0px;" scrolling="no" th:src="@{${sysConfig.zone.crownSutdaPlayer}}"></iframe>
+                </div>
+            </div>
+
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임일시</th>
+                    <td>
+                        <span th:text="${#dates.format(score.gameDate, 'MM/dd(E) HH:mm')}"></span>
+                        <span class="color03" th:text="${#numbers.formatInteger(score.round, 3, 'DEFAULT') + ' 회차'}"></span>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">KOREA</th>
+					<td>
+						<label>
+							<select th:field="*{k1}">
+								<option value="1">1띠</option>
+								<option value="2">2띠</option>
+								<option value="3">3띠</option>
+								<option value="4">4띠</option>
+								<option value="5">5띠</option>
+								<option value="6">6띠</option>
+								<option value="7">7띠</option>
+								<option value="8">8멍</option>
+								<option value="9">9띠</option>
+								<option value="10">10띠</option>
+								<option value="11">1광</option>
+								<option value="12">2멍</option>
+								<option value="13">3광</option>
+								<option value="14">4멍</option>
+								<option value="15">5멍</option>
+								<option value="16">6멍</option>
+								<option value="17">7멍</option>
+								<option value="18">8광</option>
+								<option value="19">9멍</option>
+								<option value="20">10멍</option>
+							</select>
+						</label>
+						<label>
+							<select th:field="*{k2}">
+								<option value="1">1띠</option>
+								<option value="2">2띠</option>
+								<option value="3">3띠</option>
+								<option value="4">4띠</option>
+								<option value="5">5띠</option>
+								<option value="6">6띠</option>
+								<option value="7">7띠</option>
+								<option value="8">8멍</option>
+								<option value="9">9띠</option>
+								<option value="10">10띠</option>
+								<option value="11">1광</option>
+								<option value="12">2멍</option>
+								<option value="13">3광</option>
+								<option value="14">4멍</option>
+								<option value="15">5멍</option>
+								<option value="16">6멍</option>
+								<option value="17">7멍</option>
+								<option value="18">8광</option>
+								<option value="19">9멍</option>
+								<option value="20">10멍</option>
+							</select>
+						</label>
+						<label>
+							<input type="text" th:field="*{korea}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">JAPAN</th>
+					<td>
+						<label>
+							<select th:field="*{j1}">
+								<option value="1">1띠</option>
+								<option value="2">2띠</option>
+								<option value="3">3띠</option>
+								<option value="4">4띠</option>
+								<option value="5">5띠</option>
+								<option value="6">6띠</option>
+								<option value="7">7띠</option>
+								<option value="8">8멍</option>
+								<option value="9">9띠</option>
+								<option value="10">10띠</option>
+								<option value="11">1광</option>
+								<option value="12">2멍</option>
+								<option value="13">3광</option>
+								<option value="14">4멍</option>
+								<option value="15">5멍</option>
+								<option value="16">6멍</option>
+								<option value="17">7멍</option>
+								<option value="18">8광</option>
+								<option value="19">9멍</option>
+								<option value="20">10멍</option>
+							</select>
+						</label>
+						<label>
+							<select th:field="*{j2}">
+								<option value="1">1띠</option>
+								<option value="2">2띠</option>
+								<option value="3">3띠</option>
+								<option value="4">4띠</option>
+								<option value="5">5띠</option>
+								<option value="6">6띠</option>
+								<option value="7">7띠</option>
+								<option value="8">8멍</option>
+								<option value="9">9띠</option>
+								<option value="10">10띠</option>
+								<option value="11">1광</option>
+								<option value="12">2멍</option>
+								<option value="13">3광</option>
+								<option value="14">4멍</option>
+								<option value="15">5멍</option>
+								<option value="16">6멍</option>
+								<option value="17">7멍</option>
+								<option value="18">8광</option>
+								<option value="19">9멍</option>
+								<option value="20">10멍</option>
+							</select>
+						</label>
+						<label>
+							<input type="text" th:field="*{japan}" />
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th class="required">결과</th>
+					<td class="color01">
+						<label><input type="radio" th:field="*{result}" th:value="K"/> KOREA</label>
+						<label><input type="radio" th:field="*{result}" th:value="T"/> TIE</label>
+						<label><input type="radio" th:field="*{result}" th:value="J"/> JAPAN</label>
+					</td>
+				</tr>
+                <tr>
+                    <th class="required">적특처리</th>
+                    <td class="color01">
+                        <label><input type="checkbox" th:field="*{cancel}"/> 현재회차 적특처리</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="결과입력"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function setScore() {
+        if (!$('input:checkbox[name=cancel]').is(':checked')) {
+            if ($('#card').val() === '') {
+                alert('결과처리를 완료 하세요.');
+                return false;
+            }
+        }
+    }
+</script>
+</body>
+</html>

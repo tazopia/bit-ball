@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${score}" onsubmit="return setScore();">
+        <input type="hidden" th:field="*{id}"/>
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-bars"></i> 파워볼 종료처리</h3>
+            </div>
+
+            <div class="panel-body line">
+                <div style="margin: 0 auto; width: 830px; height: 646px; overflow: hidden;position: relative; background: #fff">
+					<iframe id="zoneBox" style="position: absolute; width: 830px; height: 646px;" scrolling="no" th:src="@{${sysConfig.zone.powerPlayer}}"></iframe>
+                </div>
+            </div>
+
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임일시</th>
+                    <td>
+                        <span th:utext="${tag.dayWeekTime(score.gameDate)}"></span>
+                        <span class="color01" th:text="${#numbers.formatInteger(score.round, 3, 'DEFAULT') + ' 회차'}"></span>
+                        <span class="color04" th:text="'(' + ${#numbers.formatInteger(score.times, 3, 'DEFAULT')} + ' 회차)'"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">파워볼</th>
+                    <td>
+                        <input type="text" th:field="*{pb}" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">일반볼</th>
+                    <td>
+                        <input type="text" th:field="*{ball}" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">적특처리</th>
+                    <td class="color01">
+                        <label><input type="checkbox" th:field="*{cancel}"/> 현재회차 적특처리</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="결과입력"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function setScore() {
+        if (!$('input:checkbox[name=cancel]').is(':checked')) {
+            if ($('#pb').val() == '') {
+                alert('파워볼을 입력 하세요.');
+                return false;
+            }
+
+            if ($('#ball').val() == '') {
+                alert('일반볼을 하세요.');
+                return false;
+            }
+        }
+    }
+</script>
+</body>
+</html>

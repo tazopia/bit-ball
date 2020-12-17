@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/siteLayout" th:with="main='page', gnb='customer', lnb='memo'">
+<body>
+
+<section layout:fragment="section">
+	<h3>메시지함</h3>
+
+	<form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/customer/memo|}">
+		<input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+	</form>
+
+	<div class="board memo">
+		<ul class="head">
+			<li>No.</li>
+			<li>제목</li>
+			<li>작성일</li>
+			<li>상태</li>
+			<li><input type="checkbox" name="chk" id="chk" onclick="selectAll();" style="width:16px;height:16px;padding:0;margin:0;"/></li>
+		</ul>
+		<th:block th:each="m, num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+			<ul>
+				<li th:text="${total - num.count}">1</li>
+				<li class="ellipsis" th:onclick="|viewMemo(${m.id});return false;|"><a class="ellipsis" th:utext="${tag.memo(m.title)}"></a></li>
+				<li th:utext="${tag.dayWeekTimes(m.regDate)}"></li>
+				<li th:class="${m.checked} ? 'checked' : 'color03 checked'" th:text="${m.checked} ? '확인' : '미확인'"></li>
+				<li><input type="checkbox" name="id" th:value="${m.id}" style="width:16px;height:16px;padding:0;margin:0;"/></li>
+			</ul>
+			<ul th:id="${m.id}" class="contents">
+				<li>
+					<h5 th:utext="${tag.memo(m.title)}">질문</h5>
+					<p>
+						<a href="#" th:onclick="|deleteMemo(${m.id});return false;|" class="btn btn03">삭제</a>
+						<p th:utext="${tag.memo(m.contents)}" th:remove="tag"></p>
+					</p>
+				</li>
+			</ul>
+		</th:block>
+		<ul th:if="${page.numberOfElements eq 0}">
+			<li style="height: 300px;line-height: 300px;">등록된 쪽지가 없습니다.</li>
+		</ul>
+	</div>
+	<div class="command right">
+		<button onclick="deleteSelect();" class="btn btn02">선택항목삭제</button>
+	</div>
+	<div class="paging">
+		<ul th:replace="fragments/site :: paging(p=${page})"></ul>
+	</div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    var memo = [[${user.memo}]];
+    if (memo > 0) {
+        alert('쪽지를 확인 하세요.');
+    }
+
+    function viewMemo(id) {
+        if ($('#' + id).is(':visible')) {
+            $('#' + id).slideUp();
+        } else {
+            $('.contents').slideUp();
+            $('#' + id).slideDown();
+            showMemo(id);
+        }
+    }
+
+    function showMemo(id) {
+        $.post(path + '/customer/memo/view', {
+            id: id
+        }).done(function success() {
+            $('#' + id).prev().find('.checked').text('확인').removeClass('color03');
+        });
+    }
+
+    function deleteMemo(id) {
+        $.post(path + '/customer/memo/delete', {
+            id: id
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    function deleteSelect() {
+        var checked = $('input[name=id]:checked');
+
+        if (checked.length === 0) {
+            alert('삭제할 메시지를 선택하여 주세요.');
+            return;
+		}
+
+        if (!confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            return;
+
+		}
+		var ids = [];
+		checked.each(function () {
+			ids.push($(this).val());
+        });
+
+        $.post(path + '/customer/memo/deleteAll', {
+            ids: ids
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    var sel = false;
+    function selectAll() {
+        sel = !sel;
+        $('input[name=id]').each(function () {
+            if (sel) {
+                $(this).prop('checked', true);
+            } else {
+                $(this).prop('checked', false);
+			}
+        })
+    }
+</script>
+</body>
+</html>

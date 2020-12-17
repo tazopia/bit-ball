@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <div class="panel-header">
+            <h3><i class="bul fa fa-recycle"></i> 작업완료.</h3>
+        </div>
+        <div class="panel-body line" style="height: 200px; line-height: 200px;">
+            <div style="text-align: center; font-size: 20px;" th:text="${message}"></div>
+        </div>
+        <div class="panel-footer">
+            <button onclick="popup.close();return false;" class="btn">창닫기</button>
+        </div>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+    alert('[[${message}]]');
+    self.close();
+</script>
+</body>
+</html>

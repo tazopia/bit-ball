@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='agency', lnb='member'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>대리점 관리 :</small>
+    회원 리스트
+</h2>
+<div layout:fragment="content">
+    <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathSeller}/agency/member|}" method="get">
+        <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+        <section>
+            <div class="panel-search">
+                <label>
+                    아이디/닉네임 :
+                    <input type="text" th:field="*{username}" />
+                    (일치 <input type="checkbox" th:field="*{match}"/>)
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathSeller}/agency/member|}" class="btn">취소</a>
+                </div>
+            </div>
+        </section>
+    </form>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                회원 리스트
+                <span class="total">( 검색된 회원수 : <span th:text="${tag.num(page.totalElements)}">100</span> 명 )</span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <thead>
+            <tr>
+				<th th:if="${user.role.name() eq 'AGENCY4'}">총본사</th>
+				<th th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3'}">부본사</th>
+				<th th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3' or user.role.name() eq 'AGENCY2'}">총판</th>
+                <th>매장</th>
+                <th>아이디</th>
+                <th>닉네임</th>
+<!--                <th>예금주</th>-->
+                <th>등급</th>
+				<th>머니</th>
+				<th>포인트</th>
+                <th>입금</th>
+                <th>출금</th>
+                <th>차액</th>
+                <th colspan="2">실시간베팅</th>
+				<th>↓ 파워볼 ↑</th>
+				<th>파다리</th>
+				<th>키노</th>
+				<th>키다리</th>
+                <th>가입</th>
+                <th>접속</th>
+                <th>승인</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m,num : ${page.content}">
+				<td th:if="${user.role.name() eq 'AGENCY4'}" th:text="${#strings.defaultString(m.agency4, '-')}">총판</td>
+				<td th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3'}" th:text="${#strings.defaultString(m.agency3, '-')}">총판</td>
+				<td th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3' or user.role.name() eq 'AGENCY2'}" th:text="${#strings.defaultString(m.agency2, '-')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency1, '-')}">매장</td>
+                <td class="color03" th:text="${m.userid}">아이디</td>
+                <td class="color02" th:text="${m.nickname}">닉네임</td>
+<!--                <td th:text="${m.depositor}">예금주</td>-->
+                <td th:text="${m.role.group.name() eq 'USER' ? m.level : m.role.name}">등급</td>
+				<td class="num color01" th:text="${tag.num(m.money)}">머니</td>
+				<td class="num color02" th:text="${tag.num(m.point)}">포인트</td>
+                <td class="num color04" th:text="${tag.num(m.deposit)}">입금</td>
+                <td class="num color03" th:text="${tag.num(m.withdraw)}">출금</td>
+                <td class="num" th:text="${tag.num(m.deposit - m.withdraw)}">차액</td>
+                <td class="num color02" th:text="${tag.num(m.betZoneCnt)}">베팅금</td>
+                <td class="num color04" th:text="${tag.num(m.betZone)}">베팅금</td>
+
+				<td class="color01" th:text="${m.powerMin + '% / ' + m.powerMax + '%'}"></td>
+				<td class="color01" th:text="${m.powerLadder + '%'}"></td>
+				<td class="color01" th:text="${m.keno + '%'}"></td>
+				<td class="color01" th:text="${m.kenoLadder + '%'}"></td>
+
+                <td th:text="${tag.dayWeek(m.joinDate)}">최종베팅</td>
+                <td th:text="${tag.dayWeek(m.loginDate)}">최종베팅</td>
+                <td th:class="${m.enabled} ? 'color04' : 'color03'" th:text="${m.enabled} ? 'O' : 'X'"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

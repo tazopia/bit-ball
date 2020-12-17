@@ -1,0 +1,460 @@
+table {
+	box-shadow none
+	border-spacing 2px !important
+	border-collapse separate
+
+	//box-shadow(1px 1px 4px rgba(0, 0, 0, 0.4))
+
+	&.fixed {
+		table-layout fixed
+	}
+
+	th, td {
+		height 36px
+		vertical-align middle
+		//border 1px solid #565658
+		//padding 6px 0
+	}
+
+	th {
+		background #2a2a2a
+		color #d8af3a
+	}
+
+	td {
+		background #333
+		text-align left
+		padding 6px 0 6px 20px
+	}
+}
+
+table.banking {
+	.btn {
+		width 72px
+		padding 0
+		text-align center
+		background #d8af3a
+		color #000
+
+		&:hover {
+			background lighten(#d8af3a, 30%)
+		}
+	}
+}
+
+table.view {
+	box-shadow(none)
+	border none
+
+	.contents {
+		//border-bottom solid 1px #d8af3a !important
+		//background rgba(55, 55, 55, 0.8)
+	}
+
+	.user {
+		border none
+		border-bottom solid 1px #2a2a2a
+	}
+
+
+	th {
+		text-align left
+		background #333
+
+		p {
+			font-size 15px
+			padding 10px 20px
+			line-height 1.6
+		}
+	}
+
+	td {
+		background none
+		//border-bottom solid 1px #464547
+		padding 10px 20px
+
+		.date {
+			display block
+			height 20px
+			line-height 20px
+			background url(/images/icon_time.png) left center no-repeat
+			padding-left 16px
+			float right
+		}
+
+		&.contents {
+			border none
+			padding 20px
+			line-height 1.6
+
+			img {
+				max-width 100%
+			}
+		}
+	}
+}
+
+table.add {
+	td {
+		padding 6px 10px
+
+		input {
+			width 100%
+		}
+
+		textarea {
+			width 100%
+			height 300px
+		}
+	}
+}
+
+table.list {
+	td {
+		padding-left 0
+		text-align center
+
+		.label {
+			background-color #1f809c
+			display inline-block
+			height 20px
+			line-height 20px
+			width 50px
+			color #fff
+			font-size 10px
+			font-family Arial
+
+			&.event {
+				background-color #ee5f5b
+			}
+		}
+
+		&.title {
+			text-align left
+			padding 0 20px
+			cursor pointer
+			transition(all 0.2s ease-out)
+
+			&:hover {
+				background #B8573E
+			}
+
+			.hit {
+				color #d8af3a
+			}
+
+			.new, .bet {
+				display inline-block
+				width 15px
+				height 15px
+				line-height 15px
+				color #fff
+				margin 0 1px
+				text-align center
+				font-size 10px
+				font-family Arial
+
+				&.new {
+					background-color #c8232c
+				}
+
+				&.bet {
+					background-color #389638
+				}
+			}
+
+			a {
+				max-width 540px
+			}
+
+			&:hover a {
+				color #fff
+			}
+		}
+
+		&.user {
+			text-align left
+			padding 0 10px
+
+			&.admin {
+				//padding-left 60px
+			}
+		}
+	}
+}
+
+div.point-wrap {
+	background #333
+	padding 20px 100px
+	border-radius 4px
+	display flex
+	justify-content space-between
+	align-items center
+
+	p {
+		padding 0
+		font-size 22px
+		line-height 1
+		color #d8af3a
+	}
+
+	#page-point {
+		color #fa5252
+	}
+
+	.btn {
+		font-size 16px
+		height 30px
+		line-height 30px
+	}
+}
+
+div.board {
+	//box-shadow(1px 1px 4px rgba(0, 0, 0, 0.4))
+
+	ul {
+		display table
+//		border-collapse collapse
+		width 100%
+		//margin-top -1px
+
+		box-shadow none
+		border-spacing 1px !important
+		border-collapse separate
+
+		li {
+			display table-cell
+			height 36px
+			vertical-align middle
+			text-align center
+			//border 1px solid #565658
+			width auto
+			background #333
+
+			&.ellipsis {
+				transition(all 0.2s ease-out)
+				&:hover {
+					background #B8573E
+				}
+			}
+		}
+
+		&.head {
+			margin-top 0
+
+			li {
+				background #2a2a2a
+				text-align center !important
+			}
+		}
+	}
+
+	&.qna, &.memo {
+		li {
+			&:nth-child(1) {
+				width 80px
+			}
+
+			&:nth-child(2) {
+				width 630px
+				padding 0 10px
+				text-align left
+				cursor pointer
+
+				a {
+					width 600px
+				}
+
+				&:hover a {
+					color #fff
+				}
+			}
+
+			&:nth-child(3) {
+
+			}
+
+			&:nth-child(4) {
+				width 80px
+			}
+
+			&:nth-child(5) {
+				width 80px
+			}
+		}
+
+		ul.contents {
+			display none
+
+			li {
+				h5 {
+					font-size 14px
+					//background rgba(0, 0, 0, 0.3)
+					background #2a2a2a
+					padding 6px 20px
+				}
+
+				p {
+					padding 20px
+					position relative
+
+					.btn {
+						position absolute
+						right 0
+						top 10px
+						border-radius 4px
+					}
+				}
+
+				display block
+				height auto
+				width 100%
+				padding 20px
+				text-align left
+				line-height 1.8
+				background none
+				//box-shadow(inset 8px 8px 40px 1px rgba(0, 0, 0, 0.3))
+			}
+		}
+	}
+
+	&.memo {
+		li {
+			&:nth-child(2) {
+				width 610px
+				padding 0 10px
+				text-align left
+				cursor pointer
+
+				a {
+					width 580px
+				}
+
+				&:hover a {
+					color #fff
+				}
+			}
+
+			&:nth-child(3) {
+				width 160px
+			}
+		}
+	}
+
+}
+
+.comment {
+	background #333
+	padding 10px
+
+	textarea {
+		width calc(100% - 120px)
+		height 80px
+		border none
+	}
+
+	.btn {
+		float right
+		width 120px
+		height 80px
+		font-size 14px
+		font-weight 600
+		border-radius 0 4px 4px 0
+	}
+}
+
+.comments {
+	> div {
+		overflow hidden
+		border-top solid 1px #565658
+		padding 10px 20px
+		background #464547
+
+		.date {
+			margin-top 6px
+			display block
+			height 20px
+			line-height 20px
+			background url(/images/icon_time.png) left center no-repeat
+			padding-left 16px
+		}
+
+		.user {
+			float left
+			width 160px
+		}
+
+		.title {
+			position relative
+			padding-left 160px
+
+			p {
+				color #fff
+				line-height 1.6
+			}
+
+			.icon_delete {
+				position absolute
+				right 0
+				top 0
+				width 21px
+				height 21px
+				background url(/images/icon_delete.png) center center no-repeat #dc0405
+			}
+		}
+	}
+}
+
+.payment {
+	text-align right
+	padding 10px 0
+	.btn {
+		height 38px
+		line-height 38px
+		padding 0 40px
+		background #EC1A41
+		font-size 16px
+		font-weight 600
+
+		&:hover {
+			background darken(#EC1A41, 30%)
+		}
+	}
+}
+
+table.bet {
+	border-collapse separate !important
+	border-spacing 1px !important
+
+	th {
+		height 46px
+	}
+	td {
+		background #363537
+		padding 10px 0
+		line-height 1.6
+
+		&.cancel {
+			color #ff4400
+		}
+
+		&.win {
+			color #5bc0de
+		}
+
+		&.lose {
+			color #f89406
+		}
+
+		&.tie {
+			color #62c462
+		}
+
+		.odds {
+			font-size 16px
+			font-style italic
+			color #fff
+
+		}
+	}
+}

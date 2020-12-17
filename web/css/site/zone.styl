@@ -1,0 +1,89 @@
+div.zone {
+	overflow hidden
+	position relative
+
+	> .timer {
+		width 200px
+		float left
+
+		.timer-box {
+			background url(/images/zone/timer-bg.png)
+			border solid 4px #f60
+			width 200px
+			text-align center
+			border-radius 6px
+			padding 20px
+		}
+
+	}
+
+	> .right {
+		width 820px
+		float right
+	}
+
+	table.game td {
+		height 60px
+	}
+}
+
+#zoneButton {
+	margin 0 auto
+	width 860px
+	padding 4px 5px
+	background #bbbbbb
+	border solid 1px #acacac
+	border-radius 4px
+	text-align left
+
+	a {
+		display inline-block
+		color #222
+		font-weight 600
+		text-shadow 1px 1px 1px #fff
+		padding 0 20px
+		height 22px
+		line-height 20px
+		text-align center
+		border solid 1px transparent
+
+		&.on, &:hover {
+			background #197d5f
+			border-color #116249
+			border-radius 3px
+			color #fff
+			text-shadow none
+		}
+	}
+}
+
+span.ball1, span.ball2, span.ball3 {
+	display inline-block
+	width 30px
+	height 30px
+	background #1f809c
+	color #fff
+	line-height 30px
+	font-weight 600
+	border-radius 30px
+}
+
+span.ball2 {
+	background #9b3000
+}
+
+span.ball3 {
+	background #333
+}
+
+td.sutda {
+	padding 10px !important
+	img {
+		width 42px
+	}
+	p {
+		text-align center
+		padding 10px 0 0 0
+		font-size 14px
+	}
+}

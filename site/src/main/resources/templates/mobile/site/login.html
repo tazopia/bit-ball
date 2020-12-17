@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLoginLayout" th:with="mode='login'">
+<body id="login">
+<div class="login-wrap" layout:fragment="login">
+    <div class="login-box">
+		<h1 class="brand"><img src="/images/brand.png" /></h1>
+        <form id="frm" method="post" onsubmit="return login.goLogin();">
+            <label>
+                <input type="text" id="username" name="username" autofocus="autofocus" placeholder="userid"/>
+            </label>
+            <label>
+                <input type="password" id="password" name="password" placeholder="password"/>
+            </label>
+            <div class="command">
+                <button class="btn-big btn-login">로그인</button>
+                <a class="btn-big btn-join" th:if="${siteConfig.join.joinButton}" th:href="@{${siteConfig.join.joinCodePage} ? |${siteConfig.pathJoin}/code| : |${siteConfig.pathJoin}/join|}">회원가입</a>
+            </div>
+        </form>
+        <div class="copyright">Copyright [[${siteConfig.since}]] <span th:text="'&copy; ' + ${siteConfig.companyName} + '.'">회사명</span> All Rights Reserved.</div>
+    </div>
+</div>
+<script layout:fragment="script" th:if="true">
+    var config = [(${config})];
+
+    var message = '[[${message}]]';
+    if (message !== '') {
+        setTimeout(function () {
+            alert(message);
+        }, 10);
+    }
+
+    // window.setInterval(function () {
+    //     $('#login-bg div').last().fadeOut(2000, function () {
+    //         $('#login-bg div').last().prependTo($('#login-bg')).show();
+    //     })
+    // }, 5000);
+</script>
+</body>
+</html>

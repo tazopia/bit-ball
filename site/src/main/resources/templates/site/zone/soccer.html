@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/siteLayout" th:with="main='zone', gnb='virtual', lnb='soccer', title='가상축구'" ng-app="app">
+<body ng-controller="gameCtrl">
+
+<section layout:fragment="section">
+	<h3>
+		<img ng-src="{{flag}}"/>
+		가상축구
+	</h3>
+	<div class="box">
+		<div style="margin: 0 auto; width:860px; height: 484px; overflow: hidden;position: relative;">
+			<iframe id="zoneBox" style="position: absolute; width: 860px; height: 484px; position: absolute; top: 0px; left: 0px;" scrolling="no" src="https://mmootgga.com/bet365/s_p.html"></iframe>
+		</div>
+		<div id="zoneButton" style="width: 860px;">
+			<a href="#" onclick="showPlayer(0); return false;" class="on">프리미어쉽</a>
+			<a href="#" onclick="showPlayer(1); return false;">슈퍼리그</a>
+			<a href="#" onclick="showPlayer(2); return false;">월드컵</a>
+			<a href="#" onclick="showPlayer(3); return false;">유로컵</a>
+		</div>
+	</div>
+	<br/>
+	<div class="zone" ng-if="config.enabled && (config.ma || config.ah || config.ou)">
+		<table class="list game">
+			<caption>스포츠</caption>
+			<colgroup>
+				<col style="width: 120px;">
+				<col style="width: 114px;">
+				<col style="width: 36px;">
+				<col style="width: 273px;">
+				<col>
+				<col style="width: 273px;">
+				<col style="width: 36px;">
+				<col style="width: 80px;">
+			</colgroup>
+			<thead>
+			<tr>
+				<th>경기일시</th>
+				<th>베팅종류</th>
+				<th></th>
+				<th>승(홈)</th>
+				<th>무</th>
+				<th>패(원정)</th>
+				<th></th>
+				<th>베팅시간</th>
+			</tr>
+			</thead>
+			<tbody ng-clock class="ng-cloak">
+			<tr ng-repeat-start="game in list">
+				<td class="league" colspan="8">
+					<img ng-src="/images/sports/축구.png"/> 가상축구
+					<span style="margin-left: 20px;">{{game.gameDateName}}</span>
+					<span class="color01">{{game.gameTimeName}}</span>
+					<span class="color03" style="margin-left: 20px;">{{game.league}}</span>
+				</td>
+			</tr>
+			<tr ng-if="config.ma" ng-class="game.betTime - milliseconds | bet">
+				<td class="date">{{game.gameDateName}} <span>{{game.gameTimeName}}</span></td>
+				<td>승무패</td>
+				<td class="over">H</td>
+				<td class="bet home">
+					{{game.teamHome}}
+					<span class="odds">{{game.odds[0] | number : 2}}</span>
+					<a ng-click="add(game.id, '승무패', 'home', 0, '승', $event)"></a>
+				</td>
+				<td class="bet draw">
+					{{game.odds[1] | number : 2}}
+					<a ng-click="add(game.id, '승무패', 'draw', 1, '무', $event)"></a>
+				</td>
+				<td class="bet away">
+					<span class="odds">{{game.odds[2] | number : 2}}</span>
+					{{game.teamAway}}
+					<a ng-click="add(game.id, '승무패', 'away', 2, '패', $event)"></a>
+				</td>
+				<td class="under">A</td>
+				<td>{{game.betTime - milliseconds | betTime}}</td>
+			</tr>
+			<tr ng-if="config.ah" ng-class="game.betTime - milliseconds | bet">
+				<td class="date">{{game.gameDateName}} <span>{{game.gameTimeName}}</span></td>
+				<td>핸디캡</td>
+				<td class="over">H</td>
+				<td class="bet home">
+					{{game.teamHome}}
+					<span class="odds">{{game.odds[3] | number : 2}}</span>
+					<a ng-click="add(game.id, '핸디캡', 'home', 3, '승', $event)"></a>
+				</td>
+				<td class="draw">{{game.handy | number : 1}}</td>
+				<td class="bet away">
+					<span class="odds">{{game.odds[4] | number : 2}}</span>
+					{{game.teamAway}}
+					<a ng-click="add(game.id, '핸디캡', 'away', 4, '패', $event)"></a>
+				</td>
+				<td class="under">A</td>
+				<td>{{game.betTime - milliseconds | betTime}}</td>
+			</tr>
+			<tr ng-if="config.ou" ng-repeat-end ng-class="game.betTime - milliseconds | bet">
+				<td class="date">{{game.gameDateName}} <span>{{game.gameTimeName}}</span></td>
+				<td>오버언더</td>
+				<td class="over">O</td>
+				<td class="bet home">
+					{{game.teamHome}}
+					<span class="odds">{{game.odds[5] | number : 2}}</span>
+					<a ng-click="add(game.id, '오버언더', 'home', 5, '오버', $event)"></a>
+				</td>
+				<td class="draw">{{game.overunder | number : 1}}</td>
+				<td class="bet away">
+					<span class="odds">{{game.odds[6] | number : 2}}</span>
+					{{game.teamAway}}
+					<a ng-click="add(game.id, '오버언더', 'away', 6, '언더', $event)"></a>
+				</td>
+				<td class="under">U</td>
+				<td>{{game.betTime - milliseconds | betTime}}</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    app = angular.module('app', []);
+    app.filter('betTime', function () {
+        return function (millisecond) {
+            var seconds = parseInt(millisecond / 1000);
+            if (isNaN(seconds)) {
+                return '-';
+            }
+            if (seconds <= 0) {
+                return '베팅종료';
+            }
+            var min = '0' + parseInt(seconds / 60);
+            var sec = '0' + seconds % 60;
+            return min.substring(min.length - 2) + ':' + sec.substring(sec.length - 2);
+        }
+    });
+    app.filter('bet', function () {
+        return function (millisecond) {
+            if (millisecond <= 0) {
+                return 'off';
+            } else {
+                return 'on';
+            }
+        }
+    });
+    app.controller('gameCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+        $scope.Math = window.Math;
+        $scope.soccer = true;
+        $scope.cart = [];
+        $scope.odds = 0.00;
+        $scope.money = 0;
+        $scope.flag = '/images/zone/flag-soccer.png';
+        $scope.config = [(${config})];
+        $scope.list = [(${list})];
+        $scope.milliseconds = [[${user.milliseconds}]];
+        $scope.name = '';
+
+        $interval(function () {
+            $http({
+                url: path + '/api/info',
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                $scope.milliseconds = response.data.milliseconds;
+                angular.element('#user-memo').text(response.data.memo.toString().money());
+                angular.element('#user-money').text(response.data.money.toString().money());
+                angular.element('#user-point').text(response.data.point.toString().money());
+                clock.setTime(new Date(response.data.milliseconds));
+            }, function error(response) {
+                if (response.status === 401 || response.status === 403) {
+                    top.location.href = '/logout';
+                }
+            });
+        }, 10000);
+
+        $interval(function () {
+            $scope.milliseconds += 1000;
+            if ($scope.cart.length > 0) {
+                if ($scope.cart[0].gameDate - $scope.milliseconds - ($scope.config.betTime * 1000) < 0) {
+                    $scope.cart.length = 0;
+                    $scope.odds = 0;
+                }
+            }
+            if (parseInt(($scope.milliseconds / 1000) % 60) === 0) {
+                $http({
+                    url: path + '/zone/soccer/config',
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'Ajax': true
+                    }
+                }).then(function success(response) {
+                    $scope.config = response.data;
+                });
+                $http({
+                    url: path + '/zone/soccer/list',
+                    data: {
+                        "id": $scope.list[$scope.list.length - 1].id
+                    },
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'Ajax': true
+                    }
+                }).then(function success(response) {
+                    angular.forEach($scope.list, function (g, i) {
+                        //console.log(g.gameDate + ':' + $scope.milliseconds + ' - ' + (g.gameDate <= $scope.milliseconds));
+                        if (g.gameDate <= $scope.milliseconds) {
+                            $scope.list.splice(i, 1);
+                            return false;
+                        }
+                    });
+                    angular.forEach(response.data, function (g) {
+                        $scope.list.push(g);
+                    });
+                });
+            }
+        }, 1000);
+
+        // game.id, '오버언더', 'home', 5, '오버', $event
+        $scope.add = function (id, gameCode, betTeam, betZone, pos, event) {
+            var ele = angular.element(event.target).parent();
+
+            if (ele.parent('tr').hasClass('off')) {
+                alert('현재 베팅이 중지 되었습니다.\n\n다음 게임을 베팅하시기 바랍니다.');
+                return;
+            }
+            var game;
+            for (var i = 0; i < $scope.list.length; i++) {
+                if ($scope.list[i].id === id) {
+                    game = $scope.list[i];
+                    break;
+                }
+            }
+            $scope.cart.length = 0;
+            if (ele.hasClass('on')) {
+                ele.removeClass('on');
+                $scope.odds = 0.00;
+            } else {
+                angular.element('.bet').removeClass('on');
+                ele.addClass('on');
+                var game = null;
+                var odds = 0;
+                angular.forEach($scope.list, function (g) {
+                    if (g.id === id) {
+                        $scope.cart.push({id: id, sdate: g.sdate, pos: pos, gameCode: gameCode, betZone: betZone, betTeam: betTeam, home: g.teamHome, away: g.teamAway});
+                        $scope.odds = g.odds[betZone];
+                        $scope.name = g.gameTimeName + ' ' + g.league;
+                        return false;
+                    }
+                });
+            }
+        };
+        $scope.remove = function () {
+            angular.element('.bet').removeClass('on');
+            $scope.cart.length = 0;
+            $scope.odds = 0.00;
+        };
+        $scope.addMoney = function (m) {
+            $scope.money += m;
+        };
+        $scope.addReset = function () {
+            $scope.money = 0;
+        };
+        $scope.addMax = function () {
+            if ($scope.cart.length === 0) {
+                $scope.money = 0;
+            } else {
+                $scope.money = Math.min(Math.min(Math.floor($scope.config.win / $scope.odds), $scope.config.max), $scope.config.money);
+            }
+        };
+        $scope.betting = function () {
+            if ($scope.cart.length === 0) {
+                alert('선택된 경기가 없습니다.');
+                return;
+            }
+            if ($scope.money < $scope.config.min) {
+                alert(String.format('최소 베팅 금액은 {0}원 입니다.', $scope.config.min.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.money) {
+                alert('보유머니가 부족합니다.');
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.money > $scope.config.max) {
+                alert(String.format('최대 베팅 금액은 {0}원 입니다.', $scope.config.max.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if ($scope.odds * $scope.money > $scope.config.win) {
+                alert(String.format('적중 상한 금액은 {0}원 입니다.', $scope.config.win.toString().money()));
+                $scope.money = 0;
+                return;
+            }
+            if (!confirm('베팅 하시겠습니까?')) {
+                return;
+            }
+
+            // 베팅
+            $http({
+                url: path + '/zone/soccer/betting',
+                method: 'POST',
+                data: {
+                    "betMoney": $scope.money,
+                    "sdate": $scope.cart[0].sdate,
+                    "gameCode": $scope.cart[0].gameCode,
+                    "betTeam": $scope.cart[0].betTeam,
+                    "betZone": $scope.cart[0].betZone,
+                    "odds": $scope.odds
+                },
+                headers: {
+                    'Content-type': 'application/json',
+                    'Ajax': true
+                }
+            }).then(function success(response) {
+                angular.element('.bet').removeClass('on');
+                $scope.money = 0;
+                $scope.cart.length = 0;
+                if (response.data.success) {
+                    var money = parseInt(angular.element('#user-money').text().num()) - $scope.money;
+                    $scope.config.money = money;
+                    angular.element('#user-money').text(money.toString().money());
+                } else {
+                    alert(response.data.message);
+                }
+            }, function error(response) {
+                angular.element('.bet').removeClass('on');
+                $scope.cart.length = 0;
+                $scope.money = 0;
+                if (response.data.message !== '') {
+                    alert(response.data.message);
+                } else {
+                    alert('베팅에 실패하였습니다.\n\n잠시 후 다시 시도하여 주세요.');
+                }
+            });
+        };
+    }]);
+
+    var player = [
+        'https://mmootgga.com/bet365/s_p.html',
+        'https://mmootgga.com/bet365/s_s.html',
+        'https://mmootgga.com/bet365/s_w.html',
+        'https://mmootgga.com/bet365/s_w2.html'
+    ];
+    function showPlayer(idx) {
+        $('#zoneButton a').removeClass('on').eq(idx).addClass('on');
+        $('#zoneBox').attr('src', player[idx]);
+    }
+</script>
+</body>
+</html>

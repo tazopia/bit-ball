@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" enctype="multipart/form-data" th:action="|${siteConfig.pathAdmin}/inplay/sports/update|" th:object="${sports}" onsubmit="return update()">
+        <input type="hidden" th:field="*{name}" />
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-futbol-o"></i> 종목 수정</h3>
+            </div>
+            <table class="table-read">
+                <caption>종목 수정</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">종목</th>
+                    <td th:text="${sports.name}">축구</td>
+                </tr>
+				<tr>
+					<th class="required">종목</th>
+					<td><input type="text" th:field="*{korName}" /></td>
+				</tr>
+                <tr>
+                    <th class="required">종목깃발</th>
+                    <td>
+                        <img th:src="@{|/images/inplay/sports/${sports.flag}|}" />
+                        <span>(아이콘을 수정하실려면 파일을 다시 등록하세요.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">아이콘</th>
+                    <td><input type="file" name="file" id="file" style="width: 500px;"/></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn04" value="수정" />
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function updateSports() {
+        if ($('#korName').val() === '') {
+            alert('종목을 입력 하세요.');
+            $('#sportsName').focus();
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

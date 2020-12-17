@@ -1,0 +1,62 @@
+.bettingInfo {
+	display flex
+	flex-direction column
+
+	.item {
+		margin-bottom 1px
+		display flex
+		justify-content space-between
+		align-items center
+		background #333
+		height 34px
+		padding 0 10px
+
+		&:nth-child(odd) {
+			background #222
+		}
+	}
+
+	.value {
+		color #d8af3a
+	}
+}
+
+#bettingInfo {
+	position absolute
+	overflow hidden
+	left 240px
+	top 40px
+
+	.menu {
+		//border-radius 0 10px 10px 0
+		background #d8af3a
+		font-size 16px
+		font-weight 600
+		padding 10px
+		color #000
+		cursor pointer
+		transition(all 0.2s ease-out)
+		width 100%
+		min-width 90px
+		border-radius 0 10px 10px 0
+	}
+
+	.bettingInfo {
+		margin-left -220px
+		//visibility hidden
+		width 0
+		transition(all 0.5s ease-out)
+	}
+
+	&.on {
+		.menu {
+			border-radius 0
+		}
+		.bettingInfo {
+			//visibility visible
+			margin-left 0
+			width 220px
+		}
+	}
+
+}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org" th:with="tag = ${T(spoon.support.web.CustomTag)}">
+<head th:replace="fragments/mobileFragment :: head">
+    <meta charset="UTF-8"/>
+    <title>Best of Stella</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico?v=${siteConfig.version}|}}"/>
+    <link rel="stylesheet" th:href="@{/css/style.mobile.css}"/>
+    <script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
+</head>
+<body id="login">
+<div id="background"></div>
+<div class="page-gradient"></div>
+<div layout:fragment="login"></div>
+<div th:replace="fragments/mobileFragment :: javascript"></div>
+<div layout:fragment="popup" th:if="false" th:remove="tag"></div>
+<script layout:fragment="script" th:if="false"></script>
+</body>
+</html>

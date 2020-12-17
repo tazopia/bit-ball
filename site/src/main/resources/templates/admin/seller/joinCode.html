@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='seller', lnb='joinCode'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>총판 :</small>
+    가입 코드
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/seller/joinCode|}" method="get">
+                <label>
+                    가입코드 :
+                    <input type="text" th:field="*{joinCode}"/>
+                </label>
+                <label>
+                    총본사 :
+                    <select th:field="*{agency}">
+                        <option value="-">선택하세요.</option>
+                        <option value="">본사총판</option>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/seller/joinCode|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                가입 코드
+                <span class="total">( 검색된 코드수 : <span th:text="${tag.num(#arrays.length(list))}">100</span> 개 )</span>
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col>
+                <col style="width: 140px;">
+                <col>
+				<col>
+				<col>
+                <col>
+                <col style="width: 320px;">
+                <col>
+                <col style="width: 160px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>코드</th>
+				<th>총본사</th>
+				<th>부본사</th>
+                <th>총판</th>
+                <th>매장</th>
+                <th>비고</th>
+                <th>사용</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="color04">등록</td>
+                <td><input type="text" id="code" style="width: 120px;" /></td>
+                <td>
+                    <select id="agency4">
+                        <option value="">본사총본사</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="agency3">
+                        <option value="">본사부본사</option>
+                    </select>
+                </td>
+				<td>
+					<select id="agency2">
+						<option value="">본사총판</option>
+					</select>
+				</td>
+				<td>
+					<select id="agency1">
+						<option value="">본사매장</option>
+					</select>
+				</td>
+                <td><input type="text" id="memo" style="width: 300px;"/></td>
+                <td>
+                    <select id="enabled">
+                        <option th:value="true">사용</option>
+                        <option th:value="false">미사용</option>
+                    </select>
+                </td>
+                <td>
+                    <a class="btn btn03" style="width: 126px;" onclick="addCode();">등록</a>
+                </td>
+            </tr>
+            <tr th:each="m, num : ${list}" th:with="total=${#arrays.length(list) + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td th:text="${m.code}">코드</td>
+				<td th:text="${#strings.defaultString(m.agency4, '본사총본사')}">총판</td>
+				<td th:text="${#strings.defaultString(m.agency3, '본사부본사')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency2, '본사총판')}">총판</td>
+                <td th:text="${#strings.defaultString(m.agency1, '본사매장')}">대리점</td>
+                <td><input type="text" th:id="${'memo_' + m.id}" th:value="${m.memo}" style="width: 300px;"/></td>
+                <td>
+                    <select th:id="${'enabled_' + m.id}">
+                        <option th:value="true" th:selected="${m.enabled}">사용</option>
+                        <option th:value="false" th:selected="${!m.enabled}">미사용</option>
+                    </select>
+                </td>
+                <td>
+                    <a class="btn btn04" th:onclick="|updateCode('${m.id}');|">수정</a>
+                    <a class="btn btn02" th:onclick="|deleteCode('${m.id}');|">삭제</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var agencies = [(${agencies})];
+    var agency4 = '';
+
+    agencies.forEach(function (agency) {
+        if (agency4 !== agency.agency4) {
+            $('#agency4').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            $('#agency').append('<option value="' + agency.agency4 + '">' + agency.agency4 + '</option>');
+            agency4 = agency.agency4;
+        }
+    });
+
+    $('#agency').val('[[${command.agency}]]');
+
+    $('#agency4').on('change', function () {
+        var agency4 = $('#agency4').val();
+        var agency3 = '';
+        if (agency4 === '') {
+            $('#agency3').html('').append('<option value="">본사부본사</option>');
+        } else {
+            $('#agency3').html('');
+        }
+        agencies.forEach(function (agency) {
+            if (agency4 === agency.agency4 && agency.agency3 != null && agency.agency3 !== '' && agency3 !== agency.agency3) {
+                $('#agency3').append('<option value="' + agency.agency3 + '">' + agency.agency3 + '</option>');
+            }
+            agency3 = agency.agency3;
+        });
+        $('#agency3').change();
+    });
+
+    $('#agency3').on('change', function () {
+        var agency3 = $('#agency3').val();
+        var agency2 = '';
+        if (agency3 === '') {
+            $('#agency2').html('').append('<option value="">본사총판</option>');
+        } else {
+            $('#agency2').html('');
+        }
+        agencies.forEach(function (agency) {
+            if (agency3 === agency.agency3 && agency.agency2 != null && agency.agency2 !== '' && agency2 !== agency.agency2) {
+                $('#agency2').append('<option value="' + agency.agency2 + '">' + agency.agency2 + '</option>');
+            }
+            agency2 = agency.agency2;
+        });
+        $('#agency2').change();
+    });
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        var agency1 = '';
+        if (agency2 === '') {
+            $('#agency1').html('').append('<option value="">본사매장</option>');
+        } else {
+            $('#agency1').html('');
+        }
+        agencies.forEach(function (agency) {
+            if (agency2 === agency.agency2 && agency.agency1 != null && agency.agency1 !== '' && agency1 !== agency.agency1) {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+            agency1 = agency.agency1;
+        });
+        $('#agency1').change();
+    });
+
+    $('#agency').val('[[${command.agency}]]');
+
+    $('#agency2').on('change', function () {
+        var agency2 = $('#agency2').val();
+        if (agency2 === '') {
+            $('#agency1').html('').append('<option value="">본사대리점</option>');
+        } else {
+            $('#agency1').html('');
+        }
+        agencies.forEach(function (agency) {
+            if (agency2 == agency.agency2 && agency.agency1 != null && agency.agency1 !== '') {
+                $('#agency1').append('<option value="' + agency.agency1 + '">' + agency.agency1 + '</option>');
+            }
+        });
+    });
+
+    function addCode() {
+        if ($('#code').val() === '') {
+            alert('코드를 입력 하세요.');
+            $('#code').focus();
+            return false;
+        }
+
+        $.post(path + '/seller/joinCode/add', {
+            code: $('#code').val(),
+            agency1: $('#agency1').val(),
+            agency2: $('#agency2').val(),
+			agency3: $('#agency3').val(),
+			agency4: $('#agency4').val(),
+            enabled: $('#enabled').val(),
+            memo: $('#memo').val()
+        }).done(function (data) {
+            if (data.success) {
+                location.reload();
+            } else {
+                $('#code').val('');
+                $('#agency4').val('').change();
+            }
+        });
+    }
+
+    function deleteCode(id) {
+        if (confirm(String.format('삭제를 하시겠습니까?'))) {
+            $.post(path + '/seller/joinCode/delete', {
+                id: id
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function updateCode(id) {
+        $.post(path + '/seller/joinCode/update', {
+            id: id,
+            memo: $('#memo_' + id).val(),
+            enabled: $('#enabled_' + id).val()
+        });
+    }
+
+</script>
+</body>
+</html>

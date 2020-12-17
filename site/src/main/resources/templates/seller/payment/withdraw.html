@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='payment', lnb='withdraw'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>출금관리 :</small>
+    출금 신청
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-trophy" aria-hidden="true"></i>
+                출금 신청
+            </h3>
+        </div>
+        <table class="table-read">
+            <caption>스포츠 환경 설정</caption>
+            <colgroup>
+                <col style="width:220px;">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <th>출금 가능 금액</th>
+                <td style="font-size: 20px; font-weight: 600"><span class="color01" th:text="${tag.num(member.point)}"></span> P</td>
+            </tr>
+            <tr>
+                <th>은행</th>
+                <td th:class="${member.bank.isEmpty()} ? 'color03'" th:text="${#strings.defaultString(member.bank, '관리자에게 요청 하세요')}">은행</td>
+            </tr>
+            <tr>
+                <th>계좌번호</th>
+                <td th:class="${member.account.isEmpty()} ? 'color03'" th:text="${#strings.defaultString(member.account, '관리자에게 요청 하세요')}">계좌번호은행</td>
+            </tr>
+            <tr>
+                <th class="required">출금 신청금액</th>
+                <td>
+                    <input type="text" class="num" id="amount" th:value="${member.point}" autofocus="autofocus"/> 원
+                    <span id="amountKor" class="color02" style="margin-left: 40px;"></span>
+                </td>
+            </tr>
+            <tr>
+                <th class="required">출금 비밀번호</th>
+                <td>
+                    <input type="password" id="bankPassword"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <button class="btn btn01" onclick="withdraw();">출금신청</button>
+        </div>
+    </section>
+    <section th:if="${not #lists.isEmpty(list)}" style="margin-top: 10px;">
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-trophy" aria-hidden="true"></i>
+                출금 신청
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>환전신청</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width: 100px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>예금주</th>
+                <th>신청금액</th>
+                <th>환전금액</th>
+                <th>신청시간</th>
+                <th>처리상태</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b, num : ${list}" th:with="total=${#lists.size(list)}">
+                <td th:text="${total - num.count + 1}">번호</td>
+                <td th:text="${b.depositor}">입금인</td>
+                <td class="num color02" th:text="${#numbers.formatInteger(b.amount, 0, 'DEFAULT')}">신청금액</td>
+                <td class="num color01" th:text="${b.closing and not b.cancel and not b.reset ? #numbers.formatInteger(b.amount, 0, 'DEFAULT') : '-'}">환전금액</td>
+                <td th:utext="${tag.fullDate(b.regDate)}">신청시간</td>
+                <td th:class="${b.cancel ? 'color03' : (b.closing ? 'color01' : '')}" th:text="${b.cancel ? '취소' : (b.closing ? '완료' : '대기')}">진행상태</td>
+                <td th:if="${b.closing}" class="command"><a class="btn btn02" th:onclick="|goDelete('${b.id}')|">삭제</a></td>
+                <td th:if="${!b.closing}">-</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    var point = [[${member.point}]];
+    var bank = '[[${member.bank}]]';
+    var account = '[[${member.account}]]';
+    var depositor = '[[${member.depositor}]]';
+
+    $('#amount').on('change, keyup', function () {
+        var amount = $(this).val().num() || 0;
+        $(this).val(amount == 0 ? '' : amount.toString().money());
+        $('#amountKor').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
+    }).keyup();
+
+    function withdraw() {
+        var amount = parseInt($('#amount').val().num() || 0, 10);
+
+        if (bank === '' || account === '' || depositor === '') {
+            alert('계좌 정보가 없습니다.\n\n관리자에게 요청하세요.');
+            return false;
+        }
+
+        if ($('#bankPassword').val() == '') {
+            alert('환전 비밀번호를 입력하세요.');
+            $('#bankPassword').focus();
+            return false;
+        }
+
+        if (amount > point) {
+            alert('환전 신청 금액이 보유하신 머니보다 많습니다.');
+            $('#amount').val('');
+            return false;
+        }
+
+        if (!confirm(String.format('환전금액 {0}원\n출금계좌 {1}\n\n환전신청을 진행하시겠습니까?', amount.toString().money(), account))) {
+            return false;
+        }
+
+        $.ajax({
+            url: path + '/payment/withdraw',
+            method: 'post',
+            data: {
+                amount: amount,
+                bankPassword: $('#bankPassword').val()
+            }
+        }).done(function (data) {
+            if (data.success) {
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            } else {
+                $('#amount').val('');
+                $('#bankPassword').val('');
+                $('#amount').focus();
+            }
+        });
+    }
+
+    function goDelete(id) {
+        if (confirm('삭제를 하시면 되살릴 수 없습니다.\n\n삭제를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/payment/withdraw/delete',
+                method: 'post',
+                data: {
+                    id: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

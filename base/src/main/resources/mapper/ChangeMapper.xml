@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.ChangeMapper">
+
+    <insert id="addMember">
+        INSERT MEMBER
+            (userid, account, agency1, agency2, agency3, agency4,
+            balanceAladdin, balanceDari, balanceLadder, balanceLowhi, balancePower,
+            bank, bankPassword, betZone, betZoneCnt, black, block,
+            depositor, enabled, joinDate, joinIp, joinDomain, level,
+            loginDate, loginIp, memo, money, nickname, password,
+            phone, point, recommender, role, secession, passkey,
+            joinCode, rateCode, rateShare, rateSports, rateZone,
+            deposit, withdraw, betSports, betSportsCnt, loginCnt)
+        VALUES
+        <foreach collection="list" item="user" open="" separator="," close="">
+            (#{user.userid}, #{user.account}, #{user.agency1}, #{user.agency2}, #{user.agency3}, #{user.agency4},
+            #{user.balance}, #{user.balance}, #{user.balance}, #{user.balance}, #{user.balance},
+            #{user.bank}, #{user.bankPassword}, 0, 0, 0, 0,
+            #{user.depositor}, #{user.enabled}, #{user.joinDate}, #{user.joinIp}, #{user.joinDomain}, #{user.level},
+            #{user.loginDate}, #{user.loginIp}, #{user.memo}, #{user.money}, #{user.nickname}, #{user.password},
+            #{user.phone}, #{user.point}, #{user.recommender}, #{user.role}, #{user.secession}, #{user.phone},
+            #{user.joinCode}, #{user.rateCode}, #{user.rateShare}, #{user.rateSports}, #{user.rateZone},
+            #{user.deposit}, #{user.withdraw}, #{user.betSports}, #{user.betSportsCnt}, #{user.loginCnt})
+        </foreach>
+    </insert>
+
+</mapper>

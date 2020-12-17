@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.MemoMapper">
+
+    <insert id="addMemo">
+        INSERT INTO MEMO (userid, nickname, role, level, agency1, agency2, agency3, agency4, title, contents, regDate, checked, hidden, enabled, ip, worker)
+        SELECT userid, nickname, role, level, agency1, agency2, agency3, agency4, #{add.title}, #{add.contents}, getDate(), 0, 0, 1, #{add.ip}, #{add.worker} FROM MEMBER
+        WHERE enabled = 1
+        AND secession = 0
+        <if test="add.agency1 != null and add.agency1 != ''">
+            AND agency1 = #{add.agency1}
+        </if>
+        <if test="add.agency2 != null and add.agency2 != ''">
+            AND agency2 = #{add.agency2}
+        </if>
+        <if test="add.agency3 != null and add.agency3 != ''">
+            AND agency3 = #{add.agency3}
+        </if>
+        <if test="add.agency4 != null and add.agency4 != ''">
+            AND agency4 = #{add.agency4}
+        </if>
+        <if test="add.userType == 'money'">
+            AND deposit &gt; 0
+        </if>
+        <if test="add.userType == 'none'">
+            AND deposit = 0
+        </if>
+        <if test="add.level > 0">
+            AND level = #{add.level}
+        </if>
+    </insert>
+
+    <delete id="deleteMemo">
+        DELETE FROM MEMO
+        WHERE
+        id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

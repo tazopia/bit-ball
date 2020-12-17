@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='board', lnb=${code}, title=${title}">
+<body>
+
+<main class="page" layout:fragment="page">
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/board/${code}|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+    <h3>
+        <p class="btn-box">
+            <a th:if="${code eq 'free' and !user.block}" th:href="|${siteConfig.pathSite}/board/${code}/add|" class="btn write">새글작성</a>
+        </p>
+    </h3>
+    <div class="table-wrap">
+        <ul class="board">
+            <th:block th:each="b : ${list}" th:if="${code eq 'free'}">
+                <li class="notice" th:onclick="|location.href='${siteConfig.pathSite}/board/${b.code}/${b.id}'|">
+                    <p class="title">
+                        <a th:utext="${tag.color(b.title)}"></a>
+                    </p>
+                    <p class="info">
+                        <span th:class="'label ' + ${b.code}" th:text="${b.code eq 'event'} ? 'EVENT' : 'RULES'"></span>
+                        <span class="user admin" th:utext="${tag.color(siteConfig.nickname)}"></span>
+                        <span class="date" th:text="${#dates.format(b.regDate, 'yyyy.MM.dd')}"></span>
+                    </p>
+                    <span class="hit" th:text="${tag.num(b.comment)}"></span>
+                </li>
+            </th:block>
+            <th:block th:each="b,num : ${page.content}">
+                <li th:onclick="|location.href='${siteConfig.pathSite}/board/${b.code}/${b.id}?page=${page.number + 1}'|">
+                    <p class="title">
+                        <a th:utext="${tag.color(b.title)}"></a>
+                        <em class="new" th:if="${b.new}">N</em>
+                        <em class="bet" th:if="${b.bet}">B</em>
+                    </p>
+                    <p class="info" th:if="${b.role.name() eq 'ADMIN'}">
+                        <span th:class="'label ' + ${b.code}" th:text="${b.code eq 'event'} ? 'EVENT' : 'RULES'"></span>
+                        <span class="user admin" th:utext="${tag.color(siteConfig.nickname)}"></span>
+                        <span class="date" th:text="${tag.dayWeek(b.regDate)}"></span>
+                    </p>
+                    <p class="info" th:if="${b.role.name() ne 'ADMIN'}">
+                        <span th:replace="fragments/mobile :: level(lv=${b.level})"></span>
+                        <span class="user" th:text="${b.nickname}"></span>
+                        <span class="date" th:utext="${#dates.format(b.regDate, 'yyyy.MM.dd')}"></span>
+                    </p>
+                    <span class="hit" th:text="${tag.num(b.comment)}"></span>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+    <div class="paging">
+        <ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

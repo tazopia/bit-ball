@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='event', lnb='lotto_config'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>이벤트 :</small>
+    로또 설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${eventConfig}" onsubmit="return saveConfig();">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-cog"></i>
+                    로또 설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>사이트 설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">로또 활성화</th>
+                    <td>
+                        <label><input type="radio" th:field="*{enabled}" th:value="true"/> 사용</label>
+                        <label><input type="radio" th:field="*{enabled}" th:value="false"/> 사용하지않음</label>
+                    </td>
+                </tr>
+				<tr>
+					<th class="required">하루 최소 입금액</th>
+					<td>
+						<input type="text" class="color01 num" th:field="*{deposit}"/>원
+					</td>
+				</tr>
+                <tr>
+                    <th class="required">최대 당첨금</th>
+                    <td>
+                        충전금액의
+                        <input type="text" class="color01 num" th:field="*{max}"/>%
+                        이하로 지급 합니다.
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">로또 확율 (%)</th>
+                    <td>
+                        <input type="text" class="color03 num" th:field="*{rate[0]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[1]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[2]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[3]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[4]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[5]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[6]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[7]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[8]}" style="width: 60px;"/>
+                        <input type="text" class="color03 num" th:field="*{rate[9]}" style="width: 60px;"/>
+                        <span style="font-size: 16px; font-weight: 600;">전체 확율 : <em class="color01" id="total" th:value="${eventConfig.sum}"></em>%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">로또 배당금</th>
+                    <td>
+                        <input type="text" class="num" th:field="*{money[0]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[1]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[2]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[3]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[4]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[5]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[6]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[7]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[8]}" style="width: 60px;"/>
+                        <input type="text" class="num" th:field="*{money[9]}" style="width: 60px;"/>
+                        <span class="color02">앞에서 부터 1등부터 10등 입니다.</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    $(window).on('load', function () {
+        sum();
+    });
+
+    $('#rate0, #rate1, #rate2, #rate3, #rate4, #rate5, #rate6, #rate7, #rate8, #rate9').on('change', function () {
+        sum();
+    });
+
+    function sum() {
+        var sum = parseInt($('#rate0').val(), 10)
+            + parseInt($('#rate1').val(), 10)
+            + parseInt($('#rate2').val(), 10)
+            + parseInt($('#rate3').val(), 10)
+            + parseInt($('#rate4').val(), 10)
+            + parseInt($('#rate5').val(), 10)
+            + parseInt($('#rate6').val(), 10)
+            + parseInt($('#rate7').val(), 10)
+            + parseInt($('#rate8').val(), 10)
+            + parseInt($('#rate9').val(), 10);
+        $('#total').text(sum);
+    }
+
+    function saveConfig() {
+        if ($('#total').text() !== '100') {
+            alert('전체 확율은 100% 가 되어야 합니다.');
+            return false;
+        }
+
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

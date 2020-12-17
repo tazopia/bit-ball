@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='inplay', lnb='sports'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>인플레이 :</small>
+    종목설정
+</h2>
+<div layout:fragment="content">
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-futbol-o"></i>
+                인플레이 종목설정
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col style="width: 100px;">
+                <col>
+                <col>
+                <col>
+                <col style="width: 180px;">
+                <col style="width: 180px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>종목</th>
+                <th>아이콘</th>
+				<th>노출명</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sports,num : ${list}" th:with="total = ${#arrays.length(list) + 1}">
+                <td th:text="${total - num.count}">1</td>
+                <td class="color0" th:text="${sports.name}">축구</td>
+                <td><img th:src="@{|/images/inplay/sports/${sports.flag}|}" /></td>
+				<td class="color03" th:text="${sports.korName}">축구</td>
+                <td>
+                    <a class="btn btn04" th:onclick="|update('${sports.name}');|">수정</a>
+                </td>
+            </tr>
+            <tr th:if="${list.empty}">
+                <td colspan="5" class="empty">
+                    검색된 종목이 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function update(id) {
+        window.open(path + '/inplay/sports/update?name=' + id, 'inplay-sports-update', 'width=800, height=340');
+    }
+</script>
+</body>
+</html>

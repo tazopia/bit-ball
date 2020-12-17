@@ -1,0 +1,24 @@
+.bettingInfo {
+	display flex
+	flex-direction column
+	margin-top 4px
+	padding 0 10px
+
+	.item {
+		margin-top 1px
+		display flex
+		justify-content space-between
+		align-items center
+		background #333
+		height 34px
+		padding 0 10px
+
+		&:nth-child(odd) {
+			background #222
+		}
+	}
+
+	.value {
+		color #d8af3a
+	}
+}

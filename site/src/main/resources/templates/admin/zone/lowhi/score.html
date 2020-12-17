@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" th:object="${score}" onsubmit="return setScore();">
+        <input type="hidden" th:field="*{id}"/>
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-bars"></i> 로하이 종료처리</h3>
+            </div>
+
+            <div class="panel-body line">
+                <div style="margin: 0 auto; width: 829px; height: 575px; overflow: hidden;position: relative;">
+                    <iframe id="zoneBox" style="position: absolute; width: 900px; height: 774px;top: -145px; left: -41px;" scrolling="no" th:src="@{${sysConfig.zone.lowhiPlayer}}"></iframe>
+                </div>
+            </div>
+
+            <table class="table-read">
+                <caption>종목 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">게임일시</th>
+                    <td>
+                        <span th:text="${#dates.format(score.gameDate, 'MM/dd(E) HH:mm')}"></span>
+                        <span class="color03" th:text="${#numbers.formatInteger(score.round, 3, 'DEFAULT') + ' 회차'}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">로우 / 하이</th>
+                    <td>
+                        <label class="box"><input type="radio" th:field="*{lowhi}" th:value="LOW"/> 로우</label>
+                        <label class="box"><input type="radio" th:field="*{lowhi}" th:value="HI"/> 하이</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">홀 / 짝</th>
+                    <td>
+                        <label class="box"><input type="radio" th:field="*{oddeven}" th:value="ODD"/> 홀</label>
+                        <label class="box"><input type="radio" th:field="*{oddeven}" th:value="EVEN"/> 짝</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">적특처리</th>
+                    <td class="color01">
+                        <label><input type="checkbox" th:field="*{cancel}"/> 현재회차 적특처리</label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn03" value="결과입력"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function setScore() {
+        if (!$('input:checkbox[name=cancel]').is(':checked')) {
+            if (!$('input:radio[name=oddeven]').is(':checked')) {
+                alert('홀/짝 결과처리를 하세요.');
+                return false;
+            }
+
+            if (!$('input:radio[name=lowhi]').is(':checked')) {
+                alert('로우/하이 결과처리를 하세요.');
+                return false;
+            }
+        }
+    }
+</script>
+</body>
+</html>

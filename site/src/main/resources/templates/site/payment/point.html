@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page'">
+<body>
+
+<section layout:fragment="section">
+	<form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/payment/point|}">
+		<input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+	</form>
+    <h3>포인트 현황</h3>
+    <div class="point-wrap">
+		<p>
+			<span class="title">현재 포인트</span>
+			<span class="num" id="page-point" th:text="${tag.num(user.point)}"></span>
+		</p>
+		<p>
+			<button class="btn btn03 btn-big" onclick="point.exchange();return false;">포인트전환</button>
+		</p>
+	</div>
+    <br/><br/>
+    <h3>포인트 내역</h3>
+    <table class="list">
+        <caption></caption>
+        <colgroup>
+			<col style="width:80px;">
+			<col>
+			<col>
+			<col>
+			<col>
+			<col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>일자</th>
+            <th>내역</th>
+            <th>비고</th>
+            <th>포인트</th>
+            <th>최종포인트</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size}">
+			<td th:text="${total - num.count}">1</td>
+			<td th:utext="${tag.dayWeekTime(p.regDate)}">일자</td>
+			<td th:class="${p.amount < 0} ? 'color03' : 'color01'" th:text="${p.pointCode.name}">사용내역</td>
+			<td th:text="${#strings.defaultString(p.memo, '-')}">비고</td>
+			<td class="num color02" th:text="${tag.num(p.amount)}">기존머니</td>
+			<td class="num color0" th:text="${tag.num(p.orgPoint + p.amount)}">최종머니</td>
+        </tr>
+        <tr th:if="${page.totalElements eq 0}">
+            <td style="height: 300px;" colspan="6">등록된 추천인이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+	<div class="paging">
+		<ul th:replace="fragments/site :: paging(p=${page})"></ul>
+	</div>
+</section>
+</body>
+</html>

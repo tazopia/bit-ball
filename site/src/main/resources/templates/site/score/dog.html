@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='dog'">
+<body>
+
+<section layout:fragment="section">
+    <h3>개경주 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/dog/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>스포츠</caption>
+        <colgroup>
+            <col style="width: 140px;">
+            <col style="width: 100px;">
+            <col style="width: 50px;">
+            <col>
+            <col style="width: 80px;">
+            <col>
+            <col style="width: 50px;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>경기일시</th>
+            <th>구분</th>
+            <th colspan="2">홈팀</th>
+            <th>무</th>
+            <th colspan="2">원정팀</th>
+        </tr>
+        </thead>
+        <tbody th:each="g,num: ${page.content}">
+        <tr>
+            <td class="league" colspan="7">
+                <p>
+                    <img th:src="@{|/images/zone/flag-dog.png|}"/>
+                    <span th:text="${g.league}">리그명</span>
+                </p>
+            </td>
+        </tr>
+        <tr class="item">
+            <td rowspan="3">
+                <p th:utext="${tag.dayWeekTime(g.gameDate)}"></p>
+            </td>
+            <td rowspan="3">
+                <span>개경주</span>
+            </td>
+            <td class="over">H</td>
+            <td th:class="${g.winNumber eq 1 ? 'home hit' : 'home'}">
+                <p><span th:text="${'1. ' + g.team1}">팀1</span><span class="odds" th:text="${#numbers.formatDecimal(g.odds1, 1, 2)}">1.58</span></p>
+            </td>
+            <td rowspan="3">
+                VS
+            </td>
+            <td th:class="${g.winNumber eq 2 ? 'away hit' : 'away'}">
+                <p><span th:text="${'2. ' + g.team2}">원정팀</span><span class="odds" th:text="${#numbers.formatDecimal(g.odds2, 1, 2)}">1.58</span></p>
+            </td>
+            <td class="under">A</td>
+        </tr>
+        <tr class="item">
+            <td class="over">H</td>
+            <td th:class="${g.winNumber eq 3 ? 'home hit' : 'home'}">
+                <p><span th:text="${'3. ' + g.team3}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.odds3, 1, 2)}"></span></p>
+            </td>
+            <td th:class="${g.winNumber eq 4 ? 'away hit' : 'away'}">
+                <p><span th:text="${'4. ' + g.team4}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.odds4, 1, 2)}"></span></p>
+            </td>
+            <td class="under">A</td>
+        </tr>
+        <tr class="item">
+            <td class="over">H</td>
+            <td th:class="${g.winNumber eq 5 ? 'home hit' : 'home'}">
+                <p><span th:text="${'5. ' + g.team5}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.odds5, 1, 2)}"></span></p>
+            </td>
+            <td th:class="${g.winNumber eq 6 ? 'away hit' : 'away'}">
+                <p><span th:text="${'6. ' + g.team6}"></span><span class="odds" th:text="${#numbers.formatDecimal(g.odds6, 1, 2)}"></span></p>
+            </td>
+            <td class="under">A</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+    function changeSports(sports) {
+        $('#sports').val(sports);
+        $('#page').val(1);
+        $('#frm-search').submit();
+    }
+</script>
+</body>
+</html>

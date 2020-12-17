@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='seller', lnb='sale'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>총본사 :</small>
+    총본사 정산 관리
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/seller/sale/list|}" method="get">
+                <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+                <label>
+                    총본사:
+                    <select th:field="*{agency4}">
+                        <option value="">선택하세요.</option>
+                        <th:block th:each="a : ${seller}">
+                            <option th:value="${a}" th:text="${a}"></option>
+                        </th:block>
+                    </select>
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathAdmin}/seller/sale/list|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+                총판 정산 관리
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>총판 정산 관리</caption>
+            <thead>
+            <tr>
+				<th>총본사</th>
+				<th>부본사</th>
+                <th>총판</th>
+                <th>매장</th>
+                <th>회원</th>
+                <th>입금</th>
+                <th>출금</th>
+                <th>수익</th>
+                <th>스포츠</th>
+                <th>실시간</th>
+                <th>정산방식</th>
+                <th>지급율</th>
+                <th>정산일</th>
+                <th>정산금</th>
+                <th>지급금</th>
+                <th style="width: 140px;">정산</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="agency: ${page.content}">
+                <tr th:each="m : ${agency.saleItems}" th:class="${m.hq eq 4} ? 'on' : ${agency.id}" th:style="${m.hq ne 4} ? 'display:none;'" th:onclick="${m.hq eq 4} ? ${'toggle(' + agency.id + ');'}">
+                    <td th:class="${m.hq eq 4} ? 'popup'" th:text="${m.hq eq 4 ? m.agency4 : '-'}" th:onclick="${m.hq eq 4} ? |popup.member.info('${m.userid}');|">총판</td>
+					<td th:class="${m.hq eq 3} ? 'popup'" th:text="${m.hq eq 3 ? m.agency3 : '-'}" th:onclick="${m.hq eq 3} ? |popup.member.info('${m.userid}');|">총판</td>
+					<td th:class="${m.hq eq 2} ? 'popup'" th:text="${m.hq eq 2 ? m.agency2 : '-'}" th:onclick="${m.hq eq 2} ? |popup.member.info('${m.userid}');|">총판</td>
+					<td th:class="${m.hq eq 1} ? 'popup'" th:text="${m.hq eq 1 ? m.agency1 : '-'}" th:onclick="${m.hq eq 1} ? |popup.member.info('${m.userid}');|">총판</td>
+                    <td class="color01 num" th:text="${tag.num(m.users)}">정상회원</td>
+                    <td class="color04 num" th:text="${tag.num(m.inMoney) + '원'}">입금</td>
+                    <td class="color03 num" th:text="${tag.num(m.outMoney) + '원'}">출금</td>
+                    <td class="color02 num" th:text="${tag.num(m.inMoney - m.outMoney) + '원'}">수익</td>
+                    <td class="color04 num" th:text="${tag.num(m.betSports) + '원'}">스포츠</td>
+                    <td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
+                    <td class="color01" th:switch="${m.rateCode}">
+                        <span th:remove="tag" th:case="'수익분배'" th:text="${m.rateCode}"></span>
+                        <span th:remove="tag" th:case="'롤링분배'" th:text="${m.rateCode}"></span>
+                        <span th:remove="tag" th:case="*" th:text="'-'"></span>
+                    </td>
+                    <td class="color02" th:switch="${m.rateCode}">
+                        <span th:remove="tag" th:case="'수익분배'" th:text="${m.rateShare + '%'}"></span>
+                        <span th:remove="tag" th:case="'롤링분배'" th:text="${m.rateSports + '% / ' + m.rateZone + '%'}"></span>
+                        <span th:remove="tag" th:case="*" th:text="'-'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${m.hq eq 4}" th:remove="tag" th:utext="${tag.dayWeekTimes(m.regDate)}"></span>
+                        <span th:if="${m.hq ne 4}" th:remove="tag" th:text="'-'"></span>
+                    </td>
+                    <td class="color04 num" th:text="${tag.num(m.lastMoney) + '원'}">정산금</td>
+                    <td>
+                        <label th:if="${!m.closing and m.hq eq 4}">
+                            <input type="text" name="amount" th:value="${m.lastMoney}" style="width:100px;text-align:right;"/>
+                        </label>
+                        <span class="color02" th:if="${m.closing and m.hq eq 4}" th:text="${tag.num(m.totalMoney) + '원'}"></span>
+                        <span th:unless="${m.hq eq 4}" th:text="'-'"></span>
+                    </td>
+                    <td>
+                        <a class="btn btn01" th:if="${!m.closing and m.hq eq 4}" th:onclick="|goSale('${m.userid}', '${agency.id}', this);|" style="width: 100px;">지급하기 >></a>
+                        <span class="color02" th:if="${m.closing and m.hq eq 4}">지급완료</span>
+                        <span th:unless="${m.hq eq 4}" th:text="'-'"></span>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <div class="paging">
+                <ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+            </div>
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+    function goSale(userid, id, obj) {
+        if (!confirm(userid + ' 총판에게 포인트 지급완료를 하시겠습니까?')) {
+            return;
+        }
+
+        var amount = $(obj).parent().parent().find('input').val();
+
+        $.post(path + '/seller/sale/payment', {
+            userid: userid,
+            saleId: id,
+            amount: amount
+        }).done(function () {
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+        });
+    }
+
+    function toggle(cls) {
+        $('.' + cls).toggle();
+    }
+
+</script>
+</body>
+</html>

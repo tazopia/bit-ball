@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spoon.mapper.BankingMapper">
+
+    <select id="getRolling" parameterType="String" resultType="spoon.banking.domain.Rolling">
+        SELECT TOP 1 userid, money, point, amount, bonusPoint, regDate as lastDate,
+            (SELECT sum(betMoney) FROM BET WHERE userid = BANKING.userid AND cancel = 0 AND menuCode IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE', 'SPORTS') AND betDate &gt; banking.regDate) AS betSports,
+            (SELECT sum(betMoney) FROM BET WHERE userid = BANKING.userid AND cancel = 0 AND menuCode NOT IN ('CROSS', 'MATCH', 'HANDICAP', 'SPECIAL', 'LIVE', 'SPORTS') AND betDate &gt; banking.regDate) AS betZone
+        FROM BANKING
+        WHERE userid = #{value} AND bankingCode = 'IN' AND closing = 1 AND cancel = 0
+        ORDER BY id DESC
+    </select>
+
+    <select id="bankingTotal" parameterType="spoon.banking.domain.BankingDto$Date" resultType="spoon.banking.domain.BankingDto$Money">
+        select
+        (
+        select isNull(sum(amount), 0) from banking where userid = #{userid} and closing = 1 and cancel = 0 and bankingCode = 'IN'
+        and regDate <include refid="whereDate"/>
+        ) as deposit,
+        (
+        select isNull(sum(amount), 0) from banking where userid = #{userid} and closing = 1 and cancel = 0 and bankingCode = 'OUT'
+        and regDate <include refid="whereDate"/>
+        ) as withdraw
+    </select>
+
+    <sql id="whereDate">
+        BETWEEN #{start} + ' 00:00:00.000' AND #{end} + ' 23:59:59.999'
+    </sql>
+
+</mapper>

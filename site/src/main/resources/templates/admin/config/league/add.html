@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <form id="frm" method="post" enctype="multipart/form-data" th:object="${league}" onsubmit="return addLeague()">
+        <section>
+            <div class="panel-header">
+                <h3><i class="bul fa fa-flag"></i> 리그 등록</h3>
+            </div>
+            <table class="table-read">
+                <caption>리그 등록</caption>
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th class="required">종목</th>
+                    <td>
+                        <select th:field="*{sports}">
+                            <option th:each="sport: ${sports}" th:value="${sport.sportsName}" th:text="${sport.sportsName}">축구</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="required">리그명</th>
+                    <td><input type="text" th:field="*{league}" style="width: 300px;" /></td>
+                </tr>
+                <tr>
+                    <th class="required">아이콘</th>
+                    <td><input type="file" name="file" id="file" style="width: 500px;"/></td>
+                </tr>
+				<tr>
+					<th class="required">사용여부</th>
+					<td>
+						<label><input type="radio" th:field="*{enabled}" th:value="true"/> 사용</label>
+						<label><input type="radio" th:field="*{enabled}" th:value="false"/> 미사용</label>
+					</td>
+				</tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <input type="submit" class="btn btn02" value="등록"/>
+                <button onclick="popup.close();return false;" class="btn">창닫기</button>
+            </div>
+        </section>
+    </form>
+</main>
+<script layout:fragment="script" th:if="true">
+    if ('[[${popup}]]' == 'closing') {
+        popup.reloadClose();
+    }
+
+    function addLeague() {
+        if ($('#leagueName').val() == '') {
+            alert('리그명을 입력 하세요.');
+            $('#leagueName').focus();
+            return false;
+        }
+        if ($('#file').val() == '') {
+            alert('아이콘을 선택하세요.');
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

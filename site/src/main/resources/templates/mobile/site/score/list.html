@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='score', lnb=${menu}, title=${title} + ' 경기결과'">
+<body>
+
+<div layout:fragment="tab-menu" th:replace="fragments/mobile :: score" th:if="true"></div>
+<main class="page" layout:fragment="page">
+    <div class="tab-sports">
+        <select onchange="changeSports(this.value)">
+            <option value="" th:selected="${sports eq ''}">전체</option>
+            <option th:each="s: ${sportsList}" th:selected="${sports eq s.sportsName}" th:value="${s.sportsName}" th:text="${s.sportsName}"></option>
+        </select>
+    </div>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/score/${menu}|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+        <input type="hidden" id="sports" name="sports" th:value="${sports}"/>
+    </form>
+
+    <div class="table-wrap">
+        <table class="table-game">
+            <caption>스포츠</caption>
+            <colgroup>
+                <col>
+                <col style="width: 40px;">
+                <col style="width: 40px;">
+                <col>
+            </colgroup>
+            <tbody>
+            <th:block th:each="g : ${page.content}">
+                <tr th:if="${g.sort eq 0}">
+                    <th class="league" colspan="4">
+                        <p>
+                            <img th:src="@{|/images/sports/${g.sportsBean.sportsFlag}|}"/>
+                            <img th:src="@{|/images/league/${g.leagueBean.leagueFlag}|}" class="flag"/>
+                            <span class="color01" th:text="${g.leagueBean.leagueKor}">리그명</span>
+                            <em class="date" th:utext="${tag.dayWeekTime(g.gameDate)}"></em>
+                        </p>
+                    </th>
+                </tr>
+                <tr class="item">
+                    <td rowspan="2" th:class="${g.result.name() eq 'HOME' or g.result.name() eq 'OVER' ? 'home on bet' : 'home bet'}">
+                        <p class="ellipses">
+                            <span th:remove="tag" th:text="${g.teamHomeBean.teamKor}">홈팀</span>
+							<span th:if="${g.special} != '' and ${!#strings.contains(g.special, '|')}" class="color01" th:text="${g.special}"></span>
+							<span th:if="${g.special} != '' and ${#strings.contains(g.special, '|')}" class="color01" th:text="${#strings.arraySplit(g.special, '|')[0]}"></span>
+                        </p>
+                        <span class="odds">
+                        <span th:if="${g.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+                        <span th:if="${g.gameCode.name() eq 'OVER_UNDER'}" class="over">[오버]</span>
+                        <span th:text="${#numbers.formatDecimal(g.oddsHome, 1, 2)}" th:remove="tag"></span>
+                    </span>
+                    </td>
+                    <td style="padding:0;height: 33px;" colspan="2" th:if="${g.gameCode.name() eq 'MATCH'}"
+                        th:with="odds=${#numbers.formatDecimal(g.oddsDraw, 1, 2)}"
+                        th:class="${(g.result.name() eq 'DRAW' or g.result.name() eq 'HIT' ? 'vs draw on' : 'vs draw') + (odds eq '0.00' ? '' : ' draw odds')}"
+                        th:text="${odds eq '0.00' ? 'VS' : odds}">
+                        무
+                    </td>
+                    <td style="padding:0;height: 33px;" colspan="2" th:if="${g.gameCode.name() ne 'MATCH'}" th:class="${g.result.name() eq 'DRAW' or g.result.name() eq 'HIT' ? 'draw on' : 'draw'}"
+                        th:text="${#numbers.formatDecimal(g.handicap, 1, 1)}">무
+                    </td>
+                    <td rowspan="2" th:class="${g.result.name() eq 'AWAY' or g.result.name() eq 'UNDER' ? 'away on bet' : 'away bet'}">
+                        <p class="ellipses">
+                            <span th:remove="tag" th:text="${g.teamAwayBean.teamKor}">홈팀</span>
+							<span th:if="${g.special} != '' and ${!#strings.contains(g.special, '|')}" class="color01" th:text="${g.special}"></span>
+							<span th:if="${g.special} != '' and ${#strings.contains(g.special, '|')}" class="color01" th:text="${#strings.arraySplit(g.special, '|')[1]}"></span>
+                        </p>
+                        <span class="odds">
+                        <span th:text="${#numbers.formatDecimal(g.oddsAway, 1, 2)}" th:remove="tag"></span>
+                        <span th:if="${g.gameCode.name() eq 'HANDICAP'}" class="handy">[핸디캡]</span>
+                        <span th:if="${g.gameCode.name() eq 'OVER_UNDER'}" class="under">[언더]</span>
+                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:0;height: 33px;" class="score" th:text="${g.scoreHome eq null ? '-' : g.scoreHome}">0</td>
+                    <td style="padding:0;height: 33px;" class="score" th:text="${g.scoreAway eq null ? '-' : g.scoreAway}">0</td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+    <div class="paging">
+        <ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+    </div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    function changeSports(sports) {
+        $('#sports').val(sports);
+        $('#page').val(1);
+        $('#frm-search').submit();
+    }
+</script>
+</body>
+</html>

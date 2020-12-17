@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='accounting', lnb='list'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>정산관리 :</small>
+    정산 내역
+</h2>
+<div layout:fragment="content">
+    <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathSeller}/accounting/sale|}" method="get">
+        <input type="hidden" name="page" id="page" th:value="${page.number + 1}"/>
+    </form>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-user"></i>
+				<span>정산 내역</span>
+				<span class="total">( 검색된 내역수 : <span th:text="${page.totalElements}">100</span> 건 )</span>
+            </h3>
+        </div>
+		<table class="table-list">
+			<caption>종목 설정</caption>
+			<thead>
+			<tr>
+				<th>번호</th>
+				<th th:if="${user.role.name() eq 'AGENCY4'}">총본사</th>
+				<th th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3'}">부본사</th>
+				<th th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3' or user.role.name() eq 'AGENCY2'}">총판</th>
+				<th>매장</th>
+				<th>대상</th>
+				<th>사용내역</th>
+				<th>비고</th>
+				<th>기존머니</th>
+				<th>머니</th>
+				<th>최종머니</th>
+				<th>날짜</th>
+				<th>베팅유저</th>
+			</tr>
+			</thead>
+			<tbody id="money-body">
+			<tr th:each="m,num : ${page.content}" th:with="total=${page.totalElements - page.number * page.size + 1}">
+				<td th:text="${total - num.count}">1</td>
+				<td th:if="${user.role.name() eq 'AGENCY4'}"th:text="${m.agency4}">총본사</td>
+				<td th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3'}" th:text="${m.agency3}">부본사</td>
+				<td th:if="${user.role.name() eq 'AGENCY4' or user.role.name() eq 'AGENCY3' or user.role.name() eq 'AGENCY2'}" th:text="${m.agency2}">총판</td>
+				<td th:text="${m.agency1}">매장</td>
+				<td class="color02" th:text="${m.actionId}">0</td>
+				<td th:class="${m.amount < 0} ? 'color03' : 'color01'" th:text="${m.moneyCode.name}">사용내역</td>
+				<td th:text="${#strings.defaultString(m.memo, '-')}">비고</td>
+				<td class="num" th:text="${tag.num(m.orgMoney)}">기존머니</td>
+				<td th:class="${m.amount < 0} ? 'color03 num popup' : 'color01 num popup'" th:onclick="|popup.payment.money('${m.userid}');|" th:text="${tag.num(m.amount)}">머니</td>
+				<td class="num color0" th:text="${tag.num(m.orgMoney + m.amount)}">최종머니</td>
+				<td th:utext="${tag.dayWeekTimes(m.regDate)}"></td>
+				<td class="color01" th:text="${m.worker}"></td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="panel-footer">
+			<div class="paging">
+				<ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+			</div>
+		</div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

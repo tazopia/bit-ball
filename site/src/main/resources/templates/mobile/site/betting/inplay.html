@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/mobileLayout" th:with="main='page', gnb='betting',title='베팅내역'">
+<body>
+<div layout:fragment="tab-menu" th:if="true">
+	<div class="tab-menu">
+		<div class="tab-menu-wrap2" style="width: 100%;">
+			<a th:href="@{|${siteConfig.pathSite}/betting|}" style="width: 50%;">스포츠/미니게임</a>
+			<a class="on" th:href="@{|${siteConfig.pathSite}/betting/inplay|}" style="width: 50%;">인플레이</a>
+		</div>
+	</div>
+</div>
+<main class="page" layout:fragment="page">
+	<form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/betting|}">
+		<input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+	</form>
+
+	<div class="table-wrap">
+		<table class="table-game table-bet inplay-bet" style="table-layout: auto">
+			<caption>스포츠</caption>
+			<colgroup>
+				<col>
+				<col>
+				<col>
+				<col style="width:76px">
+			</colgroup>
+			<tbody class="betBody" th:each="b : ${page.content}">
+			<tr>
+				<th class="betTitle" colspan="5">
+					<img th:src="@{|/images/inplay/sports/${tag.sportsFlag(b.sports)}|}" style="vertical-align: middle"/>
+					<img th:src="@{|/images/inplay/league/${tag.leagueFlag(b.league)}|}" style="vertical-align: middle"/>
+					<span class="code" th:text="${tag.league(b.league)}"></span>
+					<span class="time" th:utext="${tag.dayWeekTime(b.gameDate)}"></span>
+				</th>
+			</tr>
+			<tr class="item">
+				<td class="bet">
+					<p style="padding:10px 0 0 0;" th:text="'1. ' + ${tag.team(b.teamHome)}"></p>
+					<p style="padding:10px 0 10px 0;" th:text="'2. ' + ${tag.team(b.teamAway)}"></p>
+				</td>
+				<td class="bet">
+					<span class="color0" th:text="${tag.market(b.marketId).korName}"></span>
+					<span class="color01" th:text="${b.line}"></span>
+					<span th:text="${tag.name(b.name, b.oname)}"></span>
+
+				</td>
+				<td class="bet color01" th:text="${tag.odds(b.betOdds)}"></td>
+				<td class="bet" th:classappend="${b.css}" th:text="${b.status}"></td>
+			</tr>
+			<tr>
+				<td class="betInfo" colspan="4">
+					<em class="dateDay" th:utext="${tag.dayWeekTimes(b.betDate)}">07/20(토)</em>
+					<em class="betMoney">
+                   		베팅금액 : <span class="money" th:text="${tag.num(b.betMoney)}">1,000</span>원
+                	</em>
+					<em class="rate">
+                    	배당율 : <span class="money" th:text="${tag.odds(b.betOdds)}">1,000</span>배
+                	</em>
+					<em class="expMoney">
+                    	예상금액 : <span class="money" th:text="${tag.num(b.expMoney)}">1,000</span>원
+					</em>
+					<em class="hitMoney" th:if="${b.closing}">
+						적중금액 : <span class="hit" th:text="${tag.num(b.hitMoney)}">1,000</span>원
+					</em>
+					<div class="btn-box">
+						<a th:if="${b.closing}" href="#" th:onclick="|goDelete('${b.id}');return false;|" class="btn btn02">내역 삭제</a>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="paging">
+		<ul th:replace="fragments/mobile :: paging(p=${page})"></ul>
+	</div>
+</main>
+
+<script layout:fragment="script" th:if="true">
+    function goDelete(id) {
+        if (confirm('삭제를 하시면 되살릴 수 없습니다.\n\n취소를 하시겠습니까?')) {
+            $.ajax({
+                url: path + '/betting/inplay/delete',
+                method: 'post',
+                data: {
+                    betIds: id
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminPopup">
+<body class="popup">
+<main layout:fragment="main">
+    <section>
+        <div class="panel-header">
+            <h3><i class="bul fa fa-user-plus"></i> 현재 접속자 : <span th:text="${tag.num(#arrays.length(userList))}"></span></h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col style="width: 24px;">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>아이디</th>
+                <th>닉네임</th>
+                <th>등급</th>
+                <th colspan="4">회원정보</th>
+                <th>접속일시</th>
+                <th>아이피</th>
+                <th>국가</th>
+                <th>도메인</th>
+                <th>디바이스</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${userList}" th:with="m = ${user.user}">
+                <td class="popup color03" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.userid}"></td>
+                <td class="popup color02" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.nickname}"></td>
+                <td th:text="${m.role.value lt T(spoon.member.domain.Role).AGENCY1.value ? m.level : m.role.name}"></td>
+                <td class="popup color04" th:onclick="|popup.payment.money('${m.userid}');|"><i class="bul fa fa fa-usd"></i></td>
+                <td class="popup color04" th:onclick="|popup.payment.point('${m.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
+                <td class="popup color04" th:onclick="|popup.betting.list('${m.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>
+                <td class="popup color04" th:onclick="|popup.customer.memo('${m.userid}');|"><i class="bul fa fa-envelope-o"></i></td>
+                <td th:utext="${tag.betDate(m.loginDate)}"></td>
+                <td th:text="${m.loginIp}"></td>
+                <td th:text="${tag.country(m.loginIp)}"></td>
+                <td th:text="${m.loginDomain}"></td>
+                <td th:text="${m.device}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+            <a onclick="popup.close();return false;" class="btn">창닫기</a>
+        </div>
+    </section>
+</main>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

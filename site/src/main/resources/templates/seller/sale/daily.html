@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/sellerLayout" th:with="gnb='sale', lnb='daily'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>정산관리 :</small>
+    일자별 매출
+</h2>
+<div layout:fragment="content">
+    <section>
+        <div class="panel-search">
+            <form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathSeller}/sale/daily|}" method="get">
+                <label>
+                    검색기간 :
+                    <input type="text" class="cal" th:field="*{sdate}" /> ~
+                    <input type="text" class="cal" th:field="*{edate}" />
+                </label>
+                <div class="command">
+                    <a class="btn btn01" onclick="goSearch();">검색</a>
+                    <a th:href="@{|${siteConfig.pathSeller}/sale/daily|}" class="btn">취소</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section>
+        <div class="panel-header">
+            <h3>
+                <i class="bul fa fa-calendar"></i>
+                일자별 매출
+            </h3>
+        </div>
+        <table class="table-list">
+            <caption>종목 설정</caption>
+            <thead>
+            <tr>
+                <th>일자</th>
+                <th>신규</th>
+                <th>입금</th>
+                <th>출금</th>
+                <th>입출손익</th>
+                <th>실시간 유저</th>
+                <th>실시간 베팅</th>
+                <th>실시간 적중</th>
+                <th>실시간 수익</th>
+                <th>접속</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${list}">
+                <td th:utext="${tag.dateWeek(b.ddate)}"></td>
+                <td class="num color01" th:text="${tag.num(b.member)}"></td>
+                <td class="num color04" th:text="${tag.num(b.inMoney)}"></td>
+                <td class="num color03" th:text="${tag.num(b.outMoney)}"></td>
+                <td class="num color02" th:text="${tag.num(b.inMoney - b.outMoney)}"></td>
+                <td class="num color01" th:text="${tag.num(b.zoneUser)}"></td>
+                <td class="num color04" th:text="${tag.num(b.zoneBet)}"></td>
+                <td class="num color03" th:text="${tag.num(b.zoneHit)}"></td>
+                <td class="num color02" th:text="${tag.num(b.zoneBet - b.zoneHit)}"></td>
+                <td class="num color01" th:text="${tag.num(b.loginCnt)}"></td>
+            </tr>
+            <tr>
+                <th>총합</th>
+                <th class="num color01" th:text="${tag.num(#aggregates.sum(list.![member]))}"></th>
+                <th class="num color04" th:text="${tag.num(#aggregates.sum(list.![inMoney]))}"></th>
+                <th class="num color03" th:text="${tag.num(#aggregates.sum(list.![outMoney]))}"></th>
+                <th class="num color02" th:text="${tag.num(#aggregates.sum(list.![inMoney - outMoney]))}"></th>
+                <th class="num color01" th:text="${tag.num(#aggregates.sum(list.![zoneUser]))}"></th>
+                <th class="num color04" th:text="${tag.num(#aggregates.sum(list.![zoneBet]))}"></th>
+                <th class="num color03" th:text="${tag.num(#aggregates.sum(list.![zoneHit]))}"></th>
+                <th class="num color02" th:text="${tag.num(#aggregates.sum(list.![zoneBet - zoneHit]))}"></th>
+                <th class="num color01" th:text="${tag.num(#aggregates.sum(list.![loginCnt]))}"></th>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer">
+
+        </div>
+    </section>
+</div>
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>
