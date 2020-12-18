@@ -2118,6 +2118,46 @@ div.board {
   height: 21px;
   background: url("/images/icon_delete.png") center center no-repeat #dc0405;
 }
+table.bet {
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+table.bet th {
+  height: 46px;
+  text-align: center;
+  background: #292828;
+  color: #d8af3a;
+}
+table.bet td {
+  text-align: center;
+  vertical-align: middle;
+  background: #363537;
+  padding: 10px 0;
+  line-height: 1.6 !important;
+}
+table.bet td.cancel {
+  color: #f40;
+}
+table.bet td.win {
+  color: #ffb900;
+}
+table.bet td.lose {
+  color: #f89406;
+}
+table.bet td.tie {
+  color: #62c462;
+}
+table.bet td .team {
+  color: #ffb900;
+}
+table.bet td .odds {
+  font-size: 16px;
+  font-style: italic;
+  color: #fff;
+}
+table.bet td .btn {
+  width: 50px;
+}
 .card_result {
   width: 31px;
   height: 44px;

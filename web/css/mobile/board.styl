@@ -228,3 +228,54 @@ div.board {
 	}
 
 }
+
+
+table.bet {
+	border-collapse separate
+	border-spacing 2px
+
+	th {
+		height 46px
+		text-align center
+		background #292828
+		color #d8af3a
+	}
+	td {
+		text-align center
+		vertical-align middle
+		background #363537
+		padding 10px 0
+		line-height 1.6 !important
+
+		&.cancel {
+			color #ff4400
+		}
+
+		&.win {
+			color #ffb900
+		}
+
+		&.lose {
+			color #f89406
+		}
+
+		&.tie {
+			color #62c462;
+		}
+
+		.team {
+			color #ffb900
+		}
+
+		.odds {
+			font-size 16px
+			font-style italic
+			color #fff
+
+		}
+
+		.btn {
+			width 50px
+		}
+	}
+}

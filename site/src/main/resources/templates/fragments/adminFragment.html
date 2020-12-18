@@ -119,6 +119,39 @@
 				<li th:class="${lnb eq 'keno' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/keno/closing|}"><span>종료</span></a></li>
 			</ul>
 		</li>
+
+		<li th:class="${lnb eq 'bitcoin1'} ? 'on'" th:if="${sysConfig.zone.bitcoin1}">
+			<a><em class="bul fa fa-bars"></em><span>비트코인1분</span>
+				<em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).bitcoin1.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em>
+			</a>
+			<ul class="lnb-sub lnb-3">
+				<li th:class="${lnb eq 'bitcoin1' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin1/config|}"><span>설정</span></a></li>
+				<li th:class="${lnb eq 'bitcoin1' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin1/complete|}"><span>진행</span></a></li>
+				<li th:class="${lnb eq 'bitcoin1' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin1/closing|}"><span>종료</span></a></li>
+			</ul>
+		</li>
+
+		<li th:class="${lnb eq 'bitcoin3'} ? 'on'" th:if="${sysConfig.zone.bitcoin3}">
+			<a><em class="bul fa fa-bars"></em><span>비트코인3분</span>
+				<em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).bitcoin3.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em>
+			</a>
+			<ul class="lnb-sub lnb-3">
+				<li th:class="${lnb eq 'bitcoin3' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin3/config|}"><span>설정</span></a></li>
+				<li th:class="${lnb eq 'bitcoin3' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin3/complete|}"><span>진행</span></a></li>
+				<li th:class="${lnb eq 'bitcoin3' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin3/closing|}"><span>종료</span></a></li>
+			</ul>
+		</li>
+		<li th:class="${lnb eq 'bitcoin5'} ? 'on'" th:if="${sysConfig.zone.bitcoin5}">
+			<a><em class="bul fa fa-bars"></em><span>비트코인5분</span>
+				<em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).bitcoin5.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em>
+			</a>
+			<ul class="lnb-sub lnb-3">
+				<li th:class="${lnb eq 'bitcoin5' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin5/config|}"><span>설정</span></a></li>
+				<li th:class="${lnb eq 'bitcoin5' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin5/complete|}"><span>진행</span></a></li>
+				<li th:class="${lnb eq 'bitcoin5' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin5/closing|}"><span>종료</span></a></li>
+			</ul>
+		</li>
+
         <li th:class="${lnb eq 'aladdin'} ? 'on'" th:if="${sysConfig.zone.aladdin}">
             <a><em class="bul fa fa-bars"></em><span>알라딘</span>
                 <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).aladdin.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>
@@ -235,6 +268,7 @@
     </ul>
     <ul class="lnb" th:if="${gnb eq 'member'}">
         <li th:class="${lnb eq 'list'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/member/list|}"><em class="bul fa fa-user"></em><span>회원 관리</span></a></li>
+		<li th:class="${lnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/member/list?mode=agency|}"><em class="bul fa fa-user"></em><span>총판 회원</span></a></li>
         <li th:class="${lnb eq 'disabled'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/member/list?mode=disabled|}"><em class="bul fa fa-user-circle"></em><span>승인대기 회원</span></a></li>
         <li th:class="${lnb eq 'secession'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/member/list?mode=secession|}"><em class="bul fa fa-user-times"></em><span>탈퇴/졸업 회원</span></a></li>
         <li th:class="${lnb eq 'dummy'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/member/list?mode=dummy|}"><em class="bul fa fa-address-card-o"></em><span>게시판 작업용</span></a></li>
@@ -254,19 +288,20 @@
         <li th:class="${lnb eq 'detail'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/accounting/detail|}"><em class="bul fa fa-calendar"></em><span>상세 정산</span></a></li>
     </ul>
     <ul class="lnb" th:if="${gnb eq 'seller'}">
-        <li th:class="${lnb eq 'joinCode'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/joinCode|}"><em class="bul fa fa-bullhorn"></em><span>가입코드</span></a></li>
+<!--        <li th:class="${lnb eq 'joinCode'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/joinCode|}"><em class="bul fa fa-bullhorn"></em><span>가입코드</span></a></li>-->
         <li th:class="${lnb eq 'share'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/share|}"><em class="bul fa fa-shopping-bag"></em><span>총판 지급율 관리</span></a></li>
-        <li th:class="${lnb eq 'current'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/sale|}"><em class="bul fa fa-list-alt"></em><span>총판 정산 관리</span></a></li>
-        <li th:class="${lnb eq 'sale'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/sale/list|}"><em class="bul fa fa-list-alt"></em><span>총판 정산 내역</span></a></li>
+		<li th:class="${lnb eq 'rolling'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/rolling|}"><em class="bul fa fa-shopping-bag"></em><span>정산 내역</span></a></li>
+<!--        <li th:class="${lnb eq 'current'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/sale|}"><em class="bul fa fa-list-alt"></em><span>총판 정산 관리</span></a></li>-->
+<!--        <li th:class="${lnb eq 'sale'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/sale/list|}"><em class="bul fa fa-list-alt"></em><span>총판 정산 내역</span></a></li>-->
     </ul>
     <ul class="lnb" th:if="${gnb eq 'config' or gnb eq 'system'}">
         <li sec:authorize="hasRole('ROLE_GOD')" th:class="${lnb eq 'system'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/system/config|}"><em class="bul fa fa-wrench"></em><span>시스템 설정</span></a></li>
         <li sec:authorize="hasAnyRole('ROLE_GOD', 'ROLE_SUPER')" th:class="${lnb eq 'change'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/system/change|}"><em class="bul fa fa-user-plus"></em><span>마이그레이션</span></a></li>
         <li th:class="${lnb eq 'site'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/site|}"><em class="bul fa fa-cog"></em><span>기본 환경 설정</span></a></li>
-        <li th:class="${lnb eq 'game'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/game|}"><em class="bul fa fa-cog"></em><span>스포츠 환경 설정</span></a></li>
-        <li th:class="${lnb eq 'sports'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/sports|}"><em class="bul fa fa-futbol-o"></em><span>종목 설정</span></a></li>
-        <li th:class="${lnb eq 'league'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/league|}"><em class="bul fa fa-pencil-square-o"></em><span>리그 설정</span></a></li>
-        <li th:class="${lnb eq 'team'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/team|}"><em class="bul fa fa-trophy"></em><span>팀명 설정</span></a></li>
+<!--        <li th:class="${lnb eq 'game'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/game|}"><em class="bul fa fa-cog"></em><span>스포츠 환경 설정</span></a></li>-->
+<!--        <li th:class="${lnb eq 'sports'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/sports|}"><em class="bul fa fa-futbol-o"></em><span>종목 설정</span></a></li>-->
+<!--        <li th:class="${lnb eq 'league'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/league|}"><em class="bul fa fa-pencil-square-o"></em><span>리그 설정</span></a></li>-->
+<!--        <li th:class="${lnb eq 'team'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/team|}"><em class="bul fa fa-trophy"></em><span>팀명 설정</span></a></li>-->
     </ul>
     <ul class="lnb" th:if="${gnb eq 'customer'}">
         <li th:class="${lnb eq 'qna'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/customer/qna|}"><em class="bul fa fa-desktop"></em><span>고객센터</span></a></li>

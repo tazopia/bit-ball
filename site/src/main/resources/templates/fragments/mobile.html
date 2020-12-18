@@ -29,7 +29,13 @@
         <a th:class="${gnb eq 'score' and lnb eq 'power'} ? 'on'" th:if="${sysConfig.zone.power}" th:href="@{|${siteConfig.pathSite}/zone/power/score|}">파워볼</a>
         <a th:class="${gnb eq 'score' and lnb eq 'power_ladder'} ? 'on'" th:if="${sysConfig.zone.powerLadder}" th:href="@{|${siteConfig.pathSite}/zone/power_ladder/score|}">파워사다리</a>
 		<a th:class="${gnb eq 'score' and lnb eq 'keno'} ? 'on'" th:if="${sysConfig.zone.keno}" th:href="@{|${siteConfig.pathSite}/zone/keno/score|}">스피드키노</a>
-        <a th:class="${gnb eq 'score' and lnb eq 'keno_ladder'} ? 'on'" th:if="${sysConfig.zone.kenoLadder}" th:href="@{|${siteConfig.pathSite}/zone/keno_ladder/score|}">키노사다리</a>
+
+		<a th:class="${gnb eq 'score' and lnb eq 'bitcoin1'} ? 'on'" th:if="${sysConfig.zone.bitcoin1}" th:href="@{|${siteConfig.pathSite}/zone/bitcoin1/score|}">비트코인 1분</a>
+		<a th:class="${gnb eq 'score' and lnb eq 'bitcoin3'} ? 'on'" th:if="${sysConfig.zone.bitcoin3}" th:href="@{|${siteConfig.pathSite}/zone/bitcoin3/score|}">비트코인 3분</a>
+		<a th:class="${gnb eq 'score' and lnb eq 'bitcoin5'} ? 'on'" th:if="${sysConfig.zone.bitcoin5}" th:href="@{|${siteConfig.pathSite}/zone/bitcoin5/score|}">비트코인 5분</a>
+
+
+		<a th:class="${gnb eq 'score' and lnb eq 'keno_ladder'} ? 'on'" th:if="${sysConfig.zone.kenoLadder}" th:href="@{|${siteConfig.pathSite}/zone/keno_ladder/score|}">키노사다리</a>
         <a th:class="${gnb eq 'score' and lnb eq 'aladdin'} ? 'on'" th:if="${sysConfig.zone.aladdin}" th:href="@{|${siteConfig.pathSite}/zone/aladdin/score|}">알라딘</a>
         <a th:class="${gnb eq 'score' and lnb eq 'lowhi'} ? 'on'" th:if="${sysConfig.zone.lowhi}" th:href="@{|${siteConfig.pathSite}/zone/lowhi/score|}">로하이</a>
         <a th:class="${gnb eq 'score' and lnb eq 'oddeven'} ? 'on'" th:if="${sysConfig.zone.oddeven}" th:href="@{|${siteConfig.pathSite}/zone/oddeven/score|}">홀짝</a>

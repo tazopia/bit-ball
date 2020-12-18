@@ -1721,6 +1721,35 @@ div.board.memo li:nth-child(3) {
 .payment .btn:hover {
   background: #a90e2b;
 }
+table.bet {
+  border-collapse: separate !important;
+  border-spacing: 1px !important;
+}
+table.bet th {
+  height: 46px;
+}
+table.bet td {
+  background: #363537;
+  padding: 10px 0;
+  line-height: 1.6;
+}
+table.bet td.cancel {
+  color: #f40;
+}
+table.bet td.win {
+  color: #5bc0de;
+}
+table.bet td.lose {
+  color: #f89406;
+}
+table.bet td.tie {
+  color: #62c462;
+}
+table.bet td .odds {
+  font-size: 16px;
+  font-style: italic;
+  color: #fff;
+}
 table.game {
   -webkit-box-shadow: none;
   box-shadow: none;

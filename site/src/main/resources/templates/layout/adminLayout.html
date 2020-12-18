@@ -21,13 +21,13 @@
 <!--                <li th:class="${gnb eq 'game'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/game/match/complete|}">스포츠</a></li>-->
 <!--				<li th:if="${sysConfig.sports.canInplay}" th:class="${gnb eq 'inplay'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/inplay|}">인플레이</a></li>-->
                 <li th:if="${!sysConfig.zone.gnb.empty}" th:class="${gnb eq 'zone'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/${sysConfig.zone.gnb}/config|}">실시간</a></li>
-                <li th:class="${gnb eq 'betting'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/betting/list?role=USER|}">베팅</a></li>
+                <li th:class="${gnb eq 'betting'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/betting/list|}">베팅</a></li>
                 <li th:class="${gnb eq 'payment'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/payment/deposit|}">충/환전</a></li>
                 <li th:class="${gnb eq 'member'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/member/list|}">회원</a></li>
                 <li th:class="${gnb eq 'board'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/board/free|}">게시판</a></li>
                 <li th:class="${gnb eq 'customer'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/customer/qna|}">고객응대</a></li>
                 <li th:class="${gnb eq 'accounting'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/accounting/daily|}">정산</a></li>
-                <li th:class="${gnb eq 'seller'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/joinCode|}">총판</a></li>
+                <li th:class="${gnb eq 'seller'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/rolling|}">총판</a></li>
                 <li th:class="${gnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/site|}">환경설정</a></li>
 <!--				<li th:class="${gnb eq 'sun'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/sun/config|}">선카지노</a></li>-->
                 <li th:if="${sysConfig.event.daily}" th:class="${gnb eq 'event'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/event/daily/win|}">이벤트</a></li>
@@ -78,7 +78,12 @@
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/power_ladder/complete|}" th:if="${sysConfig.zone.powerLadder}" ng-class="alarm.powerLadderResult > 0 ? 'err' : ''">파워사</a>
 				<a th:href="@{|${siteConfig.pathAdmin}/zone/keno/complete|}" th:if="${sysConfig.zone.keno}" ng-class="alarm.kenoResult > 0 ? 'err' : ''">키노</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/keno_ladder/complete|}" th:if="${sysConfig.zone.kenoLadder}" ng-class="alarm.kenoLadderResult > 0 ? 'err' : ''">키노사</a>
-                <a th:href="@{|${siteConfig.pathAdmin}/zone/aladdin/complete|}" th:if="${sysConfig.zone.aladdin}" ng-class="alarm.aladdinResult > 0 ? 'err' : ''">알라딘</a>
+
+				<a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin1/complete|}" th:if="${sysConfig.zone.bitcoin1}" ng-class="alarm.bitcoin1Result > 0 ? 'err' : ''">BTC1</a>
+				<a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin3/complete|}" th:if="${sysConfig.zone.bitcoin3}" ng-class="alarm.bitcoin3Result > 0 ? 'err' : ''">BTC3</a>
+				<a th:href="@{|${siteConfig.pathAdmin}/zone/bitcoin5/complete|}" th:if="${sysConfig.zone.bitcoin5}" ng-class="alarm.bitcoin5Result > 0 ? 'err' : ''">BTC5</a>
+
+				<a th:href="@{|${siteConfig.pathAdmin}/zone/aladdin/complete|}" th:if="${sysConfig.zone.aladdin}" ng-class="alarm.aladdinResult > 0 ? 'err' : ''">알라딘</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/lowhi/complete|}" th:if="${sysConfig.zone.lowhi}" ng-class="alarm.lowhiResult > 0 ? 'err' : ''">로하이</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/oddeven/complete|}" th:if="${sysConfig.zone.oddeven}" ng-class="alarm.oddevenResult > 0 ? 'err' : ''">홀짝</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/baccarat/complete|}" th:if="${sysConfig.zone.baccarat}" ng-class="alarm.baccaratResult > 0 ? 'err' : ''">바카라</a>
@@ -167,7 +172,25 @@
                     <p><span>진행금액</span><em ng-bind="alarm.kenoLadder | number : 0">0</em></p>
                     <p><span>실정산</span><em ng-bind="alarm.kenoLadderEnd | number : 0">0</em></p>
                 </div>
-                <div th:if="${sysConfig.zone.aladdin}">
+
+				<div th:if="${sysConfig.zone.bitcoin1}">
+					<h5>금일 비트코인 1분 현황</h5>
+					<p><span>진행금액</span><em ng-bind="alarm.bitcoin1 | number : 0">0</em></p>
+					<p><span>실정산</span><em ng-bind="alarm.bitcoin1End | number : 0">0</em></p>
+				</div>
+				<div th:if="${sysConfig.zone.bitcoin3}">
+					<h5>금일 비트코인 3분 현황</h5>
+					<p><span>진행금액</span><em ng-bind="alarm.bitcoin3 | number : 0">0</em></p>
+					<p><span>실정산</span><em ng-bind="alarm.bitcoin3End | number : 0">0</em></p>
+				</div>
+				<div th:if="${sysConfig.zone.bitcoin5}">
+					<h5>금일 비트코인 5분 현황</h5>
+					<p><span>진행금액</span><em ng-bind="alarm.bitcoin5 | number : 0">0</em></p>
+					<p><span>실정산</span><em ng-bind="alarm.bitcoin5End | number : 0">0</em></p>
+				</div>
+
+
+				<div th:if="${sysConfig.zone.aladdin}">
                     <h5>금일 알라딘 현황</h5>
                     <p><span>진행금액</span><em ng-bind="alarm.aladdin | number : 0">0</em></p>
                     <p><span>실정산</span><em ng-bind="alarm.aladdinEnd | number : 0">0</em></p>
