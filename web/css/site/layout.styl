@@ -30,26 +30,38 @@ img {
 
 #background {
 	position fixed
-	left 0
-	right 0
-	top 0
-	bottom 0
-	background url(/images/background2.jpg) center center no-repeat
-	background-size cover
+	left -30px
+	right -30px
+	top -20px
+	bottom -20px
+	//overflow hidden
 	z-index -2
+
+	.bg01, .bg02 {
+		width 100%
+		height 100%
+		background url(/images/background2.jpg) center center no-repeat
+		background-size cover
+		z-index -2
+	}
 }
 
 #login #background {
-	background-image none
+	.bg01 {
+		background-image url(/images/background.jpg)
+	}
+	.bg02 {
+		background url(/images/login_bg.png) center center no-repeat;
+		opacity 0.5
+	}
 }
 
-#login .page-bg {
+.page-bg {
 	position fixed
-	left 0
-	right 0
-	top 0
-	bottom 0
-	background url(/images/background.jpg) center center no-repeat #000
+	width 516px
+	height 100%
+	//background url(/images/right.png) center center no-repeat
+	right -100px
 }
 
 //.page-gradient {
@@ -189,7 +201,7 @@ main {
 	figure {
 		text-align center
 		display block
-		height 560px
+		height 600px
 		width 1310px
 		padding 0 15px
 		margin 0 auto 10px auto
@@ -199,7 +211,7 @@ main {
 
 
 		video {
-			margin-top -40px
+			margin-top -80px
 			border-radius 4px
 			width 100%
 			object-fit contain
@@ -216,17 +228,16 @@ main {
 		h1 {
 			padding 140px 0 0 60px
 			font-family 'Source Sans Pro', sans-serif
-			font-size 38px
+			font-size 46px
 			font-weight 600
 			color #fff
-			line-height 1.4
+			line-height 1.05
 		}
 
 		p {
-			color #000
 			display table
 			padding 4px 20px
-			background rgba(255, 255, 255, 0.3)
+			//background rgba(255, 255, 255, 0.3)
 			margin-bottom 4px
 			transition(all 0.2s ease-out)
 
@@ -240,7 +251,7 @@ main {
 footer {
 	margin-top auto
 	position relative
-	background url(/images/bottom.png) center 10px no-repeat
+	background url(/images/bottom.png) center 10px no-repeat #000
 	//background rgba(0, 0, 0, 0.5)
 	//backdrop-filter blur(10px)
 	//border-top solid 1px rgba(255,255,255,0.1)

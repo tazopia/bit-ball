@@ -20,8 +20,11 @@
             <ul class="gnb seller">
                 <li th:class="${gnb eq 'sale'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/daily|}">매출관리</a></li>
                 <li th:class="${gnb eq 'accounting'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/share|}">정산 관리</a></li>
-                <li th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/member|}">회원관리</a></li>
-				<li><a class="color01" th:href="@{|${siteConfig.pathSite}/main|}" target="_blank">사이트바로가기</a></li>
+                <li th:if="${user.role.name() eq 'AGENCY1'}" th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}">회원 관리</a></li>
+				<li th:if="${user.role.name() eq 'AGENCY2'}" th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}">매장 관리</a></li>
+				<li th:if="${user.role.name() eq 'AGENCY3'}" th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}">총판 관리</a></li>
+				<li th:if="${user.role.name() eq 'AGENCY4'}" th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}">부본사 관리</a></li>
+                <li th:class="${gnb eq 'payment'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/payment/withdraw|}">출금 관리</a></li>
             </ul>
             <a th:href="@{/logout}" class="btn">로그아웃</a>
         </nav>
@@ -34,8 +37,6 @@
                         <div class="side-welcome">
                             <span th:text="${user.userid}"></span>님 환영합니다.
                             <br/><br/>
-							보유 머니 : <span class="color01" th:text="${tag.num(user.money)}"></span> 원
-							<br/><br/>
                             보유 포인트 : <span class="color01" th:text="${tag.num(user.point)}"></span> P
                         </div>
                         <ul class="lnb" th:replace="fragments/sellerFragment :: lnb"></ul>

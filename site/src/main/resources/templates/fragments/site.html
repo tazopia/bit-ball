@@ -12,6 +12,6 @@
 </div>
 <div th:fragment="level(lv)" th:remove="tag">
 <!--    <span th:class="'lv lv' + ${lv}" th:text="'Lv.' + ${lv}">Lv.1</span>-->
-	<span th:class="'level lv' + ${lv % 10}" style="height: 24px;"><img th:src="'/images/level/lv' + ${lv % 10} + '.png'" style="height: 24px;" /></span>
+	<span th:class="'level lv' + ${lv}" style="height: 24px;"><img th:src="'/images/level/lv' + ${lv} + '.png'" style="height: 24px;" /></span>
 </div>
 </html>

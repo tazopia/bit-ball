@@ -1,39 +1,23 @@
 #login {
-
-	.page-wrap {
-		height 100%
-	}
-
 	.login-wrap {
-		position relative
 		display flex
-		width 420px
-		//padding 60px
-		height 100%
-		left 50%
-		margin-left -210px
-		background rgba(128,128,128,0.5)
-		border-left solid 2px rgba(255,255,255,0.2)
-		border-right solid 2px rgba(255,255,255,0.2)
+		min-height 100vh
 		justify-content center
 		align-items center
 
 		.login-box {
-			width 300px
-			margin-top -100px
-			//display flex
-			//min-height 100vh
-			//justify-content center
-			//align-items center
+			position relative
+			width 420px
+			text-align center
+			padding 60px
 			//border-radius 20px
 			//border solid 1.6px rgba(150,150,255,0.2)
 			//backdrop-filter blur(10px)
 		}
 
 		.brand {
-			//margin-left -20px
-			text-align center
-			margin-bottom 160px
+			margin-left -20px
+			margin-bottom 50px
 		}
 
 		label {
@@ -45,16 +29,16 @@
 		input, select {
 			width 100%
 			height 40px
-			color #ccc
+			color #222
 			font-size 16px
 			padding 0 20px
-			border solid 1px #4c5358
+			border solid 1px #e85202
 			border-radius 5px
-			background #222
+			//background rgba(0,0,0,0.5)
 		}
 
 		select {
-			color #ccc
+			color #222
 			float left
 			width 140px
 
@@ -96,25 +80,25 @@
 
 		.btn-login {
 			//background url(/images/gold_bg.jpg) center bottom no-repeat //#59a735
-			background #0153de
+			background #e85202
 			color #fff
 			text-shadow 0 0 5px rgba(0, 0, 0, 1)
-			border solid 2px #0b113a
-			box-shadow(inset 0 0 1px 1px #888)
-
+			//-webkit-text-stroke 1px #000
 
 			&:hover {
-				background-color darken(#0153de, 30%)
+				background-color darken(#e85202, 30%)
+				//background-position center top
+				//color #000
 			}
 		}
 
 		.btn-join {
-			border 2px solid #222
-			color #ccc
-			background #222
-			box-shadow(inset 0 0 1px 1px #888)
+			border 1px solid #222
+			color #000
+			background rgba(255,255,255,0.7)
 			&:hover {
-				background-color darken(#444, 30%)
+				background-color #222
+				color #fff
 			}
 		}
 
@@ -129,29 +113,11 @@
 			}
 		}
 
-
-		&.login-wrap.login-join {
-			//margin-top 100px
-			margin-left -260px
-			width 520px
-			display block
-			background none
-			border none
-
+		&.login-join {
+			margin-top 100px
 
 			.login-box {
-				margin-top 0
-				padding-top 20px
 				width 520px
-				position relative
-				display block
-				background rgba(128,128,128,0.5)
-				border-left solid 2px rgba(255,255,255,0.2)
-				border-right solid 2px rgba(255,255,255,0.2)
-
-				.brand {
-					margin-bottom 50px
-				}
 			}
 
 
@@ -179,7 +145,7 @@
 
 				p {
 					clear both
-					color #ccc
+					color #aaa
 					font-size 13px
 					text-align left
 					padding 10px 0 10px 20px
@@ -191,11 +157,7 @@
 				width 400px
 			}
 
-			.copyright {
-				text-align center
-				margin-top 50px
-				padding-bottom 40px
-			}
+			padding-bottom 40px
 		}
 	}
 }

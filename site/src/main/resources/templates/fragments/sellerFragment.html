@@ -1,44 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
-	<meta charset="UTF-8"/>
-	<title th:text="${siteConfig.companyName}">Best of Stella</title>
-	<link rel="shortcut icon" th:href="@{|/images/favicon.ico?v=${siteConfig.version}|}"/>
-	<link rel="stylesheet" th:href="@{|/css/font-awesome.min.css?v=${siteConfig.version}|}"/>
-	<link rel="stylesheet" th:href="@{|/css/jquery-ui.min.css?v=${siteConfig.version}|}"/>
-	<link rel="stylesheet" th:href="@{|/css/jquery-ui.theme.min.css?v=${siteConfig.version}|}"/>
-	<link rel="stylesheet" th:href="@{|/css/style.admin.css?v=${siteConfig.version}|}"/>
-	<script th:src="@{|/js/jquery-3.1.1.min.js?v=${siteConfig.version}|}"></script>
-	<script th:src="@{|/js/jquery-ui.min.js?v=${siteConfig.version}|}"></script>
+    <meta charset="UTF-8"/>
+    <title th:text="${siteConfig.companyName}">Best of Stella</title>
+    <link rel="shortcut icon" th:href="@{|/images/favicon.ico?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/font-awesome.min.css?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/jquery-ui.min.css?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/jquery-ui.theme.min.css?v=${siteConfig.version}|}"/>
+    <link rel="stylesheet" th:href="@{|/css/style.admin.css?v=${siteConfig.version}|}"/>
+    <script th:src="@{|/js/jquery-3.1.1.min.js?v=${siteConfig.version}|}"></script>
+    <script th:src="@{|/js/jquery-ui.min.js?v=${siteConfig.version}|}"></script>
 </head>
 <body>
 <div th:fragment="lnb" th:remove="tag">
-	<ul class="lnb" th:if="${gnb eq 'sale'}">
-		<li th:class="${lnb eq 'daily'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/daily|}"><em class="bul fa fa-calendar"></em><span>일자별 매출</span></a></li>
-		<li th:class="${lnb eq 'detail'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/detail|}"><em class="bul fa fa-calendar"></em><span>일자별 상세</span></a></li>
-		<li th:class="${lnb eq 'banking'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/banking|}"><em class="bul fa fa-krw"></em><span>입출금 내역</span></a></li>
-		<li th:class="${lnb eq 'betting'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/betting|}"><em class="bul fa fa-list"></em><span>베팅 내역</span></a></li>
-		<li th:class="${lnb eq 'money'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/money|}"><em class="bul fa fa-money"></em><span>머니 내역</span></a></li>
-	</ul>
-	<ul class="lnb" th:if="${gnb eq 'accounting'}">
-		<li th:class="${lnb eq 'share'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/share|}"><em class="bul fa fa-shopping-bag"></em><span>지급율 관리</span></a></li>
-		<li th:class="${lnb eq 'list'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/sale|}"><em class="bul fa fa-shopping-bag"></em><span>정산 내역</span></a></li>
-	</ul>
-	<ul class="lnb" th:if="${gnb eq 'agency'}">
-		<li th:class="${lnb eq 'member'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/member|}"><em class="bul fa fa-user"></em><span>회원 리스트</span></a></li>
-		<li th:if="${user.role.name() eq 'AGENCY4'}" th:class="${lnb eq 'add'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/add|}"><em class="bul fa fa-user-plus"></em><span>부본사 등록</span></a></li>
+    <ul class="lnb" th:if="${gnb eq 'sale'}">
+        <li th:class="${lnb eq 'daily'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/daily|}"><em class="bul fa fa-calendar"></em><span>일자별 매출</span></a></li>
+        <li th:class="${lnb eq 'detail'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/detail|}"><em class="bul fa fa-calendar"></em><span>일자별 상세</span></a></li>
+        <li th:class="${lnb eq 'banking'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/banking|}"><em class="bul fa fa-krw"></em><span>입출금 내역</span></a></li>
+        <li th:class="${lnb eq 'betting'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/betting|}"><em class="bul fa fa-list"></em><span>베팅 내역</span></a></li>
+		<li th:class="${lnb eq 'inplay'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/sale/inplay|}"><em class="bul fa fa-list"></em><span>인플레이 내역</span></a></li>
+    </ul>
+    <ul class="lnb" th:if="${gnb eq 'accounting'}">
+        <li th:if="${user.role.name() ne 'AGENCY1'}" th:class="${lnb eq 'share'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/share|}"><em class="bul fa fa-shopping-bag"></em><span>지급율 관리</span></a></li>
+        <li th:class="${lnb eq 'current'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/current|}"><em class="bul fa fa-shopping-bag"></em><span>현재 정산 내역</span></a></li>
+        <li th:class="${lnb eq 'list'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/accounting/list|}"><em class="bul fa fa-shopping-bag"></em><span>지난 정산 내역</span></a></li>
+    </ul>
+    <ul class="lnb" th:if="${gnb eq 'agency'}">
+        <li th:class="${lnb eq 'joinCode'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}"><em class="bul fa fa-bullhorn"></em><span>가입 코드</span></a></li>
+        <li th:class="${lnb eq 'member'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/member|}"><em class="bul fa fa-user"></em><span>회원 리스트</span></a></li>
+        <li th:if="${user.role.name() eq 'AGENCY4'}" th:class="${lnb eq 'add'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/add|}"><em class="bul fa fa-user-plus"></em><span>부본사 등록</span></a></li>
 		<li th:if="${user.role.name() eq 'AGENCY3'}" th:class="${lnb eq 'add'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/add|}"><em class="bul fa fa-user-plus"></em><span>총판 등록</span></a></li>
 		<li th:if="${user.role.name() eq 'AGENCY2'}" th:class="${lnb eq 'add'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/add|}"><em class="bul fa fa-user-plus"></em><span>매장 등록</span></a></li>
 		<li th:if="${user.role.name() eq 'AGENCY1'}" th:class="${lnb eq 'add'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/add|}"><em class="bul fa fa-user-plus"></em><span>회원 등록</span></a></li>
-	</ul>
-	<!--    <ul class="lnb" th:if="${gnb eq 'payment'}">-->
-	<!--        <li th:class="${lnb eq 'withdraw'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/payment/withdraw|}"><em class="bul fa fa-bullhorn"></em><span>출금 신청</span></a></li>-->
-	<!--        <li th:class="${lnb eq 'exchange'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/payment/exchange|}"><em class="bul fa fa-user"></em><span>포인트 지급</span></a></li>-->
-	<!--    </ul>-->
+    </ul>
+    <ul class="lnb" th:if="${gnb eq 'payment'}">
+        <li th:class="${lnb eq 'withdraw'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/payment/withdraw|}"><em class="bul fa fa-bullhorn"></em><span>출금 신청</span></a></li>
+        <li th:class="${lnb eq 'exchange'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/payment/exchange|}"><em class="bul fa fa-user"></em><span>포인트 지급</span></a></li>
+    </ul>
 </div>
 <div th:fragment="javascript" th:remove="tag">
-	<script th:src="@{|/js/common.js?v=${siteConfig.version}|}"></script>
-	<script th:if="${mode ne 'login'}" th:src="@{|/js/common.seller.js?v=${siteConfig.version}|}"></script>
+    <script th:src="@{|/js/common.js?v=${siteConfig.version}|}"></script>
+    <script th:if="${mode ne 'login'}" th:src="@{|/js/common.seller.js?v=${siteConfig.version}|}"></script>
 </div>
 </body>
 </html>

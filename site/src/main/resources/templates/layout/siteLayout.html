@@ -11,10 +11,48 @@
 	<script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
 </head>
 <body>
-<div id="background"></div>
+<div data-relative-input="true" id="background">
+	<div class="bg01" data-depth="0.1"></div>
+</div>
 <div class="page-bg"></div>
 <div class="page-gradient"></div>
 <div id="milliseconds" style="display: none" th:text="${user.milliseconds}"></div>
+<div id="menu-wrap">
+	<div class="menu-wrap">
+		<div class="menu-close" onclick="hiddenMenu();"><img src="/images/icon-close.png"/></div>
+		<div class="menu-top">
+			전체메뉴보기
+		</div>
+		<div class="menu-section">
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/game/cross|}"><span>스포츠</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/game/cross|}"><span>크로스</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/game/special|}"><span>스페셜</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/inplay|}"><span>인플레이</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/sun|}"><span>카지노</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/score/cross|}"><span>경기결과</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/betting|}"><span>베팅내역</span></a>
+
+		</div>
+		<div class="menu-section">
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/zone/power|}"><span>미니게임</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/zone/power|}"><span>파워볼</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/zone/power_ladder|}"><span>파워사다리</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/zone/keno_ladder|}"><span>키노사다리</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/zone/soccer|}"><span>가상경기</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/zone/soccer|}"><span>가상축구</span></a>
+			<a class="menu-item" th:href="@{|${siteConfig.pathSite}/zone/dog|}"><span>개경주</span></a>
+		</div>
+		<div class="menu-section">
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/payment/deposit|}"><span>충전신청</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/payment/withdraw|}"><span>환전신청</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/customer/qna|}"><span>고객상담</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/customer/memo|}"><span>메시지함</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/mypage|}"><span>정보수정</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/event/daily|}"><span>출석체크</span></a>
+			<a class="menu-head" th:href="@{|${siteConfig.pathSite}/payment/point|}"><span>포인트내역</span></a>
+		</div>
+	</div>
+</div>
 <header>
 	<section class="gnb">
 		<div class="container">
@@ -27,7 +65,7 @@
 	<nav>
 		<div class="container">
 			<div class="logo">
-				<a th:href="@{|${siteConfig.pathSite}/main|}"><img src="/images/brand.png" alt=""/></a>
+				<a th:href="@{|${siteConfig.pathSite}/main|}"><img src="/images/brand2.png" alt=""/></a>
 			</div>
 			<div class="nav">
 				<ul th:replace="fragments/siteFragment :: gnb">
@@ -95,7 +133,7 @@
 						<li><a class="btn" ng-click="addMoney(100000)">100,000</a></li>
 						<li><a class="btn" ng-click="addMoney(300000)">300,000</a></li>
 						<li><a class="btn" ng-click="addMoney(500000)">500,000</a></li>
-						<li><a class="btn" ng-click="addMoney(1000000)">1,000,000</a></li>
+						<li><a class="btn" ng-click="addMoney(500000)">1,000,000</a></li>
 						<li><a class="btn" ng-click="addReset(10000)">RESET</a></li>
 						<li><a class="btn" ng-click="addMax()">MAX</a></li>
 					</ul>
@@ -222,7 +260,7 @@
 						<li><a class="btn" ng-click="addMoney(100000)">100,000</a></li>
 						<li><a class="btn" ng-click="addMoney(300000)">300,000</a></li>
 						<li><a class="btn" ng-click="addMoney(500000)">500,000</a></li>
-						<li><a class="btn" ng-click="addMoney(1000000)">1,000,000</a></li>
+						<li><a class="btn" ng-click="addMoney(500000)">1,000,000</a></li>
 						<li><a class="btn" ng-click="addReset(10000)">RESET</a></li>
 						<li><a class="btn" ng-click="addMax()">MAX</a></li>
 					</ul>

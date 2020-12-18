@@ -51,7 +51,7 @@
                 <input type="password" id="bankPasswordConfirm" maxlength="16" placeholder="충환전 비밀번호 확인"/>
                 <p>영문 및 숫자 특수문자 조합 4자 이상으로 작성.</p>
             </label>
-            <label th:if="${siteConfig.join.requiredRecommend}">
+            <label>
                 <input type="text" th:field="*{recommender}" maxlength="16" placeholder="추천인 (지인추천 아이디)"/>
                 <span id="bul-recommend" class="bul bul-enabled"></span>
                 <p>추천인이 없으면 비워 두시기 바랍니다.</p>

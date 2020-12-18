@@ -10,10 +10,14 @@
 	<script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
 </head>
 <body>
+<div data-relative-input="true" id="background">
+	<div class="bg01" data-depth="0.1"></div>
+	<div class="bg02" data-depth="0.3"></div>
+</div>
 <div class="page-bg"></div>
 <div class="page-gradient"></div>
-<div class="page-wrap" layout:fragment="login">
-	<div class="login-wrap">
+<div class="page-wrap">
+	<div class="login-wrap" layout:fragment="login">
 		여기에 내용이 옵니다.
 	</div>
 </div>
