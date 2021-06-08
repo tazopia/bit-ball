@@ -9,10 +9,13 @@ import spoon.common.net.HttpParsing;
 import spoon.common.utils.JsonUtils;
 import spoon.config.domain.Config;
 import spoon.gameZone.ZoneConfig;
+import spoon.gameZone.ZoneUtils;
 import spoon.gameZone.power.Power;
 import spoon.gameZone.powerLadder.PowerLadder;
 import spoon.gameZone.powerLadder.service.PowerLadderBotService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 @Slf4j
@@ -50,6 +53,7 @@ public class PowerLadderParsing implements GameBotParsing {
 
             if (powerLadderBotService.notExist(cal.getTime())) {
                 PowerLadder powerLadder = new PowerLadder(round, times, cal.getTime());
+                if (!ZoneUtils.enabledPower(LocalDateTime.parse(powerLadder.getSdate(), DateTimeFormatter.ofPattern("yyyyMMddHHmm")))) continue;
                 powerLadder.setOdds(ZoneConfig.getPowerLadder().getOdds());
                 powerLadderBotService.addGame(powerLadder);
                 count++;

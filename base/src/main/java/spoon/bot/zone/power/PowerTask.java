@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import spoon.bot.zone.service.GameBotParsing;
 import spoon.config.domain.Config;
 import spoon.gameZone.ZoneConfig;
+import spoon.gameZone.ZoneUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -15,15 +16,17 @@ public class PowerTask {
 
     private GameBotParsing powerParsing;
 
-    @Scheduled(cron = "55 2/5 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void parsingGame() {
         if (notParsing()) return;
+        if (!ZoneUtils.enabledPower()) return;
         powerParsing.parsingGame();
     }
 
-    @Scheduled(cron = "0/4 3/5 * * * *")
+    @Scheduled(cron = "0/4 0/5 * * * *")
     public void parsingResult() {
         if (notParsing()) return;
+        if (!ZoneUtils.enabledPower()) return;
         powerParsing.closingGame();
     }
 

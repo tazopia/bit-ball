@@ -15,13 +15,13 @@ public class PowerLadderTask {
 
     private GameBotParsing powerLadderParsing;
 
-    @Scheduled(cron = "55 2/5 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void parsingGame() {
         if (notParsing()) return;
         powerLadderParsing.parsingGame();
     }
 
-    @Scheduled(cron = "0/4 3/5 * * * *")
+    @Scheduled(cron = "0/4 0/5 * * * *")
     public void parsingResult() {
         if (notParsing()) return;
         powerLadderParsing.closingGame();

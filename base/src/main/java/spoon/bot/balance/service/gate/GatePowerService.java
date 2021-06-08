@@ -9,7 +9,7 @@ import spoon.bet.service.BetGameService;
 import spoon.bot.balance.domain.GateResult;
 import spoon.bot.balance.entity.PolygonBalance;
 import spoon.bot.balance.repository.PolygonBalanceRepository;
-import spoon.bot.support.PowerMaker;
+import spoon.bot.support.ZoneMaker;
 import spoon.common.net.HttpParsing;
 import spoon.common.utils.DateUtils;
 import spoon.common.utils.JsonUtils;
@@ -34,10 +34,9 @@ public class GatePowerService {
         double rate = Config.getGameConfig().getBalancePowerRate();
         if (rate == 0 || !Config.getGameConfig().isBalancePower()) return;
 
-        PowerMaker powerMaker = ZoneConfig.getPower().getPowerMaker();
-        long times = powerMaker.getTimes() + 1;
+        ZoneMaker zoneMaker = ZoneConfig.getPower().getZoneMaker();
 
-        Date gameDate = powerMaker.getGameDate(times);
+        Date gameDate = zoneMaker.getGameDate();
         String sdate = DateUtils.format(gameDate, "yyyyMMddHHmm");
 
         long calc;
@@ -45,7 +44,7 @@ public class GatePowerService {
         long totalPoe = 0, totalOe = 0, totalOu = 0;
         int posPoe = 0, posOe = 0, posOu = 0;
         boolean canPoe = false, canOe = false, canOu = false;
-        String round = String.format("%03d", times);
+        String round = String.format("%03d", zoneMaker.getRound());
 
         Iterable<BetItem> items = betGameService.getBalanceBet(MenuCode.POWER, sdate);
 

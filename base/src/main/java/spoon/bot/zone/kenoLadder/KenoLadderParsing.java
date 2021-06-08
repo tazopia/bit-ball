@@ -11,7 +11,10 @@ import spoon.config.domain.Config;
 import spoon.gameZone.KenoLadder.KenoLadder;
 import spoon.gameZone.KenoLadder.service.KenoLadderBotService;
 import spoon.gameZone.ZoneConfig;
+import spoon.gameZone.ZoneUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,6 +44,7 @@ public class KenoLadderParsing implements GameBotParsing {
 
             if (kenoLadderBotService.notExist(cal.getTime())) {
                 KenoLadder kenoLadder = new KenoLadder(round > 288 ? round % 288 : round, cal.getTime());
+                if (!ZoneUtils.enabledPower(LocalDateTime.parse(kenoLadder.getSdate(), DateTimeFormatter.ofPattern("yyyyMMddHHmm")))) continue;
                 kenoLadder.setOdds(ZoneConfig.getKenoLadder().getOdds());
                 kenoLadderBotService.addGame(kenoLadder);
                 count++;

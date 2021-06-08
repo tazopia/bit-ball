@@ -186,14 +186,12 @@ public class PowerLadderServiceImpl implements PowerLadderService {
         PowerLadderConfig config = ZoneConfig.getPowerLadder();
 
         // 파워볼은 현재 회차에서 1을 더해준다.
-        int times = ZoneConfig.getPowerLadder().getPowerMaker().getTimes() + 1;
-        Date gameDate = ZoneConfig.getPowerLadder().getPowerMaker().getGameDate(times);
+        Date gameDate = ZoneConfig.getPowerLadder().getZoneMaker().getGameDate();
         PowerLadder powerLadder = powerLadderRepository.findOne(q.gameDate.eq(gameDate));
 
         if (powerLadder == null) {
             gameConfig.setGameDate(gameDate);
-            gameConfig.setTimes(config.getPowerMaker().getTimes());
-            gameConfig.setRound(config.getPowerMaker().getRound(times));
+            gameConfig.setRound(config.getZoneMaker().getRound());
             return gameConfig;
         }
 

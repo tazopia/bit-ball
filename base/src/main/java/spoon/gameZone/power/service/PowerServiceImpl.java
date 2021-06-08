@@ -190,14 +190,12 @@ public class PowerServiceImpl implements PowerService {
         PowerConfig config = ZoneConfig.getPower();
 
         // 파워볼은 현재 회차에서 1을 더해준다.
-        int times = ZoneConfig.getPower().getPowerMaker().getTimes() + 1;
-        Date gameDate = ZoneConfig.getPower().getPowerMaker().getGameDate(times);
+        Date gameDate = config.getZoneMaker().getGameDate();
         Power power = powerRepository.findOne(q.gameDate.eq(gameDate));
 
         if (power == null) {
             gameConfig.setGameDate(gameDate);
-            gameConfig.setTimes(config.getPowerMaker().getTimes());
-            gameConfig.setRound(config.getPowerMaker().getRound(times));
+            gameConfig.setRound(config.getZoneMaker().getRound());
             return gameConfig;
         }
 

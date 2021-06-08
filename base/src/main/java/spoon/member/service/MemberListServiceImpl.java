@@ -129,7 +129,7 @@ public class MemberListServiceImpl implements MemberListService {
                 builder.and(q.depositor.eq(command.getSearchValue()));
                 break;
             case "code":
-                builder.and(q.joinCode.eq(command.getSearchType().toUpperCase()));
+                builder.and(q.joinCode.eq(command.getSearchValue()));
                 break;
             case "ip":
                 builder.and(q.loginIp.like(command.getSearchValue() + "%").or(q.joinIp.like(command.getSearchValue() + "%")));

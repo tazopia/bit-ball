@@ -9,9 +9,12 @@ import spoon.common.net.HttpParsing;
 import spoon.common.utils.JsonUtils;
 import spoon.config.domain.Config;
 import spoon.gameZone.ZoneConfig;
+import spoon.gameZone.ZoneUtils;
 import spoon.gameZone.power.Power;
 import spoon.gameZone.power.service.PowerBotService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 @Slf4j
@@ -49,6 +52,7 @@ public class PowerParsing implements GameBotParsing {
 
             if (powerBotService.notExist(cal.getTime())) {
                 Power power = new Power(round, times, cal.getTime());
+                if (!ZoneUtils.enabledPower(LocalDateTime.parse(power.getSdate(), DateTimeFormatter.ofPattern("yyyyMMddHHmm")))) continue;
                 power.setOdds(ZoneConfig.getPower().getOdds());
                 powerBotService.addGame(power);
                 count++;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import spoon.bot.zone.service.GameBotParsing;
 import spoon.config.domain.Config;
 import spoon.gameZone.ZoneConfig;
+import spoon.gameZone.ZoneUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -18,12 +19,14 @@ public class KenoLadderTask {
     @Scheduled(cron = "0 0/5 * * * *")
     public void parsingGame() {
         if (notParsing()) return;
+        if (!ZoneUtils.enabledPower()) return;
         kenoLadderParsing.parsingGame();
     }
 
     @Scheduled(cron = "1/3 0/5 * * * *")
     public void parsingResult() {
         if (notParsing()) return;
+        if (!ZoneUtils.enabledPower()) return;
         kenoLadderParsing.closingGame();
     }
 

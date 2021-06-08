@@ -21,7 +21,7 @@ spring:
     datasource:
         sql-script-encoding: UTF-8
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-        url: jdbc:sqlserver://localhost:1433;DatabaseName=powerball;useUnicode=true;characterEncoding=UTF-8
+        url: jdbc:sqlserver://localhost:1433;DatabaseName=bit;useUnicode=true;characterEncoding=UTF-8
         username: sa
         password: thssla1
         hikari:

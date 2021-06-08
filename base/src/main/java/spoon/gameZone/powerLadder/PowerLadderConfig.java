@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import spoon.bot.support.PowerMaker;
+import spoon.bot.support.ZoneMaker;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class PowerLadderConfig {
 
     @JsonIgnore
-    private PowerMaker powerMaker;
+    private ZoneMaker zoneMaker;
 
     private boolean enabled;
 
@@ -44,7 +45,7 @@ public class PowerLadderConfig {
     private int[] min = {5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000};
 
     public PowerLadderConfig() {
-        this.powerMaker = new PowerMaker();
+        this.zoneMaker = new ZoneMaker(5);
     }
 
 }

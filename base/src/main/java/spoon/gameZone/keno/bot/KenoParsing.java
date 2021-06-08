@@ -8,9 +8,12 @@ import spoon.common.net.HttpParsing;
 import spoon.common.utils.JsonUtils;
 import spoon.config.domain.Config;
 import spoon.gameZone.ZoneConfig;
+import spoon.gameZone.ZoneUtils;
 import spoon.gameZone.keno.entity.Keno;
 import spoon.gameZone.keno.service.KenoBotService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,6 +42,7 @@ public class KenoParsing {
 
             if (kenoBotService.notExist(cal.getTime())) {
                 Keno keno = new Keno(round > 288 ? round % 288 : round, cal.getTime());
+                if (!ZoneUtils.enabledPower(LocalDateTime.parse(keno.getSdate(), DateTimeFormatter.ofPattern("yyyyMMddHHmm")))) continue;
                 keno.setOdds(ZoneConfig.getKeno().getOdds());
                 kenoBotService.addGame(keno);
                 count++;
