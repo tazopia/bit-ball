@@ -37,6 +37,11 @@ public enum MoneyCode {
     SUN_IN(8100, "카지노 받음"),
     SUN_OUT(8200, "카지노 보냄"),
 
+    CASINO_BET(9100, "카지노베팅"),
+    CASINO_WIN(9200, "카지노적중"),
+    CASINO_REFUND(9300, "카지노환금"),
+    CASINO_CANCEL(9400, "카지노취소"),
+
     UNKNOWN(99999, "알수없음");
 
     private int value;
@@ -72,7 +77,7 @@ public enum MoneyCode {
      * 롤링
      */
     public static MoneyCode[] getShareCode() {
-        return new MoneyCode[] {ROLL_SPORTS, ROLL_ZONE, ROLL_SPORTS_ROLLBACK, ROLL_ZONE_ROLLBACK};
+        return new MoneyCode[]{ROLL_SPORTS, ROLL_ZONE, ROLL_SPORTS_ROLLBACK, ROLL_ZONE_ROLLBACK};
     }
 
     /**

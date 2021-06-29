@@ -1,5 +1,9 @@
 package spoon.common.utils;
 
+import org.springframework.util.DigestUtils;
+
+import java.nio.charset.StandardCharsets;
+
 @SuppressWarnings("JavaDoc")
 public abstract class StringUtils {
 
@@ -78,6 +82,10 @@ public abstract class StringUtils {
     public static int lastNumber(double chart) {
         String num = String.format("%.2f", chart);
         return Integer.parseInt(num.substring(num.length() - 1), 10);
+    }
+
+    public static String md5(String value) {
+        return DigestUtils.md5DigestAsHex(value.getBytes(StandardCharsets.UTF_8));
     }
 
 }

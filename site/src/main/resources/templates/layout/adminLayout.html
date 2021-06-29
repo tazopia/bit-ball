@@ -29,7 +29,7 @@
                 <li th:class="${gnb eq 'accounting'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/accounting/daily|}">정산</a></li>
                 <li th:class="${gnb eq 'seller'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/seller/rolling|}">총판</a></li>
                 <li th:class="${gnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/config/site|}">환경설정</a></li>
-<!--				<li th:class="${gnb eq 'sun'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/sun/config|}">선카지노</a></li>-->
+				<li th:class="${gnb eq 'sun' || gnb eq 'evo'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evo/exchange|}">카지노</a></li>
                 <li th:if="${sysConfig.event.daily}" th:class="${gnb eq 'event'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/event/daily/win|}">이벤트</a></li>
             </ul>
             <a th:href="@{/logout}" class="btn">로그아웃</a>

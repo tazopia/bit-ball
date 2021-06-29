@@ -52,6 +52,7 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 .antMatchers("/", "/block", "/error/**", "/fonts/**", "/js/**", "/css/**", "/images/**", "/sound/**")
                 .antMatchers(Config.getPathJoin() + "/**")
+                .antMatchers("/api/**")
                 .antMatchers(Config.getPathAdmin())
                 .antMatchers(Config.getPathSeller());
         super.configure(web);

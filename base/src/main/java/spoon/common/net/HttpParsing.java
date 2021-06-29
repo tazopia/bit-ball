@@ -1,8 +1,10 @@
 package spoon.common.net;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import spoon.casino.evo.domain.CasinoEvoResult;
 import spoon.common.utils.ErrorUtils;
 
 import java.io.*;
@@ -16,6 +18,26 @@ public class HttpParsing {
     public static String getJson(String url) {
         try {
             return Jsoup.connect(url)
+                    .ignoreContentType(true)
+                    .userAgent(USER_AGENT)
+                    .maxBodySize(0)
+                    .timeout(60 * 1000)
+                    .execute()
+                    .body();
+        } catch (HttpStatusException e) {
+            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        } catch (IOException e) {
+            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        }
+        return null;
+    }
+
+    public static String postJson(String url) {
+        try {
+            return Jsoup.connect(url)
+                    .method(Connection.Method.POST)
                     .ignoreContentType(true)
                     .userAgent(USER_AGENT)
                     .maxBodySize(0)

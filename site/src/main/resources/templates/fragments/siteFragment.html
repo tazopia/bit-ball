@@ -39,6 +39,9 @@
 				</li>
 			</ul>
 		</li>
+		<li>
+			<a th:onclick="|window.open('${siteConfig.pathSite}/casino/evo', 'casino', 'width=1200, height=900, menubar=0, scrollbars=0, status=0, toolbar=0')|" style="cursor: pointer"><span>카지노</span></a>
+		</li>
 
         <li th:class="${gnb eq 'score'} ? 'on'">
             <a th:href="@{|${siteConfig.pathSite}/zone/power/score||}">경기결과</a>

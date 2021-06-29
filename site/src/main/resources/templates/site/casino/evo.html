@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${siteConfig.companyName}">Best of Stella</title>
+	<link rel="shortcut icon" th:href="@{|/images/favicon.png?v=${siteConfig.version}|}"/>
+	<link rel="stylesheet" th:href="@{|/css/style.css?v=${siteConfig.version}|}"/>
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.main {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: #eee;
+			text-align: center;
+			font-size: 18px;
+		}
+	</style>
+	<script>
+        var url = '[[${casinoUrl}]]';
+        if (url === '') {
+
+        } else {
+            location.href = url;
+        }
+	</script>
+</head>
+<body>
+<div data-relative-input="true" id="background">
+	<div class="bg01" data-depth="0.1"></div>
+</div>
+<div class="page-bg"></div>
+<div class="page-gradient"></div>
+<div class="main">
+	<div>
+		현재 카지노를 이용하실 수 없습니다.<br/><br/>
+		잠시후에 다시 이용하여 주세요.
+		<br/><br/><br/><br/>
+		<button class="btn btn03 btn-big" style="width: 200px; height: 40px; line-height: 40px; font-size: 20px;" onclick="self.close();">창닫기</button>
+	</div>
+</div>
+</body>
+</html>
