@@ -1,13 +1,19 @@
 package spoon.casino.evo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class CasinoEvoResult {
 
     private int returnCode = -1;
 
     private String message;
+
+    private String session;
+
+    private String gameUrl;
 
     private long money;
 

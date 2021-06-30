@@ -19,19 +19,16 @@ public class CasinoEvoApiController {
 
     @GetMapping("api/balance")
     public CasinoEvoResult balance(CasinoEvoCmd.Balance balance, HttpServletRequest request) {
-        log.error("{}&{}", request.getRequestURI(), request.getQueryString());
         return casinoEvoApiService.balance(balance);
     }
 
     @GetMapping("api/change")
     public CasinoEvoResult change(CasinoEvoCmd.Change change, HttpServletRequest request) {
-        log.error("{}&{}", request.getRequestURI(), request.getQueryString());
         return casinoEvoApiService.change(change);
     }
 
     @GetMapping("api/cancel")
     public CasinoEvoResult cancel(CasinoEvoCmd.Cancel cancel, HttpServletRequest request) {
-        log.error("{}&{}", request.getRequestURI(), request.getQueryString());
         return casinoEvoApiService.cancel(cancel);
     }
 

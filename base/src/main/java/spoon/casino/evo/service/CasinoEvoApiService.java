@@ -71,7 +71,7 @@ public class CasinoEvoApiService {
 
         if (result.getReturnCode() != 0) return "";
 
-        json = HttpParsing.postJson(getGamePageUrl(result.getMessage()));
+        json = HttpParsing.postJson(getGamePageUrl(result.getSession()));
         if (json == null) return "";
 
         result = JsonUtils.toModel(json, CasinoEvoResult.class);
@@ -79,7 +79,7 @@ public class CasinoEvoApiService {
 
         if (result.getReturnCode() != 0) return "";
 
-        return result.getMessage();
+        return result.getGameUrl();
     }
 
     /**
