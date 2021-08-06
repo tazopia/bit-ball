@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/adminLayout" th:with="gnb='evolution', lnb='config'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+    <small>카지노 :</small>
+    게임설정
+</h2>
+<div layout:fragment="content">
+    <form id="frm" method="post" th:object="${config}" onsubmit="return saveConfig()">
+        <section>
+            <div class="panel-header">
+                <h3>
+                    <i class="bul fa fa-bars" aria-hidden="true"></i>
+                    선카지노 연결설정
+                </h3>
+            </div>
+            <table class="table-read">
+                <caption>선카지노 게임설정</caption>
+                <colgroup>
+                    <col style="width:220px;">
+                    <col>
+                </colgroup>
+                <tbody>
+				<tr>
+					<th class="required">카지노 코드</th>
+					<td th:text="${config.prefix}"></td>
+				</tr>
+                <tr>
+                    <th class="required">카지노 KEY</th>
+                    <td>
+                        <input type="text" th:field="*{apiKey}" style="width:80%;"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="panel-footer">
+                <button class="btn btn04">수정</button>
+            </div>
+
+        </section>
+    </form>
+</div>
+<script layout:fragment="script" th:if="true">
+    function saveConfig() {
+        if (!confirm('변경 내용을 저장 하겠습니까?')) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

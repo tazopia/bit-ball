@@ -2438,6 +2438,49 @@ div.powerball .bet-wrap .bet-round p {
   padding: 10px 0;
   color: #ea1717;
 }
+.casino-box {
+  margin-top: 30px;
+  display: flex;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+.casino-box .btn {
+  width: auto;
+  margin: 0;
+}
+.casino-games {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: space-between;
+  grid-gap: 20px;
+}
+.casino-games .casino-game {
+  border: solid 1px #777;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+}
+.casino-games .casino-title {
+  text-align: center;
+  padding-bottom: 20px;
+  color: #fff;
+  font-size: 16px;
+}
+.casino-games .casino-cmd {
+  text-align: center;
+  margin-top: 20px;
+}
+.casino-games .casino-cmd .btn {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+}
+.casino-games img {
+  width: 100%;
+}
 .switch {
   position: relative;
   display: inline-block;

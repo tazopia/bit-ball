@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
-import spoon.casino.evo.domain.CasinoEvoResult;
 import spoon.common.utils.ErrorUtils;
 
 import java.io.*;
 import java.net.URL;
+import java.util.Map;
 
 @Slf4j
 public class HttpParsing {
@@ -75,5 +75,68 @@ public class HttpParsing {
             return false;
         }
         return true;
+    }
+
+    public static String postCasinoEvolution(String url, Map<String, String> headers) {
+        try {
+            return Jsoup.connect(url)
+                    .method(Connection.Method.POST)
+                    .ignoreContentType(true)
+                    .headers(headers)
+                    .userAgent(USER_AGENT)
+                    .maxBodySize(0)
+                    .timeout(60 * 1000)
+                    .execute()
+                    .body();
+        } catch (HttpStatusException e) {
+            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        } catch (IOException e) {
+            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        }
+        return null;
+    }
+
+    public static String getCasinoEvolution(String url, Map<String, String> headers) {
+        try {
+            return Jsoup.connect(url)
+                    .ignoreContentType(true)
+                    .userAgent(USER_AGENT)
+                    .headers(headers)
+                    .maxBodySize(0)
+                    .timeout(60 * 1000)
+                    .execute()
+                    .body();
+        } catch (HttpStatusException e) {
+            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        } catch (IOException e) {
+            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        }
+        return null;
+    }
+
+    public static String patchCasinoEvolution(String url, Map<String, String> headers) {
+        try {
+            return Jsoup.connect(url)
+                    .method(Connection.Method.POST)
+                    .ignoreContentType(true)
+                    .ignoreHttpErrors(true)
+                    .userAgent(USER_AGENT)
+                    .headers(headers)
+                    .maxBodySize(0)
+                    .timeout(60 * 1000)
+                    .execute()
+                    .body();
+        } catch (HttpStatusException e) {
+            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        } catch (IOException e) {
+            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
+            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+        }
+        return null;
     }
 }

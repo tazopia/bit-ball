@@ -39,12 +39,12 @@
 				</li>
 			</ul>
 		</li>
-		<li>
-			<a th:onclick="|window.open('${siteConfig.pathSite}/casino/evo', 'casino', 'width=1200, height=900, menubar=0, scrollbars=0, status=0, toolbar=0')|" style="cursor: pointer"><span>카지노</span></a>
+		<li th:class="${gnb eq 'casino'} ? 'on'">
+			<a th:href="@{|${siteConfig.pathSite}/casino/evolution|}"><span>카지노</span></a>
 		</li>
 
         <li th:class="${gnb eq 'score'} ? 'on'">
-            <a th:href="@{|${siteConfig.pathSite}/zone/power/score||}">경기결과</a>
+            <a th:href="@{|${siteConfig.pathSite}/zone/power/score|}">경기결과</a>
             <ul class="sub">
 <!--                <li th:class="${lnb eq 'cross'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/score/cross|}"><span>크로스</span></a></li>-->
 <!--				<li th:class="${lnb eq 'special'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/score/special|}"><span>스페셜</span></a></li>-->

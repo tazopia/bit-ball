@@ -571,11 +571,12 @@ main.page .tab-menu .tab-menu-item.on {
   background: #262527;
 }
 .btn.btn01 {
-  background: #06a;
+  background: #06a !important;
+  color: #fff !important;
 }
 .btn.btn01.on,
 .btn.btn01:hover {
-  background: #004777;
+  background: #004777 !important;
 }
 .btn.btn02 {
   background: #64973a !important;
@@ -586,11 +587,12 @@ main.page .tab-menu .tab-menu-item.on {
   background: #466a29 !important;
 }
 .btn.btn03 {
-  background: #b8573e;
+  background: #b8573e !important;
+  color: #fff !important;
 }
 .btn.btn03.on,
 .btn.btn03:hover {
-  background: #813d2b;
+  background: #813d2b !important;
 }
 main {
   margin-top: 10px;
@@ -2990,6 +2992,37 @@ div.powerball .bet-wrap .bet-round p {
   text-align: center;
   padding: 10px 0;
   color: #b8573e;
+}
+.casino-games {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 240px);
+  justify-content: space-between;
+  grid-row-gap: 40px;
+}
+.casino-games .casino-game {
+  border: solid 1px #777;
+  padding: 20px;
+  border-radius: 10px;
+}
+.casino-games .casino-title {
+  text-align: center;
+  padding-bottom: 20px;
+  color: #fff;
+  font-size: 16px;
+}
+.casino-games .casino-cmd {
+  text-align: center;
+  margin-top: 20px;
+}
+.casino-games .casino-cmd .btn {
+  width: 160px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+}
+.casino-games img {
+  width: 200px;
 }
 .switch {
   position: relative;

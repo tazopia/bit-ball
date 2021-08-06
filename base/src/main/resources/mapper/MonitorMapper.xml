@@ -46,4 +46,13 @@
         WHERE moneyCode = 'SUN_IN' AND regDate between #{start} AND #{end} AND role != 'DUMMY' and cancel = 0
     </select>
 
+    <select id="getCasino" resultType="Long">
+        SELECT IsNull(SUM(amount), 0) from MONEY
+        WHERE moneyCode = 'EVO_OUT' AND regDate between #{start} AND #{end} AND role != 'DUMMY' and cancel = 0
+    </select>
+
+    <select id="getCasinoEnd" resultType="Long">
+        SELECT IsNull(SUM(amount), 0) from MONEY
+        WHERE moneyCode = 'EVO_IN' AND regDate between #{start} AND #{end} AND role != 'DUMMY' and cancel = 0
+    </select>
 </mapper>

@@ -111,6 +111,10 @@ public class Monitor {
     private long sun;
     private long sunEnd;
 
+    // 카지노
+    private long casino;
+    private long casinoEnd;
+
     // 비트코인
     private long bitcoin1;
     private long bitcoin1End;

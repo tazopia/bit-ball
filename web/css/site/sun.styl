@@ -55,3 +55,39 @@
 	padding 10px 0;
 	color #B8573E
 }
+
+.casino-games {
+	width 100%
+	display grid
+	grid-template-columns repeat(4, 240px)
+	justify-content space-between
+	grid-row-gap 40px
+
+	.casino-game {
+		border solid 1px #777
+		padding 20px
+		border-radius 10px
+	}
+
+	.casino-title {
+		text-align center
+		padding-bottom 20px
+		color #fff
+		font-size 16px
+	}
+
+	.casino-cmd {
+		text-align center
+		margin-top 20px
+		.btn {
+			width 160px
+			height 40px
+			line-height 40px
+			font-size 16px
+		}
+	}
+
+	img {
+		width 200px
+	}
+}

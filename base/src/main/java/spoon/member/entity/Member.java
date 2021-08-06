@@ -186,6 +186,10 @@ public class Member implements Serializable {
         return ZoneConfig.getCasinoEvo().getPrefix() + String.format("%06d", this.id);
     }
 
+    public String getCasinoEvolutionId() {
+        return ZoneConfig.getCasinoEvolution().getPrefix() + String.format("%05d", this.id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import spoon.bot.zone.service.GameBotParsing;
 import spoon.casino.evo.domain.CasinoEvoConfig;
+import spoon.casino.evolution.domain.CasinoEvolutionConfig;
 import spoon.common.utils.JsonUtils;
 import spoon.config.domain.Config;
 import spoon.config.entity.JsonConfig;
@@ -524,4 +525,8 @@ public class ZoneConfig {
     @Getter
     @Setter
     private static CasinoEvoConfig casinoEvo;
+
+    @Getter
+    @Setter
+    private static CasinoEvolutionConfig casinoEvolution;
 }

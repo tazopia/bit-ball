@@ -407,8 +407,12 @@ public class MonitorServiceImpl implements MonitorService {
         }
 
         // 선카지노
-        monitor.setSun(monitorMapper.getSun(start, end) * -1);
-        monitor.setSunEnd(monitorMapper.getSunEnd(start, end));
+//        monitor.setSun(monitorMapper.getSun(start, end) * -1);
+//        monitor.setSunEnd(monitorMapper.getSunEnd(start, end));
+
+        // 에보 카지노
+        monitor.setCasino(monitorMapper.getCasino(start, end) * -1);
+        monitor.setCasinoEnd(monitorMapper.getCasinoEnd(start, end));
 
     }
 

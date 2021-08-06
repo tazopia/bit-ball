@@ -22,4 +22,8 @@ public interface MonitorMapper {
     long getSun(@Param("start") String start, @Param("end") String end);
 
     long getSunEnd(@Param("start") String start, @Param("end") String end);
+
+    long getCasino(@Param("start") String start, @Param("end") String end);
+
+    long getCasinoEnd(@Param("start") String start, @Param("end") String end);
 }

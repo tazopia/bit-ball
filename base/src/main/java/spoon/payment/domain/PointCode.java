@@ -22,6 +22,8 @@ public enum PointCode {
     COMMENT(4400, "댓글 포인트"),
     EVENT(4500, "이벤트 포인트"),
 
+    EVO_CASINO(4600, "카지노 롤링"),
+
     EXCHANGE(5100, "포인트전환"),
 
     UNKNOWN(9999, "알수없음");

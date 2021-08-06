@@ -42,6 +42,9 @@ public enum MoneyCode {
     CASINO_REFUND(9300, "카지노환금"),
     CASINO_CANCEL(9400, "카지노취소"),
 
+    EVO_IN(8300, "카지노 받음"),
+    EVO_OUT(8400, "카지노 보냄"),
+
     UNKNOWN(99999, "알수없음");
 
     private int value;

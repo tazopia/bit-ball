@@ -64,6 +64,10 @@ public class CurrentUser implements Serializable {
         return ZoneConfig.getSun().getPrefix() + String.format("%05d", this.id);
     }
 
+    public String getCasinoEvolutionId() {
+        return ZoneConfig.getCasinoEvolution().getPrefix() + String.format("%05d", this.id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
