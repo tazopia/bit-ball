@@ -46,6 +46,8 @@ public enum MenuCode {
     BITCOIN3(24200, "BTC 3분"),
     BITCOIN5(24300, "BTC 5분"),
 
+    CASINO(24400, "카지노"),
+
     NONE(99999, "삭제경기");
 
     private int value;

@@ -72,7 +72,7 @@
 
     <select id="sellerShare" resultType="spoon.seller.domain.Seller">
         SELECT userid, nickname, role, agency2, agency1, agency3, agency4, rateCode, rateShare, rateSports, rateZone,
-        powerMax, powerMin, powerLadder, keno, kenoLadder, btc3Min, btc3Max, btc5Min, btc5Max,
+        powerMax, powerMin, powerLadder, keno, kenoLadder, btc3Min, btc3Max, btc5Min, btc5Max, casino,
         (CASE
         when role = 'AGENCY1' Then
         (SELECT isNull(SUM(amount), 0) FROM BANKING WHERE agency1 = member.userid AND bankingCode = 'IN' AND closing = 1 AND cancel = 0)

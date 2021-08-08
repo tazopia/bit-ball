@@ -54,6 +54,8 @@ public class Seller {
     private double btc5Max;
     private double btc5Min;
 
+    private double casino;
+
     public int getHq() {
         if (this.role.ordinal() >= Role.AGENCY4.ordinal()) return 4;
         if (this.role.ordinal() >= Role.AGENCY3.ordinal()) return 3;

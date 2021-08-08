@@ -1,67 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.thymeleaf.org"
-      layout:decorate="layout/sellerLayout" th:with="gnb='accounting', lnb='share'">
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/sellerLayout" th:with="gnb='accounting', lnb='share'">
 <head></head>
 <body>
 <h2 layout:fragment="title">
-    <small>부본사 관리 :</small>
-    지급율 관리
+	<small>부본사 관리 :</small>
+	지급율 관리
 </h2>
 <div layout:fragment="content">
-    <section>
-        <div class="panel-header">
-            <h3>
-                <i class="bul fa fa-shopping-bag"></i>
-                부본사 지급율 관리
-            </h3>
-        </div>
-        <table class="table-list">
-            <caption>지급율 관리</caption>
-            <thead>
-            <tr>
-                <th>부본사</th>
+	<section>
+		<div class="panel-header">
+			<h3>
+				<i class="bul fa fa-shopping-bag"></i>
+				부본사 지급율 관리
+			</h3>
+		</div>
+		<table class="table-list">
+			<caption>지급율 관리</caption>
+			<thead>
+			<tr>
+				<th>부본사</th>
 				<th>총판</th>
 				<th>매장</th>
-                <th>가입회원</th>
-                <th>정상회원</th>
-                <th>총입금</th>
-                <th>총출금</th>
-                <th>총수익</th>
-                <th>베팅</th>
+				<th>가입회원</th>
+				<th>정상회원</th>
+				<th>총입금</th>
+				<th>총출금</th>
+				<th>총수익</th>
+				<th>베팅</th>
 				<th>↓ 파워볼 ↑</th>
 				<th>파다리</th>
 				<th>키노</th>
 				<th>키다리</th>
-				<th>↓ BTC3 ↑</th>
-				<th>↓ BTC5 ↑</th>
-                <th style="width: 140px;">관리</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="m : ${list}" th:class="${m.role.name() eq 'AGENCY4'} ? 'on'">
+				<th>카지노</th>
+				<th style="width: 140px;">관리</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="m : ${list}" th:class="${m.role.name() eq 'AGENCY4'} ? 'on'">
 				<td th:text="${m.hq eq 3 ? m.agency3 : '-'}">부본사</td>
 				<td th:text="${m.hq eq 2 ? m.agency2 : '-'}">총판</td>
 				<td th:text="${m.hq eq 1 ? m.agency1 : '-'}">매장</td>
-                <td class="color01 num" th:text="${tag.num(m.regMember)}">가입회원</td>
-                <td class="color01 num" th:text="${tag.num(m.joinMember)}">정상회원</td>
-                <td class="color04 num" th:text="${tag.num(m.inMoney) + '원'}">입금</td>
-                <td class="color03 num" th:text="${tag.num(m.outMoney) + '원'}">출금</td>
-                <td class="color02 num" th:text="${tag.num(m.inMoney - m.outMoney) + '원'}">수익</td>
-                <td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
-                <td th:class="${m.hq eq 4} ? 'color01'">
-                    <label th:if="${m.hq eq 3}" th:remove="tag">
-                        <input type="text" name="powerMin" th:value="${m.powerMin}" style="width: 60px; text-align: right;"/> /
-						<input type="text" name="powerMax" th:value="${m.powerMax}" style="width: 60px; text-align: right;"/>
-                    </label>
-                    <span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.powerMin + '% / ' + m.powerMax + '%'}"></span>
-                </td>
-                <td th:class="${m.hq eq 4} ? 'color01'">
-                    <label th:if="${m.hq eq 3}" th:remove="tag">
-                        <input type="text" name="powerLadder" th:value="${m.powerLadder}" style="width: 60px; text-align: right;"/>%
-                    </label>
-                    <span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.powerLadder + '%'}"></span>
-                </td>
+				<td class="color01 num" th:text="${tag.num(m.regMember)}">가입회원</td>
+				<td class="color01 num" th:text="${tag.num(m.joinMember)}">정상회원</td>
+				<td class="color04 num" th:text="${tag.num(m.inMoney) + '원'}">입금</td>
+				<td class="color03 num" th:text="${tag.num(m.outMoney) + '원'}">출금</td>
+				<td class="color02 num" th:text="${tag.num(m.inMoney - m.outMoney) + '원'}">수익</td>
+				<td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
+				<td th:class="${m.hq eq 4} ? 'color01'">
+					<label th:if="${m.hq eq 3}" th:remove="tag">
+						<input type="text" name="powerMin" th:value="${m.powerMin}" style="width: 60px; text-align: right;"/>% /
+						<input type="text" name="powerMax" th:value="${m.powerMax}" style="width: 60px; text-align: right;"/>%
+					</label>
+					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.powerMin + '% / ' + m.powerMax + '%'}"></span>
+				</td>
+				<td th:class="${m.hq eq 4} ? 'color01'">
+					<label th:if="${m.hq eq 3}" th:remove="tag">
+						<input type="text" name="powerLadder" th:value="${m.powerLadder}" style="width: 60px; text-align: right;"/>%
+					</label>
+					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.powerLadder + '%'}"></span>
+				</td>
 				<td th:class="${m.hq eq 4} ? 'color01'">
 					<label th:if="${m.hq eq 3}" th:remove="tag">
 						<input type="text" name="keno" th:value="${m.keno}" style="width: 60px; text-align: right;"/>%
@@ -76,35 +75,28 @@
 				</td>
 				<td th:class="${m.hq eq 4} ? 'color01'">
 					<label th:if="${m.hq eq 3}" th:remove="tag">
-						<input type="text" name="btc3Min" th:value="${m.btc3Min}" style="width: 60px; text-align: right;"/> /
-						<input type="text" name="btc3Max" th:value="${m.btc3Max}" style="width: 60px; text-align: right;"/>
+						<input type="text" name="casino" th:value="${m.casino}" style="width: 60px; text-align: right;"/>%
 					</label>
-					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.btc3Min + '% / ' + m.btc3Max + '%'}"></span>
+					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.casino + '%'}"></span>
 				</td>
-				<td th:class="${m.hq eq 4} ? 'color01'">
-					<label th:if="${m.hq eq 3}" th:remove="tag">
-						<input type="text" name="btc5Min" th:value="${m.btc5Min}" style="width: 60px; text-align: right;"/> /
-						<input type="text" name="btc5Max" th:value="${m.btc5Max}" style="width: 60px; text-align: right;"/>
-					</label>
-					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.btc5Min + '% / ' + m.btc5Max + '%'}"></span>
+				<td>
+					<a class="btn btn01" th:if="${m.hq eq 3}" th:onclick="|updateShare('${m.userid}', this);|" style="width: 100px;">지급율수정 >></a>
 				</td>
-                <td>
-                    <a class="btn btn01" th:if="${m.hq eq 3}" th:onclick="|updateShare('${m.userid}', this);|" style="width: 100px;">지급율수정 >></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="panel-footer">
+			</tr>
+			</tbody>
+		</table>
+		<div class="panel-footer">
 
-        </div>
-    </section>
+		</div>
+	</section>
 </div>
 <script layout:fragment="script" th:if="true">
-	var _powerMax = '[[${hq.powerMax}]]';
-	var _powerMin = [[${hq.powerMin}]];
+    var _powerMax = '[[${hq.powerMax}]]';
+    var _powerMin = [[${hq.powerMin}]];
     var _powerLadder = [[${hq.powerLadder}]];
     var _keno = [[${hq.keno}]];
     var _kenoLadder = [[${hq.kenoLadder}]];
+    var _casino = [[${hq.casino}]];
 
     function updateShare(userid, obj) {
         var tr = $(obj).parent().parent();
@@ -113,19 +105,16 @@
         var powerLadder = tr.find('input[name=powerLadder]').val();
         var keno = tr.find('input[name=keno]').val();
         var kenoLadder = tr.find('input[name=kenoLadder]').val();
-        var btc3Max = tr.find('input[name=btc3Max]').val();
-        var btc3Min = tr.find('input[name=btc3Min]').val();
-        var btc5Max = tr.find('input[name=btc5Max]').val();
-        var btc5Min = tr.find('input[name=btc5Min]').val();
+        var casino = tr.find('input[name=casino]').val();
 
-		if (_powerMax < powerMax) {
-			alert('파워볼 상위 최대 롤링은 ' + _powerMax + '% 입니다.');
-			return false;
-		}
-		if (_powerMin < powerMin) {
-			alert('파워볼 하위 최대 롤링은 ' + _powerMin + '% 입니다.');
-			return false;
-		}
+        if (_powerMax < powerMax) {
+            alert('파워볼 상위 최대 롤링은 ' + _powerMax + '% 입니다.');
+            return false;
+        }
+        if (_powerMin < powerMin) {
+            alert('파워볼 하위 최대 롤링은 ' + _powerMin + '% 입니다.');
+            return false;
+        }
         if (_powerLadder < powerLadder) {
             alert('파워사다리 최대 롤링은 ' + _powerLadder + '% 입니다.');
             return false;
@@ -138,7 +127,10 @@
             alert('키노사다리 최대 롤링은 ' + _kenoLadder + '% 입니다.');
             return false;
         }
-
+        if (_casino < casino) {
+            alert('카지노 최대 롤링은 ' + _casino + '% 입니다.');
+            return false;
+        }
 
         if (!confirm('지급율을 수정하시겠습니까?')) {
             return;
@@ -151,10 +143,7 @@
             powerLadder: powerLadder,
             keno: keno,
             kenoLadder: kenoLadder,
-			btc3Max: btc3Max,
-            btc3Min: btc3Min,
-			btc5Max: btc5Max,
-            btc5Min: btc5Min
+            casino: casino
         }).done(function () {
             setTimeout(function () {
                 location.reload();

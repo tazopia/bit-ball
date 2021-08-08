@@ -176,6 +176,8 @@ public class Member implements Serializable {
     private double btc5Max;
     private double btc5Min;
 
+    private double casino;
+
     // ---------------------------------------------
 
     public String getSunid() {
@@ -291,6 +293,8 @@ public class Member implements Serializable {
                 return betOdds > ZoneConfig.getBitcoin3().getMinOdds() ? this.btc3Max : this.btc3Min;
             case BITCOIN5:
                 return betOdds > ZoneConfig.getBitcoin5().getMinOdds() ? this.btc5Max : this.btc5Min;
+            case CASINO:
+                return this.casino;
             default:
                 return this.rateZone;
         }

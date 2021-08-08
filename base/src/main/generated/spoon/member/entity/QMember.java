@@ -69,6 +69,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Double> btc5Min = createNumber("btc5Min", Double.class);
 
+    public final NumberPath<Double> casino = createNumber("casino", Double.class);
+
     public final NumberPath<Long> change = createNumber("change", Long.class);
 
     public final NumberPath<Long> deposit = createNumber("deposit", Long.class);

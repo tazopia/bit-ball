@@ -113,6 +113,7 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
                     member.setBtc3Max(Math.min(agency.getBtc3Max(), update.getBtc3Max()));
                     member.setBtc5Min(Math.min(agency.getBtc5Min(), update.getBtc5Min()));
                     member.setBtc5Max(Math.min(agency.getBtc5Max(), update.getBtc5Max()));
+                    member.setCasino(Math.min(agency.getCasino(), update.getCasino()));
                 } else {
                     member.setPowerMin(update.getPowerMin());
                     member.setPowerMax(update.getPowerMax());
@@ -123,6 +124,7 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
                     member.setBtc3Max(update.getBtc3Max());
                     member.setBtc5Min(update.getBtc5Min());
                     member.setBtc5Max(update.getBtc5Max());
+                    member.setCasino(update.getCasino());
                 }
             }
 

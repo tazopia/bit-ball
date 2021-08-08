@@ -33,5 +33,7 @@ public class SellerDto {
         private double btc3Min;
         private double btc5Max;
         private double btc5Min;
+
+        private double casino;
     }
 }

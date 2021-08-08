@@ -20,8 +20,9 @@ public enum MoneyCode {
 
     ROLL_SPORTS(4710, "스포츠롤링"),
     ROLL_ZONE(4720, "실시간롤링"),
-    ROLL_SPORTS_ROLLBACK(4730, "스포츠롤링 취소"),
-    ROLL_ZONE_ROLLBACK(4740, "실시간롤링 취소"),
+    ROLL_CASINO(4730, "카지노롤링"),
+    ROLL_SPORTS_ROLLBACK(4740, "스포츠롤링 취소"),
+    ROLL_ZONE_ROLLBACK(4750, "실시간롤링 취소"),
 
     WIN(5100, "게임적중"),
     WIN_ROLLBACK(5200, "적중롤백"),
@@ -80,7 +81,7 @@ public enum MoneyCode {
      * 롤링
      */
     public static MoneyCode[] getShareCode() {
-        return new MoneyCode[]{ROLL_SPORTS, ROLL_ZONE, ROLL_SPORTS_ROLLBACK, ROLL_ZONE_ROLLBACK};
+        return new MoneyCode[]{ROLL_SPORTS, ROLL_ZONE, ROLL_SPORTS_ROLLBACK, ROLL_ZONE_ROLLBACK, ROLL_CASINO};
     }
 
     /**

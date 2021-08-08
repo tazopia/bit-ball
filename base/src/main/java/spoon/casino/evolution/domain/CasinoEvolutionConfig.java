@@ -33,4 +33,6 @@ public class CasinoEvolutionConfig {
 
     private String exchange = this.apiUrl + "/user/exchange-point-all?username=%s";
 
+    private String transaction = this.apiUrl + "/transaction-list?start=%s&start_transaction_id=%d&perPage=1000";
+
 }

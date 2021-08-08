@@ -54,6 +54,7 @@ public class ShareServiceImpl implements ShareService {
             agency4.setBtc3Max(update.getBtc3Max());
             agency4.setBtc5Min(update.getBtc5Min());
             agency4.setBtc5Max(update.getBtc5Max());
+            agency4.setCasino(update.getCasino());
 
             memberService.update(agency4);
         } catch (RuntimeException e) {
@@ -90,6 +91,7 @@ public class ShareServiceImpl implements ShareService {
             agency.setBtc3Max(update.getBtc3Max());
             agency.setBtc5Min(update.getBtc5Min());
             agency.setBtc5Max(update.getBtc5Max());
+            agency.setCasino(update.getCasino());
 
             memberService.update(agency);
 

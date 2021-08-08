@@ -8,6 +8,7 @@ import spoon.bot.sports.best.domain.BotBest;
 import spoon.bot.sports.bet365.domain.BotBet365;
 import spoon.bot.sports.ferrari.domain.BotFerrari;
 import spoon.bot.sports.sports.domain.BotSports;
+import spoon.casino.evolution.domain.CasinoEvolutionBetDto;
 import spoon.casino.evolution.domain.CasinoEvolutionGame;
 import spoon.gameZone.dog.Dog;
 import spoon.gameZone.soccer.Soccer;
@@ -202,6 +203,16 @@ public abstract class JsonUtils {
             });
         } catch (IOException e) {
             log.warn("List<CasinoEvolutionGame> 객체 변환에 실패하였습니다.", e);
+        }
+        return Collections.emptyList();
+    }
+
+    public static List<CasinoEvolutionBetDto> toCasinoBetList(String json) {
+        try {
+            return mapper.readValue(json, new TypeReference<List<CasinoEvolutionBetDto>>() {
+            });
+        } catch (IOException e) {
+            log.warn("List<CasinoEvolutionBetDto> 객체 변환에 실패하였습니다.", e);
         }
         return Collections.emptyList();
     }

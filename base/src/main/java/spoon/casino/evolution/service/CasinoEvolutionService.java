@@ -274,6 +274,9 @@ public class CasinoEvolutionService {
         try {
             jsonConfigService.updateZoneConfig("evolution", JsonUtils.toString(org));
             ZoneConfig.setCasinoEvolution(org);
+
+            headers.put("Authorization", "Bearer " + ZoneConfig.getCasinoEvolution().getApiKey());
+            patch.put("Authorization", "Bearer " + ZoneConfig.getCasinoEvolution().getApiKey());
         } catch (RuntimeException e) {
             log.error("카지노 환경설정 업데이트에 실패하였습니다.", e);
             return false;
