@@ -27,15 +27,6 @@
 			</td>
 		</tr>
 		<tr>
-			<th>적립포인트</th>
-			<td style="vertical-align: middle;">
-				<span>{{ point | number: 0 }}</span> 포인트
-				<button class="btn btn02" style="margin-left: 30px;margin-right: 30px;" ng-click="exchange();">포인트전환</button>
-				<span class="color03">(포인트 전환전 반드시 새로고침을 하세요)</span>
-				<button class="btn btn03" style="float:right; margin-right: 30px;" ng-click="casino();">새로고침</button>
-			</td>
-		</tr>
-		<tr>
 			<th rowspan="2">금액선택</th>
 			<td>
 				<input type="text" class="num" ng-model="amount" ng-change="changeAmount()"/> 원
