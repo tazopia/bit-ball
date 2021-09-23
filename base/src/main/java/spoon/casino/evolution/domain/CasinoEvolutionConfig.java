@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CasinoEvolutionConfig {
 
-    private String apiUrl = "https://evolutionapi.com/api";
+    private String apiUrl = "https://honorlink.org/api";
 
     private String apiKey = "VQJUhOKAdUENkC4nnDKFTsGIOKMRmTpPaX10bgPU";
 
