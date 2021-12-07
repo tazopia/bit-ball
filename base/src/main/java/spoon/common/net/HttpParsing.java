@@ -88,12 +88,8 @@ public class HttpParsing {
                     .timeout(60 * 1000)
                     .execute()
                     .body();
-        } catch (HttpStatusException e) {
-            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
-            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
         } catch (IOException e) {
-            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
-            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+            log.error("사이트에 접속할 수 없습니다. - {}, {}", url, headers, e);
         }
         return null;
     }
@@ -108,12 +104,8 @@ public class HttpParsing {
                     .timeout(60 * 1000)
                     .execute()
                     .body();
-        } catch (HttpStatusException e) {
-            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
-            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
         } catch (IOException e) {
-            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
-            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+            log.error("사이트에 접속할 수 없습니다. - {}, {}", url, headers, e);
         }
         return null;
     }
@@ -130,12 +122,8 @@ public class HttpParsing {
                     .timeout(60 * 1000)
                     .execute()
                     .body();
-        } catch (HttpStatusException e) {
-            log.warn("에러코드 : {}, 주소 : {}", e.getStatusCode(), url);
-            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
         } catch (IOException e) {
-            log.warn("사이트에 접속할 수 없습니다. - 에러코드: {}, 주소: {}", e.getMessage(), url);
-            log.warn("{}", ErrorUtils.trace(e.getStackTrace()));
+            log.error("사이트에 접속할 수 없습니다. - {}, {}", url, headers, e);
         }
         return null;
     }
