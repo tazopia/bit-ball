@@ -24,6 +24,12 @@
                     <col>
                 </colgroup>
                 <tbody>
+                <tr>
+                    <th class="required">API URL</th>
+                    <td>
+                        <input type="text" th:field="*{apiUrl}" style="width:80%;"/>
+                    </td>
+                </tr>
 				<tr>
 					<th class="required">카지노 코드</th>
 					<td th:text="${config.prefix}"></td>

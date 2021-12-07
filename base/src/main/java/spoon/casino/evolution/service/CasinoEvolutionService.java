@@ -270,6 +270,7 @@ public class CasinoEvolutionService {
     public boolean updateConfig(CasinoEvolutionConfig config) {
         CasinoEvolutionConfig org = ZoneConfig.getCasinoEvolution();
         org.setApiKey(config.getApiKey());
+        org.setApiUrl(config.getApiUrl());
 
         try {
             jsonConfigService.updateZoneConfig("evolution", JsonUtils.toString(org));

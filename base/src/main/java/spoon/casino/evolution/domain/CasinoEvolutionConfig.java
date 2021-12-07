@@ -15,24 +15,24 @@ public class CasinoEvolutionConfig {
 
     // -------------------------------------------------------------------------------
 
-    private String createUser = this.apiUrl + "/user/create?username=%s&nickname=%s";
+    private String createUser = this.getApiUrl() + "/user/create?username=%s&nickname=%s";
 
-    private String user = this.apiUrl + "/user?username=%s";
+    private String user = this.getApiUrl() + "/user?username=%s";
 
-    private String token = this.apiUrl + "/user/refresh-token?username=%s";
+    private String token = this.getApiUrl() + "/user/refresh-token?username=%s";
 
-    private String gameList = this.apiUrl + "/game-list";
+    private String gameList = this.getApiUrl() + "/game-list";
 
-    private String lobbyList = this.apiUrl + "/lobby-list";
+    private String lobbyList = this.getApiUrl() + "/lobby-list";
 
-    private String gameUrl = this.apiUrl + "/open";
+    private String gameUrl = this.getApiUrl() + "/open";
 
-    private String addBalance = this.apiUrl + "/user/add-balance?username=%s&amount=%d";
+    private String addBalance = this.getApiUrl() + "/user/add-balance?username=%s&amount=%d";
 
-    private String subBalance = this.apiUrl + "/user/sub-balance-all?username=%s";
+    private String subBalance = this.getApiUrl() + "/user/sub-balance-all?username=%s";
 
-    private String exchange = this.apiUrl + "/user/exchange-point-all?username=%s";
+    private String exchange = this.getApiUrl() + "/user/exchange-point-all?username=%s";
 
-    private String transaction = this.apiUrl + "/transaction-list?start=%s&start_transaction_id=%d&perPage=1000";
+    private String transaction = this.getApiUrl() + "/transaction-list?start=%s&start_transaction_id=%d&perPage=1000";
 
 }
