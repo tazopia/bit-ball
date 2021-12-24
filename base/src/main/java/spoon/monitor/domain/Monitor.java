@@ -114,6 +114,7 @@ public class Monitor {
     // 카지노
     private long casino;
     private long casinoEnd;
+    private long casinoBalance;
 
     // 비트코인
     private long bitcoin1;

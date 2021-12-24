@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import spoon.casino.evolution.domain.CasinoEvolutionBetDto;
+import spoon.casino.evolution.domain.CasinoEvolutionMyInfo;
 import spoon.casino.evolution.repository.CasinoEvolutionDao;
 import spoon.common.net.HttpParsing;
 import spoon.common.utils.JsonUtils;
 import spoon.gameZone.ZoneConfig;
+import spoon.monitor.service.MonitorService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +24,8 @@ public class CasinoEvolutionTransactionService {
     private final CasinoEvolutionDao casinoEvolutionDao;
 
     private final CasinoEvolutionBetService casinoEvolutionBetService;
+
+    private final MonitorService monitorService;
 
     private static final Map<String, String> headers = new HashMap<>();
 
@@ -54,9 +58,16 @@ public class CasinoEvolutionTransactionService {
 
             if (TRANSACTION < bet.getId()) TRANSACTION = bet.getId();
         }
-
-        log.error("----------------------------------------------------------------");
     }
 
+    public void getBalance() {
+        String json = HttpParsing.getCasinoEvolution(ZoneConfig.getCasinoEvolution().getMyInfo(), headers);
+        if (json == null) return;
+
+        CasinoEvolutionMyInfo info = JsonUtils.toModel(json, CasinoEvolutionMyInfo.class);
+        if (info == null) return;
+
+        monitorService.getMonitor().setCasinoBalance(Math.round(info.getBalance()));
+    }
 
 }

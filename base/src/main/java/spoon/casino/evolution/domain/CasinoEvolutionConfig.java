@@ -53,7 +53,11 @@ public class CasinoEvolutionConfig {
     }
 
     public String getTransaction() {
-        return this.getApiUrl() + "/transaction-list?start=%s&start_transaction_id=%d&perPage=1000";
+        return this.getApiUrl() + "/transaction-list-simple?start=%s&start_transaction_id=%d&perPage=1000";
+    }
+
+    public String getMyInfo() {
+        return this.getApiUrl() + "/my-info";
     }
 
 }
