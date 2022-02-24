@@ -10,7 +10,7 @@ public class CasinoEvolutionConfig {
 
     private String apiUrl = "https://api.honorlink.org/api";
 
-    private String apiKey = "VQJUhOKAdUENkC4nnDKFTsGIOKMRmTpPaX10bgPU";
+    private String apiKey = "dJ5jeptySxyxhW4IOnWzehzt1o4aBbvvmyhdPPkO";
 
     private String prefix = "bit";
 
