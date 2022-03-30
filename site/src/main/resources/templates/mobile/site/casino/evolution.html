@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.thymeleaf.org"
-	  layout:decorate="layout/mobileLayout" th:with="main='page', gnb='sun', title='카지노'" ng-app="app">
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/mobileLayout" th:with="main='page', gnb='sun', title='카지노'" ng-app="app">
 <body ng-controller="gameCtrl">
 <div layout:fragment="popup" th:if="true">
-	<div id="layout-wrap"></div>
-	<div id="layout-load" class="loading"></div>
+    <div id="layout-wrap"></div>
+    <div id="layout-load" class="loading"></div>
 </div>
 
 <main class="page" layout:fragment="page">
-	<div class="box casino-box">
-		<h4 style="font-size:16px; margin-bottom: 10px;">
-			카지노머니 :
-			{{ balance | number: 0 }} 원
-		</h4>
-		<div style="margin-left: auto">
-			<button class="btn btn01" ng-click="casino();">새로고침</button>
-		</div>
-	</div>
-	<div class="command">
-		<button class="btn-big btn03" ng-click="receive();">환전하기</button>
-	</div>
+    <div class="box casino-box">
+        <h4 style="font-size:16px; margin-bottom: 10px;">
+            카지노머니 :
+            {{ balance | number: 0 }} 원
+        </h4>
+        <div style="margin-left: auto">
+            <button class="btn btn01" ng-click="casino();">새로고침</button>
+        </div>
+    </div>
+    <div class="command">
+        <button class="btn-big btn03" ng-click="receive();">환전하기</button>
+    </div>
 
-	<h3>카지노 머니 충전</h3>
-	<div class="wrap">
-		<label>
-			<span>금액선택</span>
-			<input type="text" class="num" ng-model="amount" ng-change="changeAmount()"/>
-		</label>
-	</div>
-	<div class="amount">
-		<a class="btn" ng-click="setAmount(10000);">만원</a>
-		<a class="btn" ng-click="setAmount(30000);">삼만원</a>
-		<a class="btn" ng-click="setAmount(50000);">오만원</a>
-		<a class="btn" ng-click="setAmount(70000);">칠만원</a>
-		<a class="btn" ng-click="setAmount(100000);">십만원</a>
-		<a class="btn" ng-click="setAmount(300000);">삼십만원</a>
-		<a class="btn" ng-click="setAmount(500000);">오십만원</a>
-		<a class="btn" ng-click="setAmount(700000);">칠십만원</a>
-		<a class="btn" ng-click="setAmount(1000000);">백만원</a>
-		<a class="btn btn02" ng-click="resetAmount();">정정</a>
-	</div>
-	<div class="command">
-		<button class="btn-big btn03" ng-click="send();">충전하기</button>
-	</div>
+    <h3>카지노 머니 충전</h3>
+    <div class="wrap">
+        <label>
+            <span>금액선택</span>
+            <input type="text" class="num" ng-model="amount" ng-change="changeAmount()"/>
+        </label>
+    </div>
+    <div class="amount">
+        <a class="btn" ng-click="setAmount(10000);">만원</a>
+        <a class="btn" ng-click="setAmount(30000);">삼만원</a>
+        <a class="btn" ng-click="setAmount(50000);">오만원</a>
+        <a class="btn" ng-click="setAmount(70000);">칠만원</a>
+        <a class="btn" ng-click="setAmount(100000);">십만원</a>
+        <a class="btn" ng-click="setAmount(300000);">삼십만원</a>
+        <a class="btn" ng-click="setAmount(500000);">오십만원</a>
+        <a class="btn" ng-click="setAmount(700000);">칠십만원</a>
+        <a class="btn" ng-click="setAmount(1000000);">백만원</a>
+        <a class="btn btn02" ng-click="resetAmount();">정정</a>
+    </div>
+    <div class="command">
+        <button class="btn-big btn03" ng-click="send();">충전하기</button>
+    </div>
 
-	<div class="slotTitle">◎ Global Casino Games ◎</div>
-	<div class="casino-games">
-		<div class="casino-game" th:each="c : ${lobby}" th:if="${c.vendor eq 'evolution'}">
-			<div class="casino-title" th:text="${c.title}"></div>
-			<div class="casino-body">
-				<img th:src="${c.img}">
-			</div>
-			<div class="casino-cmd">
-				<button class="btn btn01" th:attr="ng-click=|goGame('${c.id}')|">게임입장</button>
-			</div>
-		</div>
-	</div>
-	<br/><br/><br/>
+    <div class="slotTitle">◎ Global Casino Games ◎</div>
+    <div class="casino-games">
+        <div class="casino-game" th:each="c : ${lobby}" th:if="${c.vendor eq 'evolution'}">
+            <div class="casino-title" th:text="${c.title}"></div>
+            <div class="casino-body">
+                <img th:src="${c.img}">
+            </div>
+            <div class="casino-cmd">
+                <button class="btn btn01" th:attr="ng-click=|goGame('${c.id}', '${c.provider}')|">게임입장</button>
+            </div>
+        </div>
+    </div>
+    <br/><br/><br/>
 
 </main>
 
@@ -242,8 +242,8 @@
             angular.element('#amountKor').text($scope.amount <= 0 ? '' : '(' + $.num2han($scope.amount) + ' 원)');
         }
 
-        $scope.goGame = function (id) {
-            window.open('[[${game}]]?id=' + id + '&token=' + $scope.token, '_blank');
+        $scope.goGame = function (id, provider) {
+            window.open('[[${game}]]?provider=' + provider + '&id=' + id + '&token=' + $scope.token, '_blank');
         }
 
     }]);

@@ -11,7 +11,9 @@ public class CasinoEvolutionGame {
     private String title;
     private String type;
     private String id;
+    private String provider;
     //private String vendor;
+
     @JsonProperty("thumbnail")
     private String img;
 
