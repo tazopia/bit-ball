@@ -21,9 +21,9 @@
             <th>카지노머니</th>
             <td style="vertical-align: middle;">
                 <span>{{ balance | number: 0 }}</span> 원
-                <button class="btn btn02" style="margin-left: 30px;margin-right: 30px;" ng-click="receive();">환전하기</button>
+                <a class="btn btn02" style="margin-left: 30px;margin-right: 30px;" ng-click="receive();">환전하기</a>
                 <span class="color03">(환전전 반드시 새로고침을 하세요)</span>
-                <button class="btn btn03" style="float:right; margin-right: 30px;" ng-click="casino();">새로고침</button>
+                <a class="btn btn03" style="float:right; margin-right: 30px;" ng-click="casino();">새로고침</a>
             </td>
         </tr>
         <tr>
@@ -50,7 +50,7 @@
         </tbody>
     </table>
     <div class="command">
-        <button class="btn btn01" ng-click="send();">충전하기</button>
+        <a class="btn btn01" ng-click="send();">충전하기</a>
     </div>
 
     <div class="slotTitle">◎ Global Casino Games ◎</div>
@@ -62,7 +62,7 @@
                 <img th:src="${c.img}">
             </div>
             <div class="casino-cmd">
-                <button class="btn btn01" th:attr="ng-click=|goGame('${c.id}', '${c.provider}')|">게임입장</button>
+                <a class="btn btn01" th:attr="ng-click=|goGame('${c.id}', '${c.provider}')|">게임입장</a>
             </div>
         </div>
     </div>
@@ -76,6 +76,7 @@
         $scope.balance = 0;
         $scope.point = 0;
         $scope.token = '[[${token.token}]]';
+        $scope.action = false;
 
         $scope.$watch('$viewContentLoaded', function () {
             $scope.setInfo();
@@ -126,14 +127,19 @@
         };
 
         $scope.send = function () {
+            if ($scope.action) return;
+
+            $scope.action = true;
 
             if ($scope.amount < 10000) {
                 alert('최소 전환 머니는 10,000원 이상입니다.');
+                $scope.action = false;
                 return;
             }
 
             if ($scope.amount > $scope.money) {
                 alert('전환할수 있는 최대 보유머니는 ' + $scope.money.toString().money() + '원 입니다.');
+                $scope.action = false;
                 return;
             }
 
@@ -161,15 +167,22 @@
                 $scope.amount = 0;
                 angular.element('#layout-wrap').css('display', 'none');
                 angular.element('#layout-load').css('display', 'none');
+                $scope.action = false;
             }, function error(response) {
                 angular.element('#layout-wrap').css('display', 'none');
                 angular.element('#layout-load').css('display', 'none');
+                $scope.action = false;
             });
         }
 
         $scope.receive = function () {
+            if ($scope.action) return;
+
+            $scope.action = true;
+
             if ($scope.balance === 0) {
                 alert('환전할 머니가 없습니다.');
+                $scope.action = false;
                 return;
             }
 
@@ -196,9 +209,11 @@
                 }
                 angular.element('#layout-wrap').css('display', 'none');
                 angular.element('#layout-load').css('display', 'none');
+                $scope.action = false;
             }, function error(response) {
                 angular.element('#layout-wrap').css('display', 'none');
                 angular.element('#layout-load').css('display', 'none');
+                $scope.action = false;
             });
         }
 

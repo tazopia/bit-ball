@@ -260,6 +260,10 @@ public class CasinoEvolutionService {
         QMoney q = QMoney.money;
 
         BooleanBuilder builder = new BooleanBuilder(q.moneyCode.in(MoneyCode.EVO_IN, MoneyCode.EVO_OUT));
+        if (StringUtils.notEmpty(command.getUsername())) {
+            builder.and(q.userid.contains(command.getUsername()).or(q.nickname.contains(command.getUsername())));
+        }
+
         builder.and(q.regDate.goe(DateUtils.start(command.getSdate()))).and(q.regDate.lt(DateUtils.end(command.getEdate())));
 
         return moneyRepository.findAll(builder, pageable);

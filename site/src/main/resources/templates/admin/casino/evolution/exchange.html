@@ -19,6 +19,10 @@
                     ~
                     <input type="text" class="cal" th:field="*{edate}" />
                 </label>
+                <label>
+                    아이디/닉네임
+                    <input type="text" th:field="*{username}"/>
+                </label>
                 <div class="command">
                     <a class="btn btn01" onclick="goSearch();">검색</a>
                     <a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/exchange|}" class="btn">취소</a>
