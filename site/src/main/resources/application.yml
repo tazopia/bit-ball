@@ -23,7 +23,7 @@ spring:
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         url: jdbc:sqlserver://localhost:1433;DatabaseName=bit;useUnicode=true;characterEncoding=UTF-8
         username: sa
-        password: thssla1
+        password: thssla1!@
         hikari:
             maximum-pool-size: 200
 

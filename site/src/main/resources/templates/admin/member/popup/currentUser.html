@@ -41,7 +41,7 @@
             <tr th:each="user : ${userList}" th:with="m = ${user.user}">
                 <td class="popup color03" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.userid}"></td>
                 <td class="popup color02" th:onclick="|popup.member.info('${m.userid}');|" th:text="${m.nickname}"></td>
-                <td th:text="${m.role.value lt T(spoon.member.domain.Role).AGENCY1.value ? m.level : m.role.name}"></td>
+                <td th:text="${m.role.group.name() eq 'USER' ? m.level : m.role.name}"></td>
                 <td class="popup color04" th:onclick="|popup.payment.money('${m.userid}');|"><i class="bul fa fa fa-usd"></i></td>
                 <td class="popup color04" th:onclick="|popup.payment.point('${m.userid}');|"><i class="bul fa fa-product-hunt"></i></td>
                 <td class="popup color04" th:onclick="|popup.betting.list('${m.userid}');|"><i class="bul fa fa-shopping-cart"></i></td>

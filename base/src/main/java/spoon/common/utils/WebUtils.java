@@ -143,10 +143,25 @@ public class WebUtils {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
         if (emptyIp(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (emptyIp(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED");
+        }
+        if (emptyIp(ip)) {
+            ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
+        }
+        if (emptyIp(ip)) {
             ip = request.getHeader("HTTP_CLIENT_IP");
         }
         if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            ip = request.getHeader("HTTP_FORWARDED_FOR");
+        }
+        if (emptyIp(ip)) {
+            ip = request.getHeader("HTTP_FORWARDED");
+        }
+        if (emptyIp(ip)) {
+            ip = request.getHeader("HTTP_VIA");
         }
         if (emptyIp(ip)) {
             ip = request.getHeader("X-Real-IP");
