@@ -24,6 +24,20 @@ import java.net.URLEncoder;
 @Slf4j
 public class WebUtils {
 
+    private static final String[] IP_HEADER_CANDIDATES = {
+            "X-Forwarded-For",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_X_FORWARDED_FOR",
+            "HTTP_X_FORWARDED",
+            "HTTP_X_CLUSTER_CLIENT_IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_FORWARDED_FOR",
+            "HTTP_FORWARDED",
+            "HTTP_VIA",
+            "REMOTE_ADDR"
+    };
+
     public static LoginUser loginUser() {
         try {
             return (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -132,52 +146,18 @@ public class WebUtils {
     public static String ip() {
         HttpServletRequest request = request();
         if (request == null) {
-            return null;
+            return "unknown(null)";
         }
 
-        String ip = request.getHeader("X-Forwarded-For");
-        if (emptyIp(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
+        for (String header : IP_HEADER_CANDIDATES) {
+            String ip = request.getHeader(header);
+            if (StringUtils.notEmpty(ip) && !"unknown".equalsIgnoreCase(ip)) {
+                return (ip.split(",")[0]).split(":")[0];
+            }
         }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_FORWARDED_FOR");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_FORWARDED");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("HTTP_VIA");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("X-Real-IP");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getHeader("X-RealIP");
-        }
-        if (emptyIp(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        if (ip.contains(",")) {
-            ip = ip.split(",")[0];
-        }
-        if (ip.contains(":")) {
-            ip = "unknown";
-        }
+
+        String ip = request.getRemoteAddr();
+        if ("0:0:0:0:0:0:0:1".equals(ip)) ip = "127.0.0.1";
         return ip;
     }
 
@@ -202,9 +182,4 @@ public class WebUtils {
             return null;
         }
     }
-
-    private static boolean emptyIp(String ip) {
-        return ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip);
-    }
-
 }
