@@ -45,7 +45,7 @@ public class CasinoEvolutionBetDto {
     public static class Game {
         private String id;
         private String type;
-        private long round;
+        private String round;
         private String title;
         private String vendor;
     }

@@ -70,7 +70,7 @@ public class CasinoEvolutionBet {
 
     private String gameType;
 
-    private long round;
+    private String round;
 
     private String title;
 
