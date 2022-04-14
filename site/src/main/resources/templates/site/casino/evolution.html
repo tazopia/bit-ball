@@ -56,13 +56,13 @@
     <div class="slotTitle">◎ Global Casino Games ◎</div>
     <br/><br/>
     <div class="casino-games">
-        <div class="casino-game" th:each="c : ${lobby}" th:if="${c.vendor eq 'evolution'}">
+        <div class="casino-game" th:each="c : ${lobby}" th:if="${c.provider eq 'QX'}">
             <div class="casino-title" th:text="${c.title + c.vendor}"></div>
             <div class="casino-body">
                 <img th:src="${c.img}">
             </div>
             <div class="casino-cmd">
-                <a class="btn btn01" th:attr="ng-click=|goGame('${c.id}', 'QX')|">게임입장</a>
+                <a class="btn btn01" th:attr="ng-click=|goGame('${c.id}', '${c.provider}')|">게임입장</a>
             </div>
         </div>
     </div>
