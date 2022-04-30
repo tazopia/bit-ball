@@ -37,7 +37,8 @@
 			<a th:if="${sysConfig.zone.dog}" th:href="@{|${siteConfig.pathSite}/zone/dog|}"><img src="/images/m/m-dog.png"/>개경주</a>
 			<a th:if="${sysConfig.zone.luck}" th:href="@{|${siteConfig.pathSite}/zone/luck|}"><img src="/images/m/m-luck.png"/>세븐럭</a>
 		</th:block>
-		<a th:href="@{|${siteConfig.pathSite}/casino/evolution|}"><img src="/images/m/m-casino.png"/>카지노</a>
+		<a th:if="${siteConfig.casino}" th:href="@{|${siteConfig.pathSite}/casino/evolution|}"><img src="/images/m/m-casino.png"/>카지노</a>
+		<a th:if="${not siteConfig.casino}" onclick="alert('현재 점검중입니다.');"><img src="/images/m/m-casino.png"/>카지노</a>
 
 		<a th:href="@{|${siteConfig.pathSite}/score/cross|}"><img src="/images/m/m-result.png"/>경기결과</a>
 		<a th:href="@{|${siteConfig.pathSite}/betting|}"><img src="/images/m/m-betlist.png"/>베팅내역</a>

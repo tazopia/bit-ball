@@ -22,6 +22,9 @@ public class SiteConfig {
     // 게시판 작성시 들어가는 태그
     private String nickname;
 
+    // 카지노 사용유무
+    private boolean casino = true;
+
     private Join join = new Join();
 
     @Data

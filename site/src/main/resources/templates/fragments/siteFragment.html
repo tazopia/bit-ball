@@ -40,7 +40,8 @@
 			</ul>
 		</li>
 		<li th:class="${gnb eq 'casino'} ? 'on'">
-			<a th:href="@{|${siteConfig.pathSite}/casino/evolution|}"><span>카지노</span></a>
+			<a th:if="${siteConfig.casino}" th:href="@{|${siteConfig.pathSite}/casino/evolution|}"><span>카지노</span></a>
+			<a th:if="${not siteConfig.casino}" onclick="alert('현재 점검중입니다.');"><span>카지노</span></a>
 		</li>
 
         <li th:class="${gnb eq 'score'} ? 'on'">

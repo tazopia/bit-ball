@@ -61,6 +61,17 @@
                     </td>
                 </tr>
                 <tr>
+                    <th class="required color02">카지노 사용</th>
+                    <td>
+                        <label>
+                            <input type="radio" th:field="*{casino}" th:value="true"/> 카지노 사용
+                        </label>
+                        <label>
+                            <input type="radio" th:field="*{casino}" th:value="false"/> 카지노 점검
+                        </label>
+                    </td>
+                </tr>
+                <tr>
                     <th class="required" rowspan="2">서버 점검</th>
                     <td>
                         사이트를
