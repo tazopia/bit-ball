@@ -34,7 +34,7 @@
                 <th>파다리</th>
 				<th>키노</th>
 				<th>키다리</th>
-				<th>카지노</th>
+				<th>카지노/슬롯</th>
                 <th>관리</th>
             </tr>
             </thead>
@@ -77,9 +77,10 @@
 				</td>
 				<td style="padding:0;">
 					<label th:if="${m.hq eq 4}" th:remove="tag">
-						<input type="text" name="casino" th:value="${m.casino}" style="width: 60px; text-align: right;"/> %
+						<input type="text" name="casino" th:value="${m.casino}" style="width: 60px; text-align: right;"/> % /
+                        <input type="text" name="slot" th:value="${m.slot}" style="width: 60px; text-align: right;"/> %
 					</label>
-					<span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.casino + '%'}"></span>
+					<span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.casino + '% / ' + m.slot + '%'}"></span>
 				</td>
                 <td>
                     <a class="btn btn01" th:if="${m.hq eq 4}" th:onclick="|updateShare('${m.userid}', this);|">수정 >></a>
@@ -108,7 +109,8 @@
             powerLadder: tr.find('input[name=powerLadder]').val(),
             keno: tr.find('input[name=keno]').val(),
             kenoLadder: tr.find('input[name=kenoLadder]').val(),
-            casino: tr.find('input[name=casino]').val()
+            casino: tr.find('input[name=casino]').val(),
+            slot: tr.find('input[name=slot]').val()
         }).done(function () {
             setTimeout(function () {
                 location.reload();

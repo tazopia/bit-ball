@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.transaction.annotation.Transactional;
 import spoon.casino.evolution.domain.CasinoEvolutionBetDto;
+import spoon.common.utils.StringUtils;
 import spoon.member.domain.Role;
 import spoon.member.entity.Member;
 
@@ -80,7 +82,7 @@ public class CasinoEvolutionBet {
 
     private LocalDate regDay;
 
-    public static CasinoEvolutionBet from(CasinoEvolutionBetDto.Bet transaction, Member member) {
+    public static CasinoEvolutionBet bet(CasinoEvolutionBetDto.Bet transaction, Member member) {
         CasinoEvolutionBet bet = new CasinoEvolutionBet();
         bet.id = transaction.getId();
         bet.userid = member.getUserid();
@@ -109,8 +111,31 @@ public class CasinoEvolutionBet {
         return bet;
     }
 
-    public void win(CasinoEvolutionBetDto.Bet transaction) {
-        this.winMoney = transaction.getAmount();
-        this.status = "win";
+    public static CasinoEvolutionBet win(CasinoEvolutionBetDto.Bet transaction, Member member) {
+        CasinoEvolutionBet bet = new CasinoEvolutionBet();
+        bet.id = transaction.getId();
+        bet.userid = member.getUserid();
+        bet.nickname = member.getNickname();
+        bet.role = member.getRole();
+        bet.level = member.getLevel();
+        bet.agency1 = member.getAgency1();
+        bet.agency2 = member.getAgency2();
+        bet.recommender = member.getRecommender();
+        bet.casinoId = member.getCasinoEvolutionId();
+
+        bet.type = transaction.getType();
+        bet.betMoney = 0;
+        bet.winMoney = transaction.getAmount();
+        bet.status = "win";
+        bet.gameId = transaction.getDetails().getGame().getId();
+        bet.gameType = transaction.getDetails().getGame().getType();
+        bet.round = transaction.getDetails().getGame().getRound();
+        bet.title = transaction.getDetails().getGame().getTitle();
+        bet.vendor = transaction.getDetails().getGame().getVendor();
+        bet.regDate = transaction.getRegDate();
+        bet.regDay = transaction.getRegDate().toLocalDate();
+
+        return bet;
     }
+
 }

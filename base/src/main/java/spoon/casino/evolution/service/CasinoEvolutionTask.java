@@ -17,6 +17,6 @@ public class CasinoEvolutionTask {
 
     @Scheduled(fixedDelay = 30 * 1000, initialDelay = 20 * 1000)
     public void getCasinoBalance() {
-        casinoEvolutionTransactionService.getBalance();
+        casinoEvolutionTransactionService.getAmount();
     }
 }

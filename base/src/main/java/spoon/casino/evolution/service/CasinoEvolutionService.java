@@ -34,10 +34,7 @@ import spoon.payment.service.PaymentService;
 import spoon.support.web.AjaxResult;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,6 +52,8 @@ public class CasinoEvolutionService {
     private final MoneyRepository moneyRepository;
 
     private static final QCasinoEvolutionId q = QCasinoEvolutionId.casinoEvolutionId;
+
+    private static final List<CasinoEvolutionGame> gameList = new ArrayList<>();
 
     private static final Map<String, String> headers = new HashMap<>();
 
@@ -77,6 +76,8 @@ public class CasinoEvolutionService {
         patch.put("Accept", "application/json");
         patch.put("Content-Type", "application/json");
         patch.put("X-HTTP-Method-Override", "PATCH");
+
+        this.getGames().stream().filter(x -> "slot".equals(x.getType())).forEach(gameList::add);
     }
 
     public String getCasinoId() {
@@ -93,8 +94,9 @@ public class CasinoEvolutionService {
         return createUser(user);
     }
 
+
     @Transactional
-    String createUser(CurrentUser user) {
+    public String createUser(CurrentUser user) {
         CasinoEvolutionConfig c = ZoneConfig.getCasinoEvolution();
         String json = HttpParsing.postCasinoEvolution(String.format(c.getCreateUser(), user.getCasinoEvolutionId(), user.getNickname()), headers);
         if (json == null) return "";
@@ -148,6 +150,10 @@ public class CasinoEvolutionService {
         if (json == null) return Collections.emptyList();
 
         return JsonUtils.toCasinoGameList(json);
+    }
+
+    public List<CasinoEvolutionGame> getSlot() {
+        return gameList;
     }
 
     public List<CasinoEvolutionGame> getLobby() {

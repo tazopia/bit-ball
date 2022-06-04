@@ -2481,6 +2481,46 @@ div.powerball .bet-wrap .bet-round p {
 .casino-games img {
   width: 100%;
 }
+.casino-games .slot-body {
+  background: url("/images/slot/slot_bg01.png");
+  background-size: contain;
+}
+.slot-games {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: space-between;
+  grid-gap: 20px;
+}
+.slot-games .casino-game {
+  border: solid 1px #777;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+}
+.slot-games .casino-title {
+  text-align: center;
+  padding-bottom: 20px;
+  color: #fff;
+  font-size: 16px;
+}
+.slot-games .casino-cmd {
+  text-align: center;
+  margin-top: 20px;
+}
+.slot-games .casino-cmd .btn {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+}
+.slot-games img {
+  width: 100%;
+}
+.slot-games .slot-body {
+  background: url("/images/slot/slot_bg01.png");
+  background-size: contain;
+}
 .switch {
   position: relative;
   display: inline-block;

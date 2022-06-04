@@ -33,7 +33,7 @@
 				<th>파다리</th>
 				<th>키노</th>
 				<th>키다리</th>
-				<th>카지노</th>
+				<th>카지노 / 슬롯</th>
 				<th style="width: 140px;">관리</th>
 			</tr>
 			</thead>
@@ -75,9 +75,10 @@
 				</td>
 				<td th:class="${m.hq eq 4} ? 'color01'">
 					<label th:if="${m.hq eq 3}" th:remove="tag">
-						<input type="text" name="casino" th:value="${m.casino}" style="width: 60px; text-align: right;"/>%
+						<input type="text" name="casino" th:value="${m.casino}" style="width: 60px; text-align: right;"/>% /
+						<input type="text" name="slot" th:value="${m.slot}" style="width: 60px; text-align: right;"/>
 					</label>
-					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.casino + '%'}"></span>
+					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.casino + '% / ' + m.slot + '%'}"></span>
 				</td>
 				<td>
 					<a class="btn btn01" th:if="${m.hq eq 3}" th:onclick="|updateShare('${m.userid}', this);|" style="width: 100px;">지급율수정 >></a>
@@ -97,6 +98,7 @@
     var _keno = [[${hq.keno}]];
     var _kenoLadder = [[${hq.kenoLadder}]];
     var _casino = [[${hq.casino}]];
+	var _slot = [[${hq.slot}]];
 
     function updateShare(userid, obj) {
         var tr = $(obj).parent().parent();
@@ -106,6 +108,7 @@
         var keno = tr.find('input[name=keno]').val();
         var kenoLadder = tr.find('input[name=kenoLadder]').val();
         var casino = tr.find('input[name=casino]').val();
+		var slot = tr.find('input[name=slot]').val();
 
         if (_powerMax < powerMax) {
             alert('파워볼 상위 최대 롤링은 ' + _powerMax + '% 입니다.');
@@ -131,6 +134,10 @@
             alert('카지노 최대 롤링은 ' + _casino + '% 입니다.');
             return false;
         }
+		if (_slot < slot) {
+			alert('슬롯 최대 롤링은 ' + _slot + '% 입니다.');
+			return false;
+		}
 
         if (!confirm('지급율을 수정하시겠습니까?')) {
             return;
@@ -143,7 +150,8 @@
             powerLadder: powerLadder,
             keno: keno,
             kenoLadder: kenoLadder,
-            casino: casino
+            casino: casino,
+			slot: slot
         }).done(function () {
             setTimeout(function () {
                 location.reload();

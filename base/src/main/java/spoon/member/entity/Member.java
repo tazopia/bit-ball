@@ -178,6 +178,8 @@ public class Member implements Serializable {
 
     private double casino;
 
+    private double slot;
+
     // ---------------------------------------------
 
     public String getSunid() {

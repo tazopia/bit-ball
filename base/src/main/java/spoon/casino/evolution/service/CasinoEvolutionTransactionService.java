@@ -12,6 +12,7 @@ import spoon.gameZone.ZoneConfig;
 import spoon.monitor.service.MonitorService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,10 +42,12 @@ public class CasinoEvolutionTransactionService {
 
     public void getHistory() {
         if (TRANSACTION == 0) this.init();
-        String startDate = LocalDate.now().minusDays(1).atStartOfDay().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String startDate = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         String json = HttpParsing.getCasinoEvolution(String.format(ZoneConfig.getCasinoEvolution().getTransaction(), startDate, TRANSACTION), headers);
+        log.error("------------------------------------------");
         if (json == null) return;
+        log.error("{}", json);
 
         CasinoEvolutionBetDto bets = JsonUtils.toModel(json, CasinoEvolutionBetDto.class);
         if (bets == null) return;
@@ -60,7 +63,7 @@ public class CasinoEvolutionTransactionService {
         }
     }
 
-    public void getBalance() {
+    public void getAmount() {
         String json = HttpParsing.getCasinoEvolution(ZoneConfig.getCasinoEvolution().getMyInfo(), headers);
         if (json == null) return;
 

@@ -55,6 +55,7 @@ public class ShareServiceImpl implements ShareService {
             agency4.setBtc5Min(update.getBtc5Min());
             agency4.setBtc5Max(update.getBtc5Max());
             agency4.setCasino(update.getCasino());
+            agency4.setSlot(update.getSlot());
 
             memberService.update(agency4);
         } catch (RuntimeException e) {
@@ -80,6 +81,11 @@ public class ShareServiceImpl implements ShareService {
             return new AjaxResult(false, "스피드키노 상위 최대 요율 이상은 지정하실 수 없습니다.");
         if (parent.getKenoLadder() < update.getKenoLadder())
             return new AjaxResult(false, "키다리 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        if (parent.getCasino() < update.getCasino())
+            return new AjaxResult(false, "카지노 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        if (parent.getSlot() < update.getSlot())
+            return new AjaxResult(false, "슬롯 상위 최대 요율 이상은 지정하실 수 없습니다.");    
+        
 
         try {
             agency.setPowerMin(update.getPowerMin());
@@ -92,6 +98,7 @@ public class ShareServiceImpl implements ShareService {
             agency.setBtc5Min(update.getBtc5Min());
             agency.setBtc5Max(update.getBtc5Max());
             agency.setCasino(update.getCasino());
+            agency.setSlot(update.getSlot());
 
             memberService.update(agency);
 

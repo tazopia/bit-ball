@@ -139,7 +139,8 @@ public class ShareMoneyService {
     public void casinoRolling(final CasinoEvolutionBet bet) {
 
         long amount = bet.getBetMoney();
-        MenuCode code = MenuCode.CASINO;
+        MenuCode code = "slot".equals(bet.getGameType()) ? MenuCode.SLOT : MenuCode.CASINO;
+        MoneyCode moneyCode = "slot".equals(bet.getGameType()) ? MoneyCode.ROLL_SLOT : MoneyCode.ROLL_CASINO;
 
         long amount4;
         long amount3;
@@ -163,7 +164,7 @@ public class ShareMoneyService {
         rate = rate0;
         amt = amount0;
         if (amount0 > 0) {
-            paymentService.addMoney(MoneyCode.ROLL_CASINO, bet.getId(), bet.getUserid(), amount0, getMemo(bet, rate0));
+            paymentService.addMoney(moneyCode, bet.getId(), bet.getUserid(), amount0, getMemo(bet, rate0));
         }
 
         // agency1
@@ -175,7 +176,7 @@ public class ShareMoneyService {
 
                 if (amount1 - amt > 0) {
                     double r = BigDecimal.valueOf(rate1).subtract(BigDecimal.valueOf(rate)).doubleValue();
-                    paymentService.addMoney(MoneyCode.ROLL_CASINO, bet.getId(), bet.getAgency1(), amount1 - amt, getMemo(bet, r));
+                    paymentService.addMoney(moneyCode, bet.getId(), bet.getAgency1(), amount1 - amt, getMemo(bet, r));
 
                     amt = amount1;
                     rate = rate1;
@@ -192,7 +193,7 @@ public class ShareMoneyService {
 
                 if (amount2 - amt > 0) {
                     double r = BigDecimal.valueOf(rate2).subtract(BigDecimal.valueOf(rate)).doubleValue();
-                    paymentService.addMoney(MoneyCode.ROLL_CASINO, bet.getId(), bet.getAgency2(), amount2 - amt, getMemo(bet, r));
+                    paymentService.addMoney(moneyCode, bet.getId(), bet.getAgency2(), amount2 - amt, getMemo(bet, r));
 
                     amt = amount2;
                     rate = rate2;
@@ -209,7 +210,7 @@ public class ShareMoneyService {
 
                 if (amount3 - amt > 0) {
                     double r = BigDecimal.valueOf(rate3).subtract(BigDecimal.valueOf(rate)).doubleValue();
-                    paymentService.addMoney(MoneyCode.ROLL_CASINO, bet.getId(), bet.getAgency3(), amount3 - amt, getMemo(bet, r));
+                    paymentService.addMoney(moneyCode, bet.getId(), bet.getAgency3(), amount3 - amt, getMemo(bet, r));
 
                     amt = amount3;
                     rate = rate3;
@@ -226,7 +227,7 @@ public class ShareMoneyService {
 
                 if (amount4 - amt > 0) {
                     double r = BigDecimal.valueOf(rate4).subtract(BigDecimal.valueOf(rate)).doubleValue();
-                    paymentService.addMoney(MoneyCode.ROLL_CASINO, bet.getId(), bet.getAgency4(), amount4 - amt, getMemo(bet, r));
+                    paymentService.addMoney(moneyCode, bet.getId(), bet.getAgency4(), amount4 - amt, getMemo(bet, r));
                 }
             }
         }

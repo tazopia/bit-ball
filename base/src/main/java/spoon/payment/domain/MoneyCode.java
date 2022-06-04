@@ -21,6 +21,9 @@ public enum MoneyCode {
     ROLL_SPORTS(4710, "스포츠롤링"),
     ROLL_ZONE(4720, "실시간롤링"),
     ROLL_CASINO(4730, "카지노롤링"),
+
+    ROLL_SLOT(4735, "슬롯롤링"),
+
     ROLL_SPORTS_ROLLBACK(4740, "스포츠롤링 취소"),
     ROLL_ZONE_ROLLBACK(4750, "실시간롤링 취소"),
 

@@ -46,7 +46,7 @@ public class CasinoEvolutionBetService {
 
         Member member = memberService.getMember(userid);
 
-        CasinoEvolutionBet bet = CasinoEvolutionBet.from(transaction, member);
+        CasinoEvolutionBet bet = CasinoEvolutionBet.bet(transaction, member);
 
         casinoEvolutionDao.save(bet);
         eventPublisher.publishEvent(bet);
@@ -54,7 +54,15 @@ public class CasinoEvolutionBetService {
 
     @Transactional
     public void win(CasinoEvolutionBetDto.Bet transaction) {
-        casinoEvolutionDao.getOne(transaction.getId()).ifPresent(bet -> bet.win(transaction));
+        //casinoEvolutionDao.getOne(transaction.getId()).ifPresent(bet -> bet.win(transaction));
+        String userid = this.findUserid(transaction.getUser().getUsername());
+        if (StringUtils.empty(userid)) return;
+
+        Member member = memberService.getMember(userid);
+
+        CasinoEvolutionBet bet = CasinoEvolutionBet.win(transaction, member);
+
+        casinoEvolutionDao.save(bet);
     }
 
     private String findUserid(String username) {

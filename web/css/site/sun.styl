@@ -90,4 +90,51 @@
 	img {
 		width 200px
 	}
+
+	.slot-body {
+		background url(/images/slot/slot_bg01.png)
+		background-size contain
+	}
+
+}
+
+.slot-games {
+	width 100%
+	display grid
+	grid-template-columns repeat(5, 190px)
+	justify-content space-between
+	grid-row-gap 30px
+
+	.casino-game {
+		cursor pointer
+		border solid 1px #777
+		padding 20px
+		border-radius 10px
+		transition(all 0.3s ease-out)
+
+		&:hover {
+			background-color #171928
+
+			img {
+				scaleAll(1.1)
+			}
+		}
+	}
+
+	img {
+		transition(all 0.3s ease-out)
+		max-width 150px
+	}
+
+	.casino-title {
+		text-align center
+		padding-bottom 20px
+		color #fff
+		font-size 15px
+	}
+
+	.slot-body {
+		background url(/images/slot/slot_bg01.png)
+		background-size contain
+	}
 }

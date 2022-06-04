@@ -1,0 +1,52 @@
+[
+    {
+        "id": 947809673,
+        "type": "bet",
+        "amount": -56000,
+        "before": 750150,
+        "target_id": 460413,
+        "target_type": "App\\Models\\User",
+        "status": "success",
+        "details": {
+            "game": {
+                "id": "leqhceumaq6qfoug",
+                "type": "baccarat",
+                "round": "16f57fa0c068b77ed2cab71b-qaukccicreqbv2gh",
+                "title": "Speed Baccarat A",
+                "vendor": "evolution"
+            }
+        },
+        "processed_at": "2022-06-04T18:53:01.000000Z",
+        "referer_id": null,
+        "created_at": "2022-06-04T18:53:01.000000Z",
+        "user": {
+            "id": 460413,
+            "username": "bit00093"
+        }
+    },
+    {
+        "id": 947810134,
+        "type": "win",
+        "amount": 93600,
+        "before": 694150,
+        "target_id": 460413,
+        "target_type": "App\\Models\\User",
+        "status": "success",
+        "details": {
+            "game": {
+                "id": "leqhceumaq6qfoug",
+                "type": "baccarat",
+                "round": "16f57fa0c068b77ed2cab71b-qaukccicreqbv2gh",
+                "title": "Speed Baccarat A",
+                "vendor": "evolution"
+            }
+        },
+        "processed_at": "2022-06-04T18:53:08.000000Z",
+        "referer_id": 947809673,
+        "created_at": "2022-06-04T18:53:08.000000Z",
+        "user": {
+            "id": 460413,
+            "username": "bit00093"
+        }
+    }
+]

@@ -52,4 +52,9 @@ public class CasinoEvolutionRestController {
         return casinoEvolutionService.getGameUrl(game);
     }
 
+    @PostMapping(value = "/casino/evolution/slot")
+    public AjaxResult slotUrl(@RequestBody CasinoEvolutionDto.Game game) {
+        return casinoEvolutionService.getGameUrl(game);
+    }
+
 }

@@ -47,6 +47,7 @@ public enum MenuCode {
     BITCOIN5(24300, "BTC 5분"),
 
     CASINO(24400, "카지노"),
+    SLOT(24500, "슬롯"),
 
     NONE(99999, "삭제경기");
 

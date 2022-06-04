@@ -12,12 +12,8 @@ public class CasinoEvolutionGame {
     private String type;
     private String id;
     private String provider;
-    //private String vendor;
+    private String vendor;
 
     @JsonProperty("thumbnail")
     private String img;
-
-    public String getVendor() {
-        return this.id.split("_")[0];
-    }
 }
