@@ -58,6 +58,9 @@
 				<a th:if="${siteConfig.casino}" th:href="@{|${siteConfig.pathSite}/casino/evolution|}"><img src="/images/m/m-casino.png"/>카지노</a>
 				<a th:if="${not siteConfig.casino}" onclick="alert('현재 점검중입니다.');"><img src="/images/m/m-casino.png"/>카지노</a>
 
+				<a th:if="${siteConfig.casino}" th:href="@{|${siteConfig.pathSite}/casino/slot|}"><img src="/images/m/m-slot.png"/>슬롯</a>
+				<a th:if="${not siteConfig.casino}" onclick="alert('현재 점검중입니다.');"><img src="/images/m/m-slot.png"/>슬롯</a>
+
 				<a th:href="@{|${siteConfig.pathSite}/score/cross|}"><img src="/images/m/m-result.png"/>경기결과</a>
 				<a th:href="@{|${siteConfig.pathSite}/betting|}"><img src="/images/m/m-betlist.png"/>베팅내역</a>
 				<a th:href="@{|${siteConfig.pathSite}/board/free|}"><img src="/images/m/m-freeboard.png"/>자유게시판</a>
