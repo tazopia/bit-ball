@@ -297,6 +297,8 @@ public class Member implements Serializable {
                 return betOdds > ZoneConfig.getBitcoin5().getMinOdds() ? this.btc5Max : this.btc5Min;
             case CASINO:
                 return this.casino;
+            case SLOT:
+                return this.slot;
             default:
                 return this.rateZone;
         }
