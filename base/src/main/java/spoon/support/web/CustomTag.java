@@ -15,6 +15,8 @@ import spoon.member.domain.CurrentUser;
 import spoon.member.domain.Role;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public final class CustomTag {
@@ -89,6 +91,11 @@ public final class CustomTag {
     public static String dayWeekTimes(Date date) {
         if (date == null) return "-";
         return DateUtils.format(date, "MM/dd(E) ") + "<em class=\"color02\">" + DateUtils.format(date, "HH:mm:ss") + "</em>";
+    }
+
+    public static String dayWeekTimes(LocalDateTime date) {
+        if (date == null) return "-";
+        return date.format(DateTimeFormatter.ofPattern("MM/dd(E) ")) + "<em class=\"color02\">" + date.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "</em>";
     }
 
     public static String dayWeek(Date date) {

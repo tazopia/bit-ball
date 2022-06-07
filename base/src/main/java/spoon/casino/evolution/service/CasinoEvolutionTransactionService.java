@@ -45,9 +45,7 @@ public class CasinoEvolutionTransactionService {
         String startDate = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         String json = HttpParsing.getCasinoEvolution(String.format(ZoneConfig.getCasinoEvolution().getTransaction(), startDate, TRANSACTION), headers);
-        log.error("------------------------------------------");
         if (json == null) return;
-        log.error("{}", json);
 
         CasinoEvolutionBetDto bets = JsonUtils.toModel(json, CasinoEvolutionBetDto.class);
         if (bets == null) return;

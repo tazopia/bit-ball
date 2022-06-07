@@ -41,6 +41,9 @@ public class CasinoEvolutionBetService {
 
     @Transactional
     public void bet(CasinoEvolutionBetDto.Bet transaction) {
+        boolean exists = casinoEvolutionDao.exists(transaction.getId());
+        if (exists) return;
+
         String userid = this.findUserid(transaction.getUser().getUsername());
         if (StringUtils.empty(userid)) return;
 

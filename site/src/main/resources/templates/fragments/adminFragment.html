@@ -325,15 +325,10 @@
 		<li th:if="${sysConfig.event.lotto}" th:class="${lnb eq 'lotto_config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/event/lotto/config|}"><em class="bul fa fa-desktop"></em><span>로또 설정</span></a></li>
 		<li th:if="${sysConfig.event.lotto}" th:class="${lnb eq 'lotto_payment'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/event/lotto/payment|}"><em class="bul fa fa-envelope"></em><span>로또 지급내역</span></a></li>
     </ul>
-	<ul class="lnb" th:if="${gnb eq 'sun' || gnb eq 'evo' || gnb eq 'evolution'}">
-		<li th:if="${gnb eq 'sun'}" th:class="${lnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/sun/config|}"><em class="bul fa fa-desktop"></em><span>연결설정</span></a></li>
-		<li th:if="${gnb eq 'sun'}" th:class="${lnb eq 'exchange'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/sun/exchange|}"><em class="bul fa fa-user"></em><span>충/환전 내역</span></a></li>
-		<li th:if="${gnb eq 'sun'}"><a href="http://agent.sun-slot.com/" target="_blank"><em class="bul fa fa-lock"></em><span>선카지노 관리자</span></a></li>
-		<li th:if="${gnb eq 'evo'}" th:class="${lnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evo/config|}"><em class="bul fa fa-desktop"></em><span>연결설정</span></a></li>
-		<li th:if="${gnb eq 'evo'}" th:class="${lnb eq 'exchange'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evo/exchange|}"><em class="bul fa fa-user"></em><span>베팅/전환 내역</span></a></li>
-		<li th:if="${gnb eq 'evo'}"><a href="http://ok-7878.com/partner" target="_blank"><em class="bul fa fa-lock"></em><span>카지노 관리자</span></a></li>
+	<ul class="lnb" th:if="${gnb eq 'evolution'}">
 		<li th:if="${gnb eq 'evolution'}" th:class="${lnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/config|}"><em class="bul fa fa-desktop"></em><span>연결설정</span></a></li>
 		<li th:if="${gnb eq 'evolution'}" th:class="${lnb eq 'exchange'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/exchange|}"><em class="bul fa fa-user"></em><span>충/환전 내역</span></a></li>
+        <li th:class="${lnb eq 'bet'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/bet|}"><em class="bul fa fa-user"></em><span>베팅 내역</span></a></li>
 		<li th:if="${gnb eq 'evolution'}"><a href="https://api.honorlink.org" target="_blank"><em class="bul fa fa-lock"></em><span>카지노 관리자</span></a></li>
 	</ul>
 	<ul class="lnb" th:if="${gnb eq 'inplay'}">

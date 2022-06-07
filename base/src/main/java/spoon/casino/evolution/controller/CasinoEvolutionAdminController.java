@@ -43,11 +43,20 @@ public class CasinoEvolutionAdminController {
     }
 
     @RequestMapping(value = "/casino/evolution/exchange", method = RequestMethod.GET)
-    public String gateExchange(ModelMap map, CasinoEvolutionDto.Command command,
+    public String gateExchange(ModelMap map, CasinoEvolutionDto.Exchange command,
                                @PageableDefault(size = 20, direction = Sort.Direction.DESC, sort = "id") Pageable pageable) {
         map.addAttribute("command", command);
         map.addAttribute("page", casinoEvolutionService.page(command, pageable));
 
         return "admin/casino/evolution/exchange";
+    }
+
+    @RequestMapping(value = "/casino/evolution/bet", method = RequestMethod.GET)
+    public String casinoBet(ModelMap map, CasinoEvolutionDto.Command command,
+                            @PageableDefault(size = 30, direction = Sort.Direction.DESC, sort = "regDate") Pageable pageable) {
+        map.addAttribute("command", command);
+        map.addAttribute("page", casinoEvolutionService.betting(command, pageable));
+
+        return "admin/casino/evolution/bet";
     }
 }

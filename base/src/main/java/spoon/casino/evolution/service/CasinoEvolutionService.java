@@ -12,8 +12,11 @@ import spoon.casino.evolution.domain.CasinoEvolutionConfig;
 import spoon.casino.evolution.domain.CasinoEvolutionDto;
 import spoon.casino.evolution.domain.CasinoEvolutionGame;
 import spoon.casino.evolution.domain.CasinoEvolutionResult;
+import spoon.casino.evolution.entity.CasinoEvolutionBet;
 import spoon.casino.evolution.entity.CasinoEvolutionId;
+import spoon.casino.evolution.entity.QCasinoEvolutionBet;
 import spoon.casino.evolution.entity.QCasinoEvolutionId;
+import spoon.casino.evolution.repository.CasinoEvolutionBetRepository;
 import spoon.casino.evolution.repository.CasinoEvolutionIdRepository;
 import spoon.common.net.HttpParsing;
 import spoon.common.utils.DateUtils;
@@ -42,6 +45,8 @@ import java.util.*;
 public class CasinoEvolutionService {
 
     private final CasinoEvolutionIdRepository casinoEvolutionIdRepository;
+
+    private final CasinoEvolutionBetRepository casinoEvolutionBetRepository;
 
     private final ConfigService jsonConfigService;
 
@@ -262,7 +267,7 @@ public class CasinoEvolutionService {
         return result;
     }
 
-    public Page<Money> page(CasinoEvolutionDto.Command command, Pageable pageable) {
+    public Page<Money> page(CasinoEvolutionDto.Exchange command, Pageable pageable) {
         QMoney q = QMoney.money;
 
         BooleanBuilder builder = new BooleanBuilder(q.moneyCode.in(MoneyCode.EVO_IN, MoneyCode.EVO_OUT));
@@ -295,4 +300,19 @@ public class CasinoEvolutionService {
         return true;
     }
 
+    public Page<CasinoEvolutionBet> betting(CasinoEvolutionDto.Command command, Pageable pageable) {
+        QCasinoEvolutionBet bet = QCasinoEvolutionBet.casinoEvolutionBet;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (StringUtils.notEmpty(command.getUserid())) {
+            builder.and(bet.userid.contains(command.getUserid()).or(bet.nickname.contains(command.getUserid())));
+        }
+
+        if (StringUtils.notEmpty(command.getCasinoId())) {
+            builder.and(bet.casinoId.contains(command.getCasinoId()));
+        }
+
+        return casinoEvolutionBetRepository.findAll(builder, pageable);
+    }
 }

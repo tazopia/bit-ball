@@ -41,4 +41,8 @@ public class CasinoEvolutionDao {
                         .fetchFirst()
         );
     }
+
+    public boolean exists(long id) {
+        return casinoEvolutionBetRepository.exists(bet.id.eq(id));
+    }
 }

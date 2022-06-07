@@ -26,10 +26,16 @@ public class CasinoEvolutionDto {
     }
 
     @Data
-    public static class Command {
+    public static class Exchange {
         private String username;
         private String sdate = DateUtils.format(DateUtils.beforeDays(1), "yyyy.MM.dd");
 
         private String edate = DateUtils.format(new Date(), "yyyy.MM.dd");
+    }
+
+    @Data
+    public static class Command {
+        private String userid;
+        private String casinoId;
     }
 }
