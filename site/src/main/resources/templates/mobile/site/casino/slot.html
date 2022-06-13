@@ -189,7 +189,6 @@
     angular.module('app', []).controller('gameCtrl', ['$scope', '$http', '$interval', '$timeout', function ($scope, $http, $interval, $timeout) {
         $scope.money = 0;
         $scope.amount = 0;
-        $scope.amount2 = 0;
         $scope.balance = 0;
         $scope.point = 0;
         $scope.token = '[[${token.token}]]';
@@ -304,17 +303,9 @@
 
             $scope.action = true;
 
-            if ($scope.amount2 === 0) {
+            if ($scope.balance === 0) {
                 alert('환전할 머니가 없습니다.');
                 $scope.action = false;
-                $scope.amount2 = 0;
-                return;
-            }
-
-            if ($scope.amount2 > $scope.balance) {
-                alert('환전할 수 있는 최대 머니는 ' + $scope.balance.toString().money() + '원 입니다.');
-                $scope.action = false;
-                $scope.amount2 = 0;
                 return;
             }
 
@@ -329,7 +320,7 @@
                     'Ajax': true
                 },
                 data: {
-                    "money": $scope.amount2,
+                    "money": $scope.balance,
                     "casinoId": '[[${casinoId}]]'
                 }
             }).then(function success(response) {
@@ -340,7 +331,6 @@
                     alert(response.data.message);
                     //alert('머니 환전에 실패하였습니다.\n\n잠시 후 다시 이용하세요.')
                 }
-                $scope.amount2 = 0;
                 angular.element('#layout-wrap').css('display', 'none');
                 angular.element('#layout-load').css('display', 'none');
                 $scope.action = false;
@@ -397,23 +387,6 @@
 
         $scope.changeAmount = function () {
             angular.element('#amountKor').text($scope.amount <= 0 ? '' : '(' + $.num2han($scope.amount) + ' 원)');
-        }
-
-        $scope.setAmount2 = function (amount) {
-            $scope.amount2 += amount;
-            if (amount === 0) {
-                $scope.amount2 = $scope.balance;
-            }
-            angular.element('#amountKor2').text(amount <= 0 ? '' : '(' + $.num2han(amount) + ' 원)');
-        }
-
-        $scope.resetAmount2 = function () {
-            $scope.amount2 = 0;
-            angular.element('#amountKor2').text('');
-        }
-
-        $scope.changeAmount2 = function () {
-            angular.element('#amountKor2').text($scope.amount2 <= 0 ? '' : '(' + $.num2han($scope.amount2) + ' 원)');
         }
 
         $scope.goGame = function (id, provider) {
