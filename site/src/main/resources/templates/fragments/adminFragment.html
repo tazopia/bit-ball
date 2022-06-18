@@ -329,7 +329,7 @@
 		<li th:if="${gnb eq 'evolution'}" th:class="${lnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/config|}"><em class="bul fa fa-desktop"></em><span>연결설정</span></a></li>
 		<li th:if="${gnb eq 'evolution'}" th:class="${lnb eq 'exchange'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/exchange|}"><em class="bul fa fa-user"></em><span>충/환전 내역</span></a></li>
         <li th:class="${lnb eq 'bet'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/casino/evolution/bet|}"><em class="bul fa fa-user"></em><span>베팅 내역</span></a></li>
-		<li th:if="${gnb eq 'evolution'}"><a href="https://api.honorlink.org" target="_blank"><em class="bul fa fa-lock"></em><span>카지노 관리자</span></a></li>
+		<li th:if="${gnb eq 'evolution'}"><a href="https://backoffice.honorlink.org" target="_blank"><em class="bul fa fa-lock"></em><span>카지노 관리자</span></a></li>
 	</ul>
 	<ul class="lnb" th:if="${gnb eq 'inplay'}">
 		<li th:class="${lnb eq 'inplay'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/inplay|}"><em class="bul fa fa-desktop"></em><span>인플레이</span></a></li>
