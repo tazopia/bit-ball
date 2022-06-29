@@ -83,7 +83,6 @@ public class HttpParsing {
                     .method(Connection.Method.POST)
                     .ignoreContentType(true)
                     .headers(headers)
-                    .userAgent(USER_AGENT)
                     .maxBodySize(0)
                     .timeout(60 * 1000)
                     .execute()
@@ -98,7 +97,6 @@ public class HttpParsing {
         try {
             return Jsoup.connect(url)
                     .ignoreContentType(true)
-                    .userAgent(USER_AGENT)
                     .headers(headers)
                     .maxBodySize(0)
                     .timeout(60 * 1000)
@@ -116,7 +114,6 @@ public class HttpParsing {
                     .method(Connection.Method.POST)
                     .ignoreContentType(true)
                     .ignoreHttpErrors(true)
-                    .userAgent(USER_AGENT)
                     .headers(headers)
                     .maxBodySize(0)
                     .timeout(60 * 1000)
