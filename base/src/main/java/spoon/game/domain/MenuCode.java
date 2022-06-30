@@ -46,6 +46,13 @@ public enum MenuCode {
     BITCOIN3(24200, "BTC 3분"),
     BITCOIN5(24300, "BTC 5분"),
 
+    // EOS 파워볼
+    EOS1(25100, "EOS 파워볼 1분"),
+    EOS2(25200, "EOS 파워볼 2분"),
+    EOS3(25300, "EOS 파워볼 3분"),
+    EOS4(25400, "EOS 파워볼 4분"),
+    EOS5(25500, "EOS 파워볼 5분"),
+
     CASINO(24400, "카지노"),
     SLOT(24500, "슬롯"),
 
@@ -98,6 +105,12 @@ public enum MenuCode {
         if (Config.getSysConfig().getZone().isSoccer()) list.add(MenuCode.SOCCER);
         if (Config.getSysConfig().getZone().isDog()) list.add(MenuCode.DOG);
         if (Config.getSysConfig().getZone().isLuck()) list.add(MenuCode.LUCK);
+
+        if (Config.getSysConfig().getZone().isEos1()) list.add(MenuCode.EOS1);
+        if (Config.getSysConfig().getZone().isEos2()) list.add(MenuCode.EOS2);
+        if (Config.getSysConfig().getZone().isEos3()) list.add(MenuCode.EOS3);
+        if (Config.getSysConfig().getZone().isEos4()) list.add(MenuCode.EOS4);
+        if (Config.getSysConfig().getZone().isEos5()) list.add(MenuCode.EOS5);
 
         return list;
     }

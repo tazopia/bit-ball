@@ -176,6 +176,24 @@ public class Member implements Serializable {
     private double btc5Max;
     private double btc5Min;
 
+    // --------------------------------------------
+    private double eos1Max;
+    private double eos1Min;
+
+    private double eos2Max;
+    private double eos2Min;
+
+    private double eos3Max;
+    private double eos3Min;
+
+    private double eos4Max;
+    private double eos4Min;
+
+    private double eos5Max;
+    private double eos5Min;
+
+    // --------------------------------------------
+
     private double casino;
 
     private double slot;
@@ -283,6 +301,16 @@ public class Member implements Serializable {
 
     public double getRollingOdds(MenuCode code, double betOdds) {
         switch (code) {
+            case EOS1:
+                return betOdds > 2 ? this.eos1Max : this.eos1Min;
+            case EOS2:
+                return betOdds > 2 ? this.eos2Max : this.eos2Min;
+            case EOS3:
+                return betOdds > 2 ? this.eos3Max : this.eos3Min;
+            case EOS4:
+                return betOdds > 2 ? this.eos4Max : this.eos4Min;
+            case EOS5:
+                return betOdds > 2 ? this.eos5Max : this.eos5Min;
             case POWER:
                 return betOdds > ZoneConfig.getPower().getMinOdds() ? this.powerMax : this.powerMin;
             case POWER_LADDER:

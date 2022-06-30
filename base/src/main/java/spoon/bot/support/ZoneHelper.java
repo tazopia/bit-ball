@@ -21,10 +21,12 @@ public class ZoneHelper {
             case "1": // 7luck
             case "odd":
             case "over":
+            case "B":
                 return new ZoneScore(1, 0, GameResult.HOME);
             case "p2":
             case "중":
             case "2": // 7luck
+            case "M":
                 return new ZoneScore(1, 1, GameResult.DRAW);
             case "EVEN":
             case "E":
@@ -37,6 +39,7 @@ public class ZoneHelper {
             case "0": // 7luck
             case "even":
             case "under":
+            case "S":
                 return new ZoneScore(0, 1, GameResult.AWAY);
             default:
                 return new ZoneScore(0, 0, GameResult.CANCEL);

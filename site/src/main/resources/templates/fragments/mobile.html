@@ -15,13 +15,19 @@
 </div>
 <div class="tab-menu" th:fragment="score">
     <div class="tab-menu-wrap">
-        <a th:class="${lnb eq 'cross'} ? 'on'" th:href="@{|${siteConfig.pathSite}/score/cross|}">크로스</a>
-        <a th:class="${lnb eq 'special'} ? 'on'" th:href="@{|${siteConfig.pathSite}/score/special|}">스페셜</a>
-        <a th:if="${sysConfig.sports.canLive}" th:class="${lnb eq 'live'} ? 'on'" th:href="@{|${siteConfig.pathSite}/score/live|}">라이브</a>
+<!--        <a th:class="${lnb eq 'cross'} ? 'on'" th:href="@{|${siteConfig.pathSite}/score/cross|}">크로스</a>-->
+<!--        <a th:class="${lnb eq 'special'} ? 'on'" th:href="@{|${siteConfig.pathSite}/score/special|}">스페셜</a>-->
+<!--        <a th:if="${sysConfig.sports.canLive}" th:class="${lnb eq 'live'} ? 'on'" th:href="@{|${siteConfig.pathSite}/score/live|}">라이브</a>-->
 
 		<a th:class="${gnb eq 'score' and lnb eq 'cw_oddeven'} ? 'on'" th:if="${sysConfig.zone.crownOddeven}" th:href="@{|${siteConfig.pathSite}/zone/cw_oddeven/score|}">홀짝</a>
 		<a th:class="${gnb eq 'score' and lnb eq 'cw_baccarat'} ? 'on'" th:if="${sysConfig.zone.crownBaccarat}" th:href="@{|${siteConfig.pathSite}/zone/cw_baccarat/score|}">바카라</a>
 		<a th:class="${gnb eq 'score' and lnb eq 'cw_sutda'} ? 'on'" th:if="${sysConfig.zone.crownSutda}" th:href="@{|${siteConfig.pathSite}/zone/cw_sutda/score|}">섯다</a>
+
+        <a th:class="${gnb eq 'score' and lnb eq 'eos1'} ? 'on'" th:if="${sysConfig.zone.eos1}" th:href="@{|${siteConfig.pathSite}/zone/eos1/score|}">EOS 1분</a>
+        <a th:class="${gnb eq 'score' and lnb eq 'eos2'} ? 'on'" th:if="${sysConfig.zone.eos2}" th:href="@{|${siteConfig.pathSite}/zone/eos2/score|}">EOS 2분</a>
+        <a th:class="${gnb eq 'score' and lnb eq 'eos3'} ? 'on'" th:if="${sysConfig.zone.eos3}" th:href="@{|${siteConfig.pathSite}/zone/eos3/score|}">EOS 3분</a>
+        <a th:class="${gnb eq 'score' and lnb eq 'eos4'} ? 'on'" th:if="${sysConfig.zone.eos4}" th:href="@{|${siteConfig.pathSite}/zone/eos4/score|}">EOS 4분</a>
+        <a th:class="${gnb eq 'score' and lnb eq 'eos5'} ? 'on'" th:if="${sysConfig.zone.eos5}" th:href="@{|${siteConfig.pathSite}/zone/eos5/score|}">EOS 5분</a>
 
 		<a th:class="${gnb eq 'score' and lnb eq 'ladder'} ? 'on'" th:if="${sysConfig.zone.ladder}" th:href="@{|${siteConfig.pathSite}/zone/ladder/score|}">사다리</a>
         <a th:class="${gnb eq 'score' and lnb eq 'dari'} ? 'on'" th:if="${sysConfig.zone.dari}" th:href="@{|${siteConfig.pathSite}/zone/dari/score|}">다리다리</a>

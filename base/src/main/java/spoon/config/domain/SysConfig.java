@@ -179,6 +179,32 @@ public class SysConfig {
         private String bitcoin5Url = "http://bot31.box-joa.com/api/bc5";
         private String bitcoin5Player = "http://www.ntryfx.com/btc/5min/"; // 830x640
 
+
+        // EOS1
+        private boolean eos1;
+        private String eos1Url = "http://zone.box-joa.com/api/eos1";
+        private String eos1Player = "http://ntry.com/scores/eos_powerball/1min/main.php"; // 830x640
+
+        // EOS2
+        private boolean eos2;
+        private String eos2Url = "http://zone.box-joa.com/api/eos2";
+        private String eos2Player = "http://ntry.com/scores/eos_powerball/2min/main.php"; // 830x640
+
+        // EOS3
+        private boolean eos3;
+        private String eos3Url = "http://zone.box-joa.com/api/eos3";
+        private String eos3Player = "http://ntry.com/scores/eos_powerball/3min/main.php"; // 830x640
+
+        // EOS4
+        private boolean eos4;
+        private String eos4Url = "http://zone.box-joa.com/api/eos4";
+        private String eos4Player = "http://ntry.com/scores/eos_powerball/4min/main.php"; // 830x640
+
+        // EOS5
+        private boolean eos5;
+        private String eos5Url = "http://zone.box-joa.com/api/eos5";
+        private String eos5Player = "http://ntry.com/scores/eos_powerball/5min/main.php"; // 830x640
+
         // 게이트
         private boolean gate;
 
@@ -191,6 +217,16 @@ public class SysConfig {
                 return "snail";
             } else if (this.newSnail) {
                 return "new_snail";
+            } else if (this.eos1) {
+                return "eos1";
+            } else if (this.eos2) {
+                return "eos2";
+            } else if (this.eos3) {
+                return "eos3";
+            } else if (this.eos4) {
+                return "eos4";
+            } else if (this.eos5) {
+                return "eos5";
             } else if (this.power) {
                 return "power";
             } else if (this.powerLadder) {

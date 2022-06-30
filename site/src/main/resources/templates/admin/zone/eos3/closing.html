@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org"
+	  layout:decorate="layout/adminLayout" th:with="gnb='zone', lnb='eos3', pnb='closing'">
+<head></head>
+<body>
+<h2 layout:fragment="title">
+	<small>실시간 :</small>
+	EOS 3분 파워볼 게임종료
+</h2>
+<div layout:fragment="content">
+	<section>
+		<div class="panel-search">
+			<form id="frm-search" th:object="${command}" th:action="@{|${siteConfig.pathAdmin}/zone/eos3/closing|}" method="get">
+				<input type="hidden" id="page" name="page" th:value="${page.number + 1}">
+				<input type="text" class="cal" th:field="*{gameDate}" placeholder="게임일자"/>
+				<a href="#" id="sp-reset-date" class="btn btn-cal">지움</a>
+				<label style="margin-left: 20px;">
+					회차:
+					<input type="text" th:field="*{round}" placeholder="회차"/>
+				</label>
+				<div class="command">
+					<a class="btn btn01" onclick="goSearch();">검색</a>
+					<a th:href="@{|${siteConfig.pathAdmin}/zone/eos3/closing|}" class="btn">취소</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	<section>
+		<div class="panel-header">
+			<h3>
+				<i class="bul fa fa-bars" aria-hidden="true"></i>
+				EOS 3분 파워볼 게임종료
+				<span th:class="${config.enabled} ? 'color02' : 'color03'" th:text="${config.enabled} ? '(게임 실행 중)' : '(게임 중지 중)'">게임실행중</span>
+			</h3>
+		</div>
+		<table class="table-list table-game table-zone">
+			<caption>파워볼 등록완료</caption>
+			<colgroup>
+				<col style="width: 140px;">
+				<col style="width: 140px;">
+				<col style="width: 140px;">
+				<col>
+				<col style="width: 200px;">
+				<col>
+				<col style="width: 120px;">
+			</colgroup>
+			<tbody th:each="g,num: ${page.content}" th:class="${num.count > 1} ? 'box'" th:with="round = ${#numbers.formatInteger(g.round, 3, 'DEFAULT')} + '회차 '">
+			<tr>
+				<td rowspan="11" th:utext="${tag.dayWeekTime(g.gameDate)}">27(월)</td>
+				<td rowspan="11">
+					<p th:class="${not g.beforeGameDate} ? 'color03' : 'color01'" th:text="${#numbers.formatInteger(g.round, 0, 'DEFAULT')} + ' 회차'"></p>
+				</td>
+				<td class="color02">일반볼 홀/짝</td>
+				<td th:class="${g.oddeven eq 'ODD'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [홀]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[0], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[0] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[0] gt 0 ? #numbers.formatInteger(g.amount[0], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td class="vs">VS</td>
+				<td th:class="${g.oddeven eq 'EVEN'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [짝]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[1], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[1] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[1] gt 0 ? #numbers.formatInteger(g.amount[1], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td rowspan="11">
+					<a class="btn btn03" th:onclick="'closingPower(' + ${g.id} + ');'">결과</a>
+				</td>
+			</tr>
+			<tr>
+				<td class="color02">파워볼 홀/짝</td>
+				<td th:class="${g.pb_oddeven eq 'ODD'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '파워볼 [홀]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[2], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[2] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[2] gt 0 ? #numbers.formatInteger(g.amount[2], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td class="vs">VS</td>
+				<td th:class="${g.pb_oddeven eq 'EVEN'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '파워볼 [짝]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[3], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[3] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[3] gt 0 ? #numbers.formatInteger(g.amount[3], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+			<tr>
+				<td class="color02">일반볼 오버/언더</td>
+				<td th:class="${g.overunder eq 'OVER'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [오버]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[4], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[4] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[4] gt 0 ? #numbers.formatInteger(g.amount[4], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td class="vs">VS</td>
+				<td th:class="${g.overunder eq 'UNDER'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [언더]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[5], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[5] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[5] gt 0 ? #numbers.formatInteger(g.amount[5], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+			<tr>
+				<td class="color02">파워볼 오버/언더</td>
+				<td th:class="${g.pb_overunder eq 'OVER'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '파워볼 [오버]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[6], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[6] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[6] gt 0 ? #numbers.formatInteger(g.amount[6], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td class="vs">VS</td>
+				<td th:class="${g.pb_overunder eq 'UNDER'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '파워볼 [언더]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[7], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[7] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[7] gt 0 ? #numbers.formatInteger(g.amount[7], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+
+			</tr>
+			<tr>
+				<td class="color02">일반볼 대/중/소</td>
+				<td th:class="${g.size eq 'B'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [대]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[8], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[8] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[8] gt 0 ? #numbers.formatInteger(g.amount[8], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.size eq 'M'} ? 'draw hit' : 'draw'">
+
+					<span th:text="'일반볼 [중]'"></span>
+					<span class="odds" th:text="${#numbers.formatDecimal(g.odds[9], 0, 2, 'DEFAULT')}"></span>
+
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[9] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[9] gt 0 ? #numbers.formatInteger(g.amount[9], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.size eq 'S'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [소]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[10], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[10] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[10] gt 0 ? #numbers.formatInteger(g.amount[10], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+
+			<tr>
+				<td rowspan="2" class="color02">일반볼 홀짝/OU</td>
+				<td th:class="${g.oddeven eq 'ODD' and g.overunder eq 'OVER'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [홀][오버]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[11], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[11] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[11] gt 0 ? #numbers.formatInteger(g.amount[11], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td rowspan="2" class="vs">VS</td>
+				<td th:class="${g.oddeven eq 'ODD' and g.overunder eq 'UNDER'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [홀][언더]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[12], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[12] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[12] gt 0 ? #numbers.formatInteger(g.amount[12], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+			<tr>
+				<td th:class="${g.oddeven eq 'EVEN' and g.overunder eq 'OVER'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [짝][오버]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[13], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[13] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[13] gt 0 ? #numbers.formatInteger(g.amount[13], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.oddeven eq 'EVEN' and g.overunder eq 'UNDER'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [짝][언더]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[14], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[14] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[14] gt 0 ? #numbers.formatInteger(g.amount[14], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+
+			<tr>
+				<td rowspan="2" class="color02">일반볼 홀짝/대중소</td>
+				<td th:class="${g.oddeven eq 'ODD' and g.size eq 'B'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [홀][대]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[15], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[15] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[15] gt 0 ? #numbers.formatInteger(g.amount[15], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.oddeven eq 'ODD' and g.size eq 'M'} ? 'draw hit' : 'draw'">
+
+					<span th:text="'일반볼 [홀][중]'"></span>
+					<span class="odds" th:text="${#numbers.formatDecimal(g.odds[16], 0, 2, 'DEFAULT')}"></span>
+
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[16] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[16] gt 0 ? #numbers.formatInteger(g.amount[16], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.oddeven eq 'ODD' and g.size eq 'S'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [홀][소]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[17], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[17] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[17] gt 0 ? #numbers.formatInteger(g.amount[17], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+			<tr>
+				<td th:class="${g.oddeven eq 'EVEN' and g.size eq 'B'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '일반볼 [짝][대]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[18], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[18] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[18] gt 0 ? #numbers.formatInteger(g.amount[18], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.oddeven eq 'EVEN' and g.size eq 'M'} ? 'draw hit' : 'draw'">
+
+					<span th:text="'일반볼 [짝][중]'"></span>
+					<span class="odds" th:text="${#numbers.formatDecimal(g.odds[19], 0, 2, 'DEFAULT')}"></span>
+
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[19] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[19] gt 0 ? #numbers.formatInteger(g.amount[19], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.oddeven eq 'EVEN' and g.size eq 'S'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '일반볼 [짝][소]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[20], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[20] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[20] gt 0 ? #numbers.formatInteger(g.amount[20], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td rowspan="2" class="color02">파워볼 홀짝/OU</td>
+				<td th:class="${g.pb_oddeven eq 'ODD' and g.pb_overunder eq 'OVER'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '파워볼 [홀][오버]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[21], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[21] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[21] gt 0 ? #numbers.formatInteger(g.amount[21], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td rowspan="2" class="vs">VS</td>
+				<td th:class="${g.pb_oddeven eq 'ODD' and g.pb_overunder eq 'UNDER'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '파워볼 [홀][언더]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[22], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[22] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[22] gt 0 ? #numbers.formatInteger(g.amount[22], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+			<tr>
+				<td th:class="${g.pb_oddeven eq 'EVEN' and g.pb_overunder eq 'OVER'} ? 'home hit' : 'home'">
+					<p>
+						<span th:text="${round} + '파워볼 [짝][오버]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[23], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[23] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[23] gt 0 ? #numbers.formatInteger(g.amount[23], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+				<td th:class="${g.pb_oddeven eq 'EVEN' and g.pb_overunder eq 'UNDER'} ? 'away hit' : 'away'">
+					<p>
+						<span th:text="${round} + '파워볼 [짝][언더]'"></span>
+						<span class="odds" th:text="${#numbers.formatDecimal(g.odds[24], 0, 2, 'DEFAULT')}"></span>
+					</p>
+					<a th:onclick="|popup.betting.zone('eos3', ${g.sdate});|" th:class="${g.amount[24] gt 0 ? 'btn btn-team on' : 'btn btn-team'}" th:text="${g.amount[24] gt 0 ? #numbers.formatInteger(g.amount[24], 0, 'DEFAULT') : '베팅내역'}">베팅내역</a>
+				</td>
+			</tr>
+
+			</tbody>
+			<tr th:if="${page.content.empty}">
+				<td colspan="7" class="empty">
+					등록된 파워볼 경기가 없습니다.
+				</td>
+			</tr>
+		</table>
+
+		<div class="panel-footer">
+			<div class="paging">
+				<ul th:replace="fragments/admin :: paging(p=${page})"></ul>
+			</div>
+		</div>
+
+	</section>
+</div>
+<script layout:fragment="script" th:if="true">
+    function closingPower(id) {
+        window.open(path + '/zone/eos3/score?id=' + id, 'popup-eos3', 'width=900, height=880');
+    }
+</script>
+</body>
+</html>

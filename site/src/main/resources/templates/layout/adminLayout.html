@@ -71,7 +71,13 @@
 				<a th:href="@{|${siteConfig.pathAdmin}/zone/cw_baccarat/complete|}" th:if="${sysConfig.zone.crownBaccarat}" ng-class="alarm.crownBaccaratResult > 0 ? 'err' : ''">바카라</a>
 				<a th:href="@{|${siteConfig.pathAdmin}/zone/cw_sutda/complete|}" th:if="${sysConfig.zone.crownSutda}" ng-class="alarm.crownSutdaResult > 0 ? 'err' : ''">섰다</a>
 
-				<a th:href="@{|${siteConfig.pathAdmin}/zone/ladder/complete|}" th:if="${sysConfig.zone.ladder}" ng-class="alarm.ladderResult > 0 ? 'err' : ''">사다리</a>
+                <a th:href="@{|${siteConfig.pathAdmin}/zone/eos1/complete|}" th:if="${sysConfig.zone.eos1}" ng-class="alarm.eos1Result > 0 ? 'err' : ''">EOS1</a>
+                <a th:href="@{|${siteConfig.pathAdmin}/zone/eos2/complete|}" th:if="${sysConfig.zone.eos2}" ng-class="alarm.eos1Result > 0 ? 'err' : ''">EOS2</a>
+                <a th:href="@{|${siteConfig.pathAdmin}/zone/eos3/complete|}" th:if="${sysConfig.zone.eos3}" ng-class="alarm.eos1Result > 0 ? 'err' : ''">EOS3</a>
+                <a th:href="@{|${siteConfig.pathAdmin}/zone/eos4/complete|}" th:if="${sysConfig.zone.eos4}" ng-class="alarm.eos1Result > 0 ? 'err' : ''">EOS4</a>
+                <a th:href="@{|${siteConfig.pathAdmin}/zone/eos5/complete|}" th:if="${sysConfig.zone.eos5}" ng-class="alarm.eos1Result > 0 ? 'err' : ''">EOS5</a>
+
+                <a th:href="@{|${siteConfig.pathAdmin}/zone/ladder/complete|}" th:if="${sysConfig.zone.ladder}" ng-class="alarm.ladderResult > 0 ? 'err' : ''">사다리</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/dari/complete|}" th:if="${sysConfig.zone.dari}" ng-class="alarm.dariResult > 0 ? 'err' : ''">다리</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/new_snail/complete|}" th:if="${sysConfig.zone.newSnail}" ng-class="alarm.newSnailResult > 0 ? 'err' : ''">달팽이</a>
                 <a th:href="@{|${siteConfig.pathAdmin}/zone/power/complete|}" th:if="${sysConfig.zone.power}" ng-class="alarm.powerResult > 0 ? 'err' : ''">파워볼</a>
@@ -137,6 +143,31 @@
 					<p><span>실정산</span><em ng-bind="alarm.crownSutdaEnd | number : 0">0</em></p>
 				</div>
 
+                <div th:if="${sysConfig.zone.eos1}">
+                    <h5>금일 EOS 1분 현황</h5>
+                    <p><span>진행금액</span><em ng-bind="alarm.eos1 | number : 0">0</em></p>
+                    <p><span>실정산</span><em ng-bind="alarm.eos1End | number : 0">0</em></p>
+                </div>
+                <div th:if="${sysConfig.zone.eos2}">
+                    <h5>금일 EOS 2분 현황</h5>
+                    <p><span>진행금액</span><em ng-bind="alarm.eos2 | number : 0">0</em></p>
+                    <p><span>실정산</span><em ng-bind="alarm.eos2End | number : 0">0</em></p>
+                </div>
+                <div th:if="${sysConfig.zone.eos3}">
+                    <h5>금일 EOS 3분 현황</h5>
+                    <p><span>진행금액</span><em ng-bind="alarm.eos3 | number : 0">0</em></p>
+                    <p><span>실정산</span><em ng-bind="alarm.eos3End | number : 0">0</em></p>
+                </div>
+                <div th:if="${sysConfig.zone.eos4}">
+                    <h5>금일 EOS 4분 현황</h5>
+                    <p><span>진행금액</span><em ng-bind="alarm.eos4 | number : 0">0</em></p>
+                    <p><span>실정산</span><em ng-bind="alarm.eos4End | number : 0">0</em></p>
+                </div>
+                <div th:if="${sysConfig.zone.eos5}">
+                    <h5>금일 EOS 5분 현황</h5>
+                    <p><span>진행금액</span><em ng-bind="alarm.eos5 | number : 0">0</em></p>
+                    <p><span>실정산</span><em ng-bind="alarm.eos5End | number : 0">0</em></p>
+                </div>
 
                 <div th:if="${sysConfig.zone.ladder}">
                     <h5>금일 사다리 현황</h5>

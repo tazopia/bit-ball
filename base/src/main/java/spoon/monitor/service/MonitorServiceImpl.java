@@ -179,6 +179,7 @@ public class MonitorServiceImpl implements MonitorService {
                 crownOddeven = 0, crownBaccarat = 0, crownSutda = 0;
         long keno = 0;
         long bitcoin1 = 0, bitcoin3 = 0, bitcoin5 = 0;
+        long eos1 = 0, eos2 = 0, eos3 = 0, eos4 = 0, eos5 = 0;
 
         for (MonitorDto.Bet bet : betList) {
             switch (bet.getMenuCode()) {
@@ -252,6 +253,21 @@ public class MonitorServiceImpl implements MonitorService {
                 case BITCOIN5:
                     bitcoin5 += bet.getBetMoney();
                     break;
+                case EOS1:
+                    eos1 += bet.getBetMoney();
+                    break;
+                case EOS2:
+                    eos2 += bet.getBetMoney();
+                    break;
+                case EOS3:
+                    eos3 += bet.getBetMoney();
+                    break;
+                case EOS4:
+                    eos4 += bet.getBetMoney();
+                    break;
+                case EOS5:
+                    eos5 += bet.getBetMoney();
+                    break;
             }
         }
         monitor.setSports(sports);
@@ -279,6 +295,12 @@ public class MonitorServiceImpl implements MonitorService {
         monitor.setBitcoin3(bitcoin3);
         monitor.setBitcoin5(bitcoin5);
 
+        monitor.setEos1(eos1);
+        monitor.setEos2(eos2);
+        monitor.setEos3(eos3);
+        monitor.setEos4(eos4);
+        monitor.setEos5(eos5);
+
         // 종료금액
         List<MonitorDto.Bet> betEndList = monitorMapper.getBetEnd(start, end);
         sports = 0;
@@ -300,6 +322,12 @@ public class MonitorServiceImpl implements MonitorService {
         crownBaccarat = 0;
         crownSutda = 0;
         keno = 0;
+
+        eos1 = 0;
+        eos2 = 0;
+        eos3 = 0;
+        eos4 = 0;
+        eos5 = 0;
 
         for (MonitorDto.Bet betEnd : betEndList) {
             switch (betEnd.getMenuCode()) {
@@ -373,6 +401,21 @@ public class MonitorServiceImpl implements MonitorService {
                 case BITCOIN5:
                     bitcoin5 += betEnd.getBetMoney() - betEnd.getHitMoney();
                     break;
+                case EOS1:
+                    eos1 += betEnd.getBetMoney() - betEnd.getHitMoney();
+                    break;
+                case EOS2:
+                    eos2 += betEnd.getBetMoney() - betEnd.getHitMoney();
+                    break;
+                case EOS3:
+                    eos3 += betEnd.getBetMoney() - betEnd.getHitMoney();
+                    break;
+                case EOS4:
+                    eos4 += betEnd.getBetMoney() - betEnd.getHitMoney();
+                    break;
+                case EOS5:
+                    eos5 += betEnd.getBetMoney() - betEnd.getHitMoney();
+                    break;
             }
         }
         monitor.setSportsEnd(sports);
@@ -399,6 +442,12 @@ public class MonitorServiceImpl implements MonitorService {
         monitor.setBitcoin1End(bitcoin1);
         monitor.setBitcoin3End(bitcoin3);
         monitor.setBitcoin5End(bitcoin5);
+
+        monitor.setEos1End(eos1);
+        monitor.setEos2End(eos2);
+        monitor.setEos3End(eos3);
+        monitor.setEos4End(eos4);
+        monitor.setEos5End(eos5);
 
         // 인플레이
         if (Config.getSysConfig().getSports().isCanInplay()) {

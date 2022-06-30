@@ -29,6 +29,12 @@
 				<a th:href="@{|${siteConfig.pathSite}/payment/withdraw|}"><img src="/images/m/m-withdraw.png"/>환 전</a>
 
 				<th:block th:if="${!sysConfig.zone.gnb.empty}">
+					<a th:if="${sysConfig.zone.eos1}" th:href="@{|${siteConfig.pathSite}/zone/eos1|}"><img src="/images/m/m-eos1.png"/>EOS 1분</a>
+					<a th:if="${sysConfig.zone.eos2}" th:href="@{|${siteConfig.pathSite}/zone/eos2|}"><img src="/images/m/m-eos2.png"/>EOS 2분</a>
+					<a th:if="${sysConfig.zone.eos3}" th:href="@{|${siteConfig.pathSite}/zone/eos3|}"><img src="/images/m/m-eos3.png"/>EOS 3분</a>
+					<a th:if="${sysConfig.zone.eos4}" th:href="@{|${siteConfig.pathSite}/zone/eos4|}"><img src="/images/m/m-eos4.png"/>EOS 4분</a>
+					<a th:if="${sysConfig.zone.eos5}" th:href="@{|${siteConfig.pathSite}/zone/eos5|}"><img src="/images/m/m-eos5.png"/>EOS 5분</a>
+
 					<a th:if="${sysConfig.zone.ladder}" th:href="@{|${siteConfig.pathSite}/zone/ladder|}"><img src="/images/m/m-sadari.png"/>사다리</a>
 					<a th:if="${sysConfig.zone.dari}" th:href="@{|${siteConfig.pathSite}/zone/dari|}"><img src="/images/m/m-dari.png"/>다리다리</a>
 					<a th:if="${sysConfig.zone.snail}" th:href="@{|${siteConfig.pathSite}/zone/snail|}"><img src="/images/m/m-dal.png"/>달팽이</a>

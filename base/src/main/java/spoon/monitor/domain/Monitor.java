@@ -126,6 +126,18 @@ public class Monitor {
     private long bitcoin5;
     private long bitcoin5End;
 
+    // eos
+    private long eos1;
+    private long eos1End;
+    private long eos2;
+    private long eos2End;
+    private long eos3;
+    private long eos3End;
+    private long eos4;
+    private long eos4End;
+    private long eos5;
+    private long eos5End;
+
     // 게임존
     public long getLadderResult() {
         return ZoneConfig.getLadder().getResult();
@@ -205,5 +217,26 @@ public class Monitor {
 
     public long getBitcoin5Result() {
         return ZoneConfig.getBitcoin5().getResult();
+    }
+
+
+    public long getEos1Result() {
+        return ZoneConfig.getEos1().getResult();
+    }
+
+    public long getEos2Result() {
+        return ZoneConfig.getEos2().getResult();
+    }
+
+    public long getEos3Result() {
+        return ZoneConfig.getEos3().getResult();
+    }
+
+    public long getEos4Result() {
+        return ZoneConfig.getEos4().getResult();
+    }
+
+    public long getEos5Result() {
+        return ZoneConfig.getEos5().getResult();
     }
 }

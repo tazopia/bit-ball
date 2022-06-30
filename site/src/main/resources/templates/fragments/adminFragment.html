@@ -83,6 +83,53 @@
                 <li th:class="${lnb eq 'new_snail' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/new_snail/closing|}"><span>종료</span></a></li>
             </ul>
         </li>
+
+        <li th:class="${lnb eq 'eos1'} ? 'on'" th:if="${sysConfig.zone.eos1}">
+            <a><em class="bul fa fa-bars"></em><span>EOS 1분</span>
+                <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).eos1.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>
+            <ul class="lnb-sub lnb-3">
+                <li th:class="${lnb eq 'eos1' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos1/config|}"><span>설정</span></a></li>
+                <li th:class="${lnb eq 'eos1' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos1/complete|}"><span>진행</span></a></li>
+                <li th:class="${lnb eq 'eos1' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos1/closing|}"><span>종료</span></a></li>
+            </ul>
+        </li>
+        <li th:class="${lnb eq 'eos2'} ? 'on'" th:if="${sysConfig.zone.eos2}">
+            <a><em class="bul fa fa-bars"></em><span>EOS 2분</span>
+                <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).eos2.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>
+            <ul class="lnb-sub lnb-3">
+                <li th:class="${lnb eq 'eos2' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos2/config|}"><span>설정</span></a></li>
+                <li th:class="${lnb eq 'eos2' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos2/complete|}"><span>진행</span></a></li>
+                <li th:class="${lnb eq 'eos2' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos2/closing|}"><span>종료</span></a></li>
+            </ul>
+        </li>
+        <li th:class="${lnb eq 'eos3'} ? 'on'" th:if="${sysConfig.zone.eos3}">
+            <a><em class="bul fa fa-bars"></em><span>EOS 3분</span>
+                <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).eos3.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>
+            <ul class="lnb-sub lnb-3">
+                <li th:class="${lnb eq 'eos3' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos3/config|}"><span>설정</span></a></li>
+                <li th:class="${lnb eq 'eos3' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos3/complete|}"><span>진행</span></a></li>
+                <li th:class="${lnb eq 'eos3' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos3/closing|}"><span>종료</span></a></li>
+            </ul>
+        </li>
+        <li th:class="${lnb eq 'eos4'} ? 'on'" th:if="${sysConfig.zone.eos4}">
+            <a><em class="bul fa fa-bars"></em><span>EOS 4분</span>
+                <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).eos4.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>
+            <ul class="lnb-sub lnb-3">
+                <li th:class="${lnb eq 'eos4' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos4/config|}"><span>설정</span></a></li>
+                <li th:class="${lnb eq 'eos4' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos4/complete|}"><span>진행</span></a></li>
+                <li th:class="${lnb eq 'eos4' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos4/closing|}"><span>종료</span></a></li>
+            </ul>
+        </li>
+        <li th:class="${lnb eq 'eos5'} ? 'on'" th:if="${sysConfig.zone.eos5}">
+            <a><em class="bul fa fa-bars"></em><span>EOS 5분</span>
+                <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).eos5.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>
+            <ul class="lnb-sub lnb-3">
+                <li th:class="${lnb eq 'eos5' and pnb eq 'config'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos5/config|}"><span>설정</span></a></li>
+                <li th:class="${lnb eq 'eos5' and pnb eq 'complete'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos5/complete|}"><span>진행</span></a></li>
+                <li th:class="${lnb eq 'eos5' and pnb eq 'closing'} ? 'on'"><a th:href="@{|${siteConfig.pathAdmin}/zone/eos5/closing|}"><span>종료</span></a></li>
+            </ul>
+        </li>
+
         <li th:class="${lnb eq 'power'} ? 'on'" th:if="${sysConfig.zone.power}">
             <a><em class="bul fa fa-bars"></em><span>파워볼</span>
                 <em th:class="'sub fa fa-power-off' + (${T(spoon.gameZone.ZoneConfig).power.enabled} ? ' color01' : ' color05')" aria-hidden="true"></em></a>

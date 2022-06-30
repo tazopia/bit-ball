@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      layout:decorate="layout/siteLayout" th:with="main='page', gnb='score', lnb='eos1'">
+<body>
+
+<section layout:fragment="section">
+    <h3>EOS 파워볼 1분 경기결과</h3>
+
+    <form id="frm-search" method="get" th:action="@{|${siteConfig.pathSite}/zone/eos1/score|}">
+        <input type="hidden" id="page" name="page" th:value="${page.number + 1}"/>
+    </form>
+
+    <table class="list game">
+        <caption>사다리</caption>
+        <colgroup>
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th rowspan="2">일자</th>
+            <th rowspan="2">오늘회차</th>
+            <th colspan="3">파워볼</th>
+            <th colspan="5">일반볼</th>
+        </tr>
+        <tr>
+            <th>결과</th>
+            <th>홀짝</th>
+            <th>언오버</th>
+            <th>결과</th>
+            <th>합</th>
+            <th>대중소</th>
+            <th>홀짝</th>
+            <th>언오버</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${page.content}">
+            <td th:utext="${tag.dayWeekTime(g.gameDate)}"></td>
+            <td class="color01" th:text="${tag.round(g.round, 3)} + '회차'"></td>
+            <td th:text="${g.pb}"></td>
+            <td>
+                <span th:if="${g.pb_oddeven eq 'ODD'}" class="color01">홀</span>
+                <span th:if="${g.pb_oddeven eq 'EVEN'}" class="color02">짝</span>
+                <span th:if="${g.pb_oddeven ne 'ODD' and g.pb_oddeven ne 'EVEN'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.pb_overunder eq 'UNDER'}" class="color01">언더</span>
+                <span th:if="${g.pb_overunder eq 'OVER'}" class="color02">오버</span>
+                <span th:if="${g.pb_overunder ne 'OVER' and g.pb_overunder ne 'UNDER'}">-</span>
+            </td>
+            <td th:text="${g.ball}"></td>
+            <td th:text="${g.sum}"></td>
+            <td>
+                <span th:if="${g.size eq 'B'}" class="color02">대</span>
+                <span th:if="${g.size eq 'M'}" class="color03">중</span>
+                <span th:if="${g.size eq 'S'}" class="color01">소</span>
+                <span th:if="${g.size ne 'B' and g.size ne 'M' and g.size ne 'S'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.oddeven eq 'ODD'}" class="color01">홀</span>
+                <span th:if="${g.oddeven eq 'EVEN'}" class="color02">짝</span>
+                <span th:if="${g.oddeven ne 'ODD' and g.oddeven ne 'EVEN'}">-</span>
+            </td>
+            <td>
+                <span th:if="${g.overunder eq 'UNDER'}" class="color01">언더</span>
+                <span th:if="${g.overunder eq 'OVER'}" class="color02">오버</span>
+                <span th:if="${g.overunder ne 'OVER' and g.overunder ne 'UNDER'}">-</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <ul th:replace="fragments/site :: paging(p=${page})"></ul>
+    </div>
+</section>
+
+<script layout:fragment="script" th:if="true">
+
+</script>
+</body>
+</html>

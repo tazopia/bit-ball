@@ -49,7 +49,7 @@ public class QCasinoEvolutionBet extends EntityPathBase<CasinoEvolutionBet> {
 
     public final EnumPath<spoon.member.domain.Role> role = createEnum("role", spoon.member.domain.Role.class);
 
-    public final NumberPath<Long> round = createNumber("round", Long.class);
+    public final StringPath round = createString("round");
 
     public final StringPath status = createString("status");
 

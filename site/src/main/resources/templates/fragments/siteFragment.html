@@ -15,6 +15,27 @@
 <body>
 <div th:fragment="gnb" th:remove="tag">
     <ul>
+		<li th:class="${gnb eq 'eos'} ? 'on'">
+			<a th:href="@{|${siteConfig.pathSite}/zone/eos3|}">EOS 파워볼</a>
+			<ul class="sub">
+				<li th:class="${lnb eq 'eos1'} ? 'on'" th:if="${sysConfig.zone.eos1}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/eos1|}"><span>EOS 1분</span></a>
+				</li>
+				<li th:class="${lnb eq 'eos2'} ? 'on'" th:if="${sysConfig.zone.eos2}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/eos2|}"><span>EOS 2분</span></a>
+				</li>
+				<li th:class="${lnb eq 'eos3'} ? 'on'" th:if="${sysConfig.zone.eos3}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/eos3|}"><span>EOS 3분</span></a>
+				</li>
+				<li th:class="${lnb eq 'eos4'} ? 'on'" th:if="${sysConfig.zone.eos4}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/eos4|}"><span>EOS 4분</span></a>
+				</li>
+				<li th:class="${lnb eq 'eos5'} ? 'on'" th:if="${sysConfig.zone.eos5}">
+					<a th:href="@{|${siteConfig.pathSite}/zone/eos5|}"><span>EOS 5분</span></a>
+				</li>
+			</ul>
+		</li>
+
 		<li th:class="${gnb eq 'zone' and lnb eq 'power'} ? 'on'" th:if="${sysConfig.zone.power}">
 			<a th:href="@{|${siteConfig.pathSite}/zone/power|}">파워볼</a>
 		</li>
@@ -49,11 +70,17 @@
 		</li>
 
         <li th:class="${gnb eq 'score'} ? 'on'">
-            <a th:href="@{|${siteConfig.pathSite}/zone/power/score|}">경기결과</a>
+            <a th:href="@{|${siteConfig.pathSite}/zone/eos3/score|}">경기결과</a>
             <ul class="sub">
 <!--                <li th:class="${lnb eq 'cross'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/score/cross|}"><span>크로스</span></a></li>-->
 <!--				<li th:class="${lnb eq 'special'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/score/special|}"><span>스페셜</span></a></li>-->
 <!--				<li th:if="${sysConfig.sports.canLive}" th:class="${lnb eq 'live'} ? 'on'"><a th:href="@{|${siteConfig.pathSite}/score/live|}"><span>라이브</span></a></li>-->
+
+				<li th:class="${gnb eq 'score' and lnb eq 'eos1'} ? 'on'" th:if="${sysConfig.zone.eos1}"><a th:href="@{|${siteConfig.pathSite}/zone/eos1/score|}"><span>EOS 파워볼 1분</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'eos2'} ? 'on'" th:if="${sysConfig.zone.eos2}"><a th:href="@{|${siteConfig.pathSite}/zone/eos2/score|}"><span>EOS 파워볼 2분</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'eos3'} ? 'on'" th:if="${sysConfig.zone.eos3}"><a th:href="@{|${siteConfig.pathSite}/zone/eos3/score|}"><span>EOS 파워볼 3분</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'eos4'} ? 'on'" th:if="${sysConfig.zone.eos4}"><a th:href="@{|${siteConfig.pathSite}/zone/eos4/score|}"><span>EOS 파워볼 4분</span></a></li>
+				<li th:class="${gnb eq 'score' and lnb eq 'eos5'} ? 'on'" th:if="${sysConfig.zone.eos5}"><a th:href="@{|${siteConfig.pathSite}/zone/eos5/score|}"><span>EOS 파워볼 5분</span></a></li>
 
 				<li th:class="${gnb eq 'score' and lnb eq 'cw_oddeven'} ? 'on'" th:if="${sysConfig.zone.crownOddeven}"><a th:href="@{|${siteConfig.pathSite}/zone/cw_oddeven/score|}"><span>홀짝</span></a></li>
 				<li th:class="${gnb eq 'score' and lnb eq 'cw_baccarat'} ? 'on'" th:if="${sysConfig.zone.crownBaccarat}"><a th:href="@{|${siteConfig.pathSite}/zone/cw_baccarat/score|}"><span>바카라</span></a></li>

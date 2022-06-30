@@ -25,6 +25,16 @@ import spoon.gameZone.crownOddeven.CrownOddevenConfig;
 import spoon.gameZone.crownSutda.CrownSutdaConfig;
 import spoon.gameZone.dari.DariConfig;
 import spoon.gameZone.dog.DogConfig;
+import spoon.gameZone.eos1.bot.Eos1Parsing;
+import spoon.gameZone.eos1.domain.Eos1Config;
+import spoon.gameZone.eos2.bot.Eos2Parsing;
+import spoon.gameZone.eos2.domain.Eos2Config;
+import spoon.gameZone.eos3.bot.Eos3Parsing;
+import spoon.gameZone.eos3.domain.Eos3Config;
+import spoon.gameZone.eos4.bot.Eos4Parsing;
+import spoon.gameZone.eos4.domain.Eos4Config;
+import spoon.gameZone.eos5.bot.Eos5Parsing;
+import spoon.gameZone.eos5.domain.Eos5Config;
 import spoon.gameZone.keno.bot.KenoParsing;
 import spoon.gameZone.keno.domain.KenoConfig;
 import spoon.gameZone.ladder.LadderConfig;
@@ -87,6 +97,16 @@ public class ZoneConfig {
 
     private Bitcoin5Parsing bitcoin5Parsing;
 
+    private Eos1Parsing eos1Parsing;
+
+    private Eos2Parsing eos2Parsing;
+
+    private Eos3Parsing eos3Parsing;
+
+    private Eos4Parsing eos4Parsing;
+
+    private Eos5Parsing eos5Parsing;
+
     public void loadZoneConfig() {
         initLadderConfig();
         initSnailConfig();
@@ -113,6 +133,13 @@ public class ZoneConfig {
         initBitcoin1Config();
         initBitcoin3Config();
         initBitcoin5Config();
+
+        // Eos 파워볼
+        initEos1Config();
+        initEos2Config();
+        initEos3Config();
+        initEos4Config();
+        initEos5Config();
     }
 
     private void initCrownSutdaConfig() {
@@ -430,6 +457,81 @@ public class ZoneConfig {
         }
     }
 
+    private void initEos1Config() {
+        // 스카이 홀짝
+        JsonConfig config = jsonRepository.findOne("zone_eos1");
+        if (config == null) {
+            ZoneConfig.setEos1(new Eos1Config());
+        } else {
+            ZoneConfig.setEos1(JsonUtils.toModel(config.getJson(), Eos1Config.class));
+        }
+
+        if (ZoneConfig.getEos1().isEnabled() && Config.getSysConfig().getZone().isEos1()) {
+            eos1Parsing.parsingGame();
+            eos1Parsing.closingGame();
+        }
+    }
+
+    private void initEos2Config() {
+        // 스카이 홀짝
+        JsonConfig config = jsonRepository.findOne("zone_eos2");
+        if (config == null) {
+            ZoneConfig.setEos2(new Eos2Config());
+        } else {
+            ZoneConfig.setEos2(JsonUtils.toModel(config.getJson(), Eos2Config.class));
+        }
+
+        if (ZoneConfig.getEos2().isEnabled() && Config.getSysConfig().getZone().isEos2()) {
+            eos2Parsing.parsingGame();
+            eos2Parsing.closingGame();
+        }
+    }
+
+    private void initEos3Config() {
+        // 스카이 홀짝
+        JsonConfig config = jsonRepository.findOne("zone_eos3");
+        if (config == null) {
+            ZoneConfig.setEos3(new Eos3Config());
+        } else {
+            ZoneConfig.setEos3(JsonUtils.toModel(config.getJson(), Eos3Config.class));
+        }
+
+        if (ZoneConfig.getEos3().isEnabled() && Config.getSysConfig().getZone().isEos3()) {
+            eos3Parsing.parsingGame();
+            eos3Parsing.closingGame();
+        }
+    }
+
+    private void initEos4Config() {
+        // 스카이 홀짝
+        JsonConfig config = jsonRepository.findOne("zone_eos4");
+        if (config == null) {
+            ZoneConfig.setEos4(new Eos4Config());
+        } else {
+            ZoneConfig.setEos4(JsonUtils.toModel(config.getJson(), Eos4Config.class));
+        }
+
+        if (ZoneConfig.getEos4().isEnabled() && Config.getSysConfig().getZone().isEos4()) {
+            eos4Parsing.parsingGame();
+            eos4Parsing.closingGame();
+        }
+    }
+
+    private void initEos5Config() {
+        // 스카이 홀짝
+        JsonConfig config = jsonRepository.findOne("zone_eos5");
+        if (config == null) {
+            ZoneConfig.setEos5(new Eos5Config());
+        } else {
+            ZoneConfig.setEos5(JsonUtils.toModel(config.getJson(), Eos5Config.class));
+        }
+
+        if (ZoneConfig.getEos5().isEnabled() && Config.getSysConfig().getZone().isEos5()) {
+            eos5Parsing.parsingGame();
+            eos5Parsing.closingGame();
+        }
+    }
+
     @Getter
     @Setter
     private static LadderConfig ladder;
@@ -529,4 +631,24 @@ public class ZoneConfig {
     @Getter
     @Setter
     private static CasinoEvolutionConfig casinoEvolution;
+
+    @Getter
+    @Setter
+    private static Eos1Config eos1;
+
+    @Getter
+    @Setter
+    private static Eos2Config eos2;
+
+    @Getter
+    @Setter
+    private static Eos3Config eos3;
+
+    @Getter
+    @Setter
+    private static Eos4Config eos4;
+
+    @Getter
+    @Setter
+    private static Eos5Config eos5;
 }

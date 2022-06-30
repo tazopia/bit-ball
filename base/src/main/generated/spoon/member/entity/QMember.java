@@ -141,6 +141,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final BooleanPath secession = createBoolean("secession");
 
+    public final NumberPath<Double> slot = createNumber("slot", Double.class);
+
     public final StringPath userid = createString("userid");
 
     public final NumberPath<Long> withdraw = createNumber("withdraw", Long.class);
