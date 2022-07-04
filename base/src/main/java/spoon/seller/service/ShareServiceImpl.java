@@ -57,6 +57,17 @@ public class ShareServiceImpl implements ShareService {
             agency4.setCasino(update.getCasino());
             agency4.setSlot(update.getSlot());
 
+            agency4.setEos1Min(update.getEos1Min());
+            agency4.setEos1Max(update.getEos1Max());
+            agency4.setEos2Min(update.getEos2Min());
+            agency4.setEos2Max(update.getEos2Max());
+            agency4.setEos3Min(update.getEos3Min());
+            agency4.setEos3Max(update.getEos3Max());
+            agency4.setEos4Min(update.getEos4Min());
+            agency4.setEos4Max(update.getEos4Max());
+            agency4.setEos5Min(update.getEos5Min());
+            agency4.setEos5Max(update.getEos5Max());
+
             memberService.update(agency4);
         } catch (RuntimeException e) {
             log.error("총판 수수료율 수정에 실패하였습니다.: {}", update.toString(), e);
@@ -73,6 +84,23 @@ public class ShareServiceImpl implements ShareService {
         Member agency = memberService.getMember(update.getUserid());
         final Member parent = memberService.getMember(WebUtils.userid());
 
+        if (parent.getEos1Min() < update.getEos1Min() || parent.getEos1Max() < update.getEos1Max()) {
+            return new AjaxResult(false, "EOS 파워볼 1분 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        }
+        if (parent.getEos2Min() < update.getEos2Min() || parent.getEos2Max() < update.getEos2Max()) {
+            return new AjaxResult(false, "EOS 파워볼 2분 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        }
+        if (parent.getEos3Min() < update.getEos3Min() || parent.getEos3Max() < update.getEos3Max()) {
+            return new AjaxResult(false, "EOS 파워볼 3분 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        }
+        if (parent.getEos4Min() < update.getEos4Min() || parent.getEos4Max() < update.getEos4Max()) {
+            return new AjaxResult(false, "EOS 파워볼 4분 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        }
+        if (parent.getEos5Min() < update.getEos5Min() || parent.getEos5Max() < update.getEos5Max()) {
+            return new AjaxResult(false, "EOS 파워볼 5분 상위 최대 요율 이상은 지정하실 수 없습니다.");
+        }
+
+
         if (parent.getPowerMin() < update.getPowerMin() || parent.getPowerMax() < update.getPowerMax())
             return new AjaxResult(false, "파워볼 상위 최대 요율 이상은 지정하실 수 없습니다.");
         if (parent.getPowerLadder() < update.getPowerLadder())
@@ -88,9 +116,17 @@ public class ShareServiceImpl implements ShareService {
         
 
         try {
-            agency.setPowerMin(update.getPowerMin());
-            agency.setPowerMax(update.getPowerMax());
-            agency.setPowerLadder(update.getPowerLadder());
+            agency.setEos1Min(update.getEos1Min());
+            agency.setEos1Max(update.getEos1Max());
+            agency.setEos2Min(update.getEos2Min());
+            agency.setEos2Max(update.getEos2Max());
+            agency.setEos3Min(update.getEos3Min());
+            agency.setEos3Max(update.getEos3Max());
+            agency.setEos4Min(update.getEos4Min());
+            agency.setEos4Max(update.getEos4Max());
+            agency.setEos5Min(update.getEos5Min());
+            agency.setEos5Max(update.getEos5Max());
+
             agency.setKeno(update.getKeno());
             agency.setKenoLadder(update.getKenoLadder());
             agency.setBtc3Min(update.getBtc3Min());

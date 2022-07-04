@@ -30,9 +30,8 @@
                 <th>출금</th>
                 <th>수익</th>
                 <th>베팅</th>
-                <th>↓ 파워볼 ↑</th>
-                <th>파다리</th>
-				<th>키노</th>
+                <th>EOS3(단폴/조합)</th>
+                <th>EOS5(단폴/조합)</th>
 				<th>키다리</th>
 				<th>카지노/슬롯</th>
                 <th>관리</th>
@@ -52,22 +51,18 @@
                 <td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
                 <td style="padding:0;">
                     <label th:if="${m.hq eq 4}" th:remove="tag">
-                        <input type="text" name="powerMin" th:value="${m.powerMin}" style="width: 60px; text-align: right;"/> /
-						<input type="text" name="powerMax" th:value="${m.powerMax}" style="width: 60px; text-align: right;"/>
+                        <input type="text" name="eos3Min" th:value="${m.eos3Min}" style="width: 50px; text-align: right;"/> /
+                        <input type="text" name="eos3Max" th:value="${m.eos3Max}" style="width: 50px; text-align: right;"/>
                     </label>
-                    <span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.powerMin + '% / ' + m.powerMax + '%'}"></span>
+                    <span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.eos3Min + '% / ' + m.eos3Max + '%'}"></span>
                 </td>
+
 				<td style="padding:0;">
 					<label th:if="${m.hq eq 4}" th:remove="tag">
-						<input type="text" name="powerLadder" th:value="${m.powerLadder}" style="width: 60px; text-align: right;"/> %
+                        <input type="text" name="eos5Min" th:value="${m.eos5Min}" style="width: 50px; text-align: right;"/> /
+                        <input type="text" name="eos5Max" th:value="${m.eos5Max}" style="width: 50px; text-align: right;"/>
 					</label>
-					<span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.powerLadder + '%'}"></span>
-				</td>
-				<td style="padding:0;">
-					<label th:if="${m.hq eq 4}" th:remove="tag">
-						<input type="text" name="keno" th:value="${m.keno}" style="width: 60px; text-align: right;"/> %
-					</label>
-					<span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.keno + '%'}"></span>
+					<span th:if="${m.hq ne 4}" th:remove="tag" th:text="${m.eos5Min + '% / ' + m.eos5Max + '%'}"></span>
 				</td>
 				<td style="padding:0;">
 					<label th:if="${m.hq eq 4}" th:remove="tag">
@@ -104,9 +99,13 @@
 
         $.post(path + '/seller/share', {
             userid: userid,
-            powerMin: tr.find('input[name=powerMin]').val(),
-            powerMax: tr.find('input[name=powerMax]').val(),
-            powerLadder: tr.find('input[name=powerLadder]').val(),
+            //powerMin: tr.find('input[name=powerMin]').val(),
+            //powerMax: tr.find('input[name=powerMax]').val(),
+            //powerLadder: tr.find('input[name=powerLadder]').val(),
+            eos3Min: tr.find('input[name=eos3Min]').val(),
+            eos3Max: tr.find('input[name=eos3Max]').val(),
+            eos5Min: tr.find('input[name=eos5Min]').val(),
+            eos5Max: tr.find('input[name=eos5Max]').val(),
             keno: tr.find('input[name=keno]').val(),
             kenoLadder: tr.find('input[name=kenoLadder]').val(),
             casino: tr.find('input[name=casino]').val(),

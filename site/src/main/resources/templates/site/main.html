@@ -24,11 +24,11 @@
 				</ul>
 			</article>
 			<article class="powerball">
-				<h3><span th:text="${siteConfig.companyName}">Soul</span> 파워볼 결과</h3>
+				<h3><span th:text="${siteConfig.companyName}">Soul</span> EOS 파워볼 3분 결과</h3>
 				<ul>
 					<li th:each="list : ${powerball}">
 						<span class="date" th:text="${list.date}">03.12(월) 23:00</span>
-						<span class="times"><span th:text="${tag.num(list.times[0])} + ','"></span><span class="color02" th:text="${list.times[1]}"></span></span>
+						<span class="times"><span class="color02" th:text="${list.round} + ' '"></span> 회차</span>
 						<span class="balls">
 							<img th:each="b : ${list.balls}" th:src="@{|/images/powerball/p${b}.png|}" style="padding: 0 2px;"/>
 						</span>

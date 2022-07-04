@@ -36,5 +36,16 @@ public class SellerDto {
 
         private double casino;
         private double slot;
+
+        private double eos1Max;
+        private double eos1Min;
+        private double eos2Max;
+        private double eos2Min;
+        private double eos3Max;
+        private double eos3Min;
+        private double eos4Max;
+        private double eos4Min;
+        private double eos5Max;
+        private double eos5Min;
     }
 }

@@ -29,9 +29,8 @@
 				<th>총출금</th>
 				<th>총수익</th>
 				<th>베팅</th>
-				<th>↓ 파워볼 ↑</th>
-				<th>파다리</th>
-				<th>키노</th>
+				<th>EOS 3분 (단폴/조합)</th>
+				<th>EOS 5분 (단폴/조합)</th>
 				<th>키다리</th>
 				<th>카지노 / 슬롯</th>
 				<th style="width: 140px;">관리</th>
@@ -50,22 +49,17 @@
 				<td class="color03 num" th:text="${tag.num(m.betZone) + '원'}">실시간</td>
 				<td th:class="${m.hq eq 4} ? 'color01'">
 					<label th:if="${m.hq eq 3}" th:remove="tag">
-						<input type="text" name="powerMin" th:value="${m.powerMin}" style="width: 60px; text-align: right;"/>% /
-						<input type="text" name="powerMax" th:value="${m.powerMax}" style="width: 60px; text-align: right;"/>%
+						<input type="text" name="eos3Min" th:value="${m.eos3Min}" style="width: 60px; text-align: right;"/>% /
+						<input type="text" name="eos3Max" th:value="${m.eos3Max}" style="width: 60px; text-align: right;"/>%
 					</label>
-					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.powerMin + '% / ' + m.powerMax + '%'}"></span>
+					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.eos3Min + '% / ' + m.eos3Max + '%'}"></span>
 				</td>
 				<td th:class="${m.hq eq 4} ? 'color01'">
 					<label th:if="${m.hq eq 3}" th:remove="tag">
-						<input type="text" name="powerLadder" th:value="${m.powerLadder}" style="width: 60px; text-align: right;"/>%
+						<input type="text" name="eos5Min" th:value="${m.eos5Min}" style="width: 60px; text-align: right;"/>% /
+						<input type="text" name="eos5Max" th:value="${m.eos5Max}" style="width: 60px; text-align: right;"/>%
 					</label>
-					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.powerLadder + '%'}"></span>
-				</td>
-				<td th:class="${m.hq eq 4} ? 'color01'">
-					<label th:if="${m.hq eq 3}" th:remove="tag">
-						<input type="text" name="keno" th:value="${m.keno}" style="width: 60px; text-align: right;"/>%
-					</label>
-					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.keno + '%'}"></span>
+					<span th:if="${m.hq ne 3}" th:remove="tag" th:text="${m.eos5Min + '% / ' + m.eos5Max + '%'}"></span>
 				</td>
 				<td th:class="${m.hq eq 4} ? 'color01'">
 					<label th:if="${m.hq eq 3}" th:remove="tag">
@@ -92,40 +86,40 @@
 	</section>
 </div>
 <script layout:fragment="script" th:if="true">
-    var _powerMax = '[[${hq.powerMax}]]';
-    var _powerMin = [[${hq.powerMin}]];
-    var _powerLadder = [[${hq.powerLadder}]];
-    var _keno = [[${hq.keno}]];
+	var _eos3Max = [[${hq.eos3Max}]];
+	var _eos3Min = [[${hq.eos3Min}]];
+	var _eos5Max = [[${hq.eos5Max}]];
+	var _eos5Min = [[${hq.eos5Min}]];
     var _kenoLadder = [[${hq.kenoLadder}]];
     var _casino = [[${hq.casino}]];
 	var _slot = [[${hq.slot}]];
 
     function updateShare(userid, obj) {
         var tr = $(obj).parent().parent();
-        var powerMax = tr.find('input[name=powerMax]').val();
-        var powerMin = tr.find('input[name=powerMin]').val();
-        var powerLadder = tr.find('input[name=powerLadder]').val();
-        var keno = tr.find('input[name=keno]').val();
+		var eos3Max = tr.find('input[name=eos3Max]').val();
+		var eos3Min = tr.find('input[name=eos3Min]').val();
+		var eos5Max = tr.find('input[name=eos5Max]').val();
+		var eos5Min = tr.find('input[name=eos5Min]').val();
         var kenoLadder = tr.find('input[name=kenoLadder]').val();
         var casino = tr.find('input[name=casino]').val();
 		var slot = tr.find('input[name=slot]').val();
 
-        if (_powerMax < powerMax) {
-            alert('파워볼 상위 최대 롤링은 ' + _powerMax + '% 입니다.');
-            return false;
-        }
-        if (_powerMin < powerMin) {
-            alert('파워볼 하위 최대 롤링은 ' + _powerMin + '% 입니다.');
-            return false;
-        }
-        if (_powerLadder < powerLadder) {
-            alert('파워사다리 최대 롤링은 ' + _powerLadder + '% 입니다.');
-            return false;
-        }
-        if (_keno < keno) {
-            alert('스피드키노 최대 롤링은 ' + _keno + '% 입니다.');
-            return false;
-        }
+		if (_eos3Max < eos3Max) {
+			alert('EOS 파워볼 3분 조합 최대 롤링은 ' + _eos3Max + '% 입니다.');
+			return false;
+		}
+		if (_eos3Min < eos3Min) {
+			alert('EOS 파워볼 3분 단폴 최대 롤링은 ' + _eos3Min + '% 입니다.');
+			return false;
+		}
+		if (_eos5Max < eos5Max) {
+			alert('EOS 파워볼 5분 조합 최대 롤링은 ' + _eos5Max + '% 입니다.');
+			return false;
+		}
+		if (_eos5Min < eos5Min) {
+			alert('EOS 파워볼 5분 단폴 최대 롤링은 ' + _eos5Min + '% 입니다.');
+			return false;
+		}
         if (_kenoLadder < kenoLadder) {
             alert('키노사다리 최대 롤링은 ' + _kenoLadder + '% 입니다.');
             return false;
@@ -145,10 +139,10 @@
 
         $.post(path + '/accounting/share', {
             userid: userid,
-            powerMin: powerMin,
-            powerMax: powerMax,
-            powerLadder: powerLadder,
-            keno: keno,
+			eos3Min: eos3Min,
+			eos3Max: eos3Max,
+			eos5Min: eos5Min,
+			eos5Max: eos5Max,
             kenoLadder: kenoLadder,
             casino: casino,
 			slot: slot

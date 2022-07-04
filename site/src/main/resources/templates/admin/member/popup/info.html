@@ -98,17 +98,14 @@
 					<th rowspan="2">요율</th>
 					<td colspan="3">
 						<label>
-							파워볼 로우/하이 :
-							<input type="text" name="powerMin" th:value="${member.powerMin}" style="width: 60px; text-align: right;"/>% /
-							<input type="text" name="powerMax" th:value="${member.powerMax}" style="width: 60px; text-align: right;"/>%
+							EOS 3분 단폴/조합 :
+							<input type="text" name="eos3Min" th:value="${member.eos3Min}" style="width: 60px; text-align: right;"/>% /
+							<input type="text" name="eos3Max" th:value="${member.eos3Max}" style="width: 60px; text-align: right;"/>%
 						</label>
 						<label>
-							파다리 :
-							<input type="text" name="powerLadder" th:value="${member.powerLadder}" style="width: 60px; text-align: right;"/>%
-						</label>
-						<label>
-							키노 :
-							<input type="text" name="keno" th:value="${member.keno}" style="width: 60px; text-align: right;"/>%
+							EOS 5분 단폴/조합 :
+							<input type="text" name="eos5Min" th:value="${member.eos5Min}" style="width: 60px; text-align: right;"/>% /
+							<input type="text" name="eos5Max" th:value="${member.eos5Max}" style="width: 60px; text-align: right;"/>%
 						</label>
 						<label>
 							키다리 :
@@ -119,8 +116,9 @@
 				<tr th:if="${member.role.name() eq 'USER'}">
 					<td colspan="3">
 						<label>
-							카지노 :
-							<input type="text" name="casino" th:value="${member.casino}" style="width: 60px; text-align: right;"/>%
+							카지노/슬롯 :
+							<input type="text" name="casino" th:value="${member.casino}" style="width: 60px; text-align: right;"/>% /
+							<input type="text" name="slot" th:value="${member.slot}" style="width: 60px; text-align: right;"/>%
 						</label>
 					</td>
 				</tr>

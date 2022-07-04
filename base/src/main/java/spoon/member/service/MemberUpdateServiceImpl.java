@@ -114,6 +114,17 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
                     member.setBtc5Min(Math.min(agency.getBtc5Min(), update.getBtc5Min()));
                     member.setBtc5Max(Math.min(agency.getBtc5Max(), update.getBtc5Max()));
                     member.setCasino(Math.min(agency.getCasino(), update.getCasino()));
+
+                    member.setEos1Min(Math.min(agency.getEos1Min(), update.getEos1Min()));
+                    member.setEos1Max(Math.min(agency.getEos1Max(), update.getEos1Max()));
+                    member.setEos2Min(Math.min(agency.getEos2Min(), update.getEos2Min()));
+                    member.setEos2Max(Math.min(agency.getEos2Max(), update.getEos2Max()));
+                    member.setEos3Min(Math.min(agency.getEos3Min(), update.getEos3Min()));
+                    member.setEos3Max(Math.min(agency.getEos3Max(), update.getEos3Max()));
+                    member.setEos4Min(Math.min(agency.getEos4Min(), update.getEos4Min()));
+                    member.setEos4Max(Math.min(agency.getEos4Max(), update.getEos4Max()));
+                    member.setEos5Min(Math.min(agency.getEos5Min(), update.getEos5Min()));
+                    member.setEos5Max(Math.min(agency.getEos5Max(), update.getEos5Max()));
                 } else {
                     member.setPowerMin(update.getPowerMin());
                     member.setPowerMax(update.getPowerMax());
@@ -125,6 +136,17 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
                     member.setBtc5Min(update.getBtc5Min());
                     member.setBtc5Max(update.getBtc5Max());
                     member.setCasino(update.getCasino());
+
+                    member.setEos1Min(update.getEos1Min());
+                    member.setEos1Max(update.getEos1Max());
+                    member.setEos2Min(update.getEos2Min());
+                    member.setEos2Max(update.getEos2Max());
+                    member.setEos3Min(update.getEos3Min());
+                    member.setEos3Max(update.getEos3Max());
+                    member.setEos4Min(update.getEos4Min());
+                    member.setEos4Max(update.getEos4Max());
+                    member.setEos5Min(update.getEos5Min());
+                    member.setEos5Max(update.getEos5Max());
                 }
             }
 
