@@ -6,7 +6,7 @@
 	<meta charset="UTF-8"/>
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<title>Best of Stella</title>
-	<link rel="shortcut icon" th:href="@{/images/favicon.ico?v=${siteConfig.version}|}}"/>
+	<link rel="shortcut icon" th:href="@{/images/favicon.png?v=${siteConfig.version}|}}"/>
 	<link rel="stylesheet" th:href="@{/css/style.mobile.css}"/>
 	<script th:src="@{/webjars/jquery/3.1.1/dist/jquery.min.js}"></script>
 </head>
@@ -17,7 +17,7 @@
 <div th:replace="fragments/mobileFragment :: gnb"></div>
 <header style="text-align: center">
 	<a id="btn-menu" style="float:left;"></a>
-	<h1 th:if="${mode eq 'main'}"><img src="/images/brand2.png" style="height:40px;margin-top: 5px"/></h1>
+	<h1 th:if="${mode eq 'main'}"><img src="/images/brand.png" style="height:40px;margin-top: 5px"/></h1>
 	<h1 th:if="${mode ne 'main'}" th:text="${title}">Mac</h1>
 	<a th:href="@{|${siteConfig.pathSite}/main|}" id="btn-home" style="float:right;"></a>
 </header>
