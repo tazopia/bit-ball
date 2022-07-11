@@ -23,8 +23,8 @@
 	-ms-object-fit cover
 	object-fit cover
 	z-index -1
-	background url(/images/background.jpg) center center no-repeat
-	background-size cover
+	background url(/images/background.jpg) center bottom no-repeat
+	//background-size cover
 	opacity 1
 }
 
@@ -79,7 +79,7 @@
 	}
 
 	input, select {
-		border solid 1px #e85202
+		border solid 1px #d8af3a
 	}
 
 	h1 {
@@ -123,27 +123,17 @@
 	}
 
 	.btn-login {
-		//background url(/images/gold_bg.jpg) center bottom no-repeat //#59a735
-		background #e85202
+		background url(/images/gold_bg.jpg) center bottom no-repeat //#59a735
+		//background #0153de
 		color #fff
 		text-shadow 0 0 5px rgba(0, 0, 0, 1)
-		//-webkit-text-stroke 1px #000
-
-		&:hover {
-			background-color darken(#e85202, 30%)
-			//background-position center top
-			//color #000
-		}
 	}
 
 	.btn-join {
-		border 1px solid #222
-		background rgba(255,255,255,0.7)
-		color #000
-		&:hover {
-			background-color #222
-			color #fff
-		}
+		border 1px solid #ccc
+		color #ccc
+		background transparent
+		//box-shadow(inset 0 0 1px 1px #888)
 	}
 
 	.copyright {

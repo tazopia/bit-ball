@@ -208,20 +208,29 @@ img {
   bottom: -20px;
   z-index: -2;
 }
-#background .bg01,
-#background .bg02 {
+#background .bg01 {
   width: 100%;
   height: 100%;
-  background: url("/images/background2.jpg") center center no-repeat;
+  background: url("/images/background.jpg") center center no-repeat;
   background-size: cover;
   z-index: -2;
+}
+#background .bg02 {
+  background: rgba(0,0,0,0.5);
 }
 #login #background .bg01 {
   background-image: url("/images/background.jpg");
 }
 #login #background .bg02 {
-  background: url("/images/login_bg.png") center center no-repeat;
   opacity: 0.5;
+}
+.page-gradient {
+  background: rgba(0,0,0,0.6);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 .page-bg {
   position: fixed;
@@ -775,8 +784,10 @@ ul.calendar li.th {
   font-weight: 600;
   padding: 0;
 }
+header {
+  background: rgba(0,0,0,0.8);
+}
 header nav {
-  background: url("/images/background3.jpg") center top no-repeat;
   background-size: cover;
   -webkit-animation: MOVE-BG 30s infinite alternate;
   -o-animation: MOVE-BG 30s infinite alternate;
@@ -816,7 +827,6 @@ header .container {
   width: 1310px;
 }
 header .gnb {
-  background: #000;
   overflow: hidden;
   height: 40px;
   line-height: 40px;
@@ -840,8 +850,7 @@ header .gnb #rolling-wrap {
   font-size: 14px;
 }
 header .info {
-  border-bottom: solid 2px transparent;
-  background: #000;
+  border-top: solid 2px #d8af3a;
 }
 header .info .container {
   display: flex;
@@ -2146,7 +2155,7 @@ ul.sports li img {
   font-size: 14px;
   font-weight: 600;
   background: #000;
-  color: #e85202;
+  color: #d8af3a;
   height: 40px;
   line-height: 40px;
   padding: 0 10px;
@@ -2230,12 +2239,12 @@ ul.sports li img {
   font-size: 16px;
   height: 42px;
   line-height: 42px;
-  background: #e85202;
+  background: url("/images/gold_bg.jpg") center bottom no-repeat;
   color: #fff;
   font-weight: 600;
 }
 .cart-wrap .cart-betting .btn:hover {
-  background-color: #a23901;
+  background-position: center top;
 }
 .cart-wrap .cart-betting .btn em {
   margin-left: 2px;
@@ -2422,7 +2431,6 @@ td.sutda p {
   padding: 60px;
 }
 #login .login-wrap .brand {
-  margin-left: -20px;
   margin-bottom: 50px;
 }
 #login .login-wrap label {
@@ -2434,14 +2442,15 @@ td.sutda p {
 #login .login-wrap select {
   width: 100%;
   height: 40px;
-  color: #222;
+  color: #fff;
   font-size: 16px;
   padding: 0 20px;
-  border: solid 1px #e85202;
+  border: solid 1px #d8af3a;
   border-radius: 5px;
+  background: rgba(0,0,0,0.8);
 }
 #login .login-wrap select {
-  color: #222;
+  color: #fff;
   float: left;
   width: 140px;
 }
@@ -2472,21 +2481,22 @@ td.sutda p {
   border-radius: 5px;
 }
 #login .login-wrap .btn-login {
-  background: #e85202;
+  background: url("/images/gold_bg.jpg") center bottom no-repeat;
   color: #fff;
   text-shadow: 0 0 5px #000;
 }
 #login .login-wrap .btn-login:hover {
-  background-color: #a23901;
+  background-position: center center;
 }
 #login .login-wrap .btn-join {
-  border: 1px solid #222;
-  color: #000;
-  background: rgba(255,255,255,0.7);
+  border: 1px solid #ccc;
+  color: #ccc;
+  -webkit-box-shadow: inset 0 0 1px 1px #888;
+  box-shadow: inset 0 0 1px 1px #888;
 }
 #login .login-wrap .btn-join:hover {
-  background-color: #222;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
 }
 #login .login-wrap .copyright {
   margin-top: 100px;
