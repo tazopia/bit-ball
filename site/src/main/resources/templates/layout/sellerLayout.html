@@ -37,7 +37,9 @@
                         <div class="side-welcome">
                             <span th:text="${user.userid}"></span>님 환영합니다.
                             <br/><br/>
-                            보유 포인트 : <span class="color01" th:text="${tag.num(user.point)}"></span> P
+                            <p>보유 머니 : <span class="color01" th:text="${tag.num(user.money)}"></span> 원</p>
+                            <br/>
+                            <p>보유 포인트 : <span class="color01" th:text="${tag.num(user.point)}"></span> P</p>
                         </div>
                         <ul class="lnb" th:replace="fragments/sellerFragment :: lnb"></ul>
                     </div>
