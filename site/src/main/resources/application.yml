@@ -21,7 +21,7 @@ spring:
     datasource:
         sql-script-encoding: UTF-8
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-        url: jdbc:sqlserver://localhost:1433;DatabaseName=bit;useUnicode=true;characterEncoding=UTF-8
+        url: jdbc:sqlserver://192.168.0.10:1433;DatabaseName=bit;useUnicode=true;characterEncoding=UTF-8
         username: sa
         password: thssla1!@
         hikari:
@@ -45,12 +45,13 @@ spring:
           enabled: detect
 
 logging:
-    level: ERROR
-    level.spoon: WARN
-    level.spoon.bot: INFO
-    level.jdbc.sqlonly: INFO
-    level.org.springframework: ERROR
-    level.org.hibernate: ERROR
+    level:
+        root: ERROR
+        spoon: ERROR
+        spoon.bot: ERROR
+        jdbc.sqlonly: ERROR
+        org.springframework: ERROR
+        org.hibernate: ERROR
 
 # 사이트 설정
 config:

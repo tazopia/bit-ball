@@ -13,6 +13,8 @@ import spoon.member.entity.Member;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @NoArgsConstructor
 @ToString
@@ -82,6 +84,12 @@ public class CasinoEvolutionBet {
 
     private LocalDate regDay;
 
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date regDate2;
+
+    @Temporal(value = TemporalType.DATE)
+    private Date regDay2;
+
     public static CasinoEvolutionBet bet(CasinoEvolutionBetDto.Bet transaction, Member member) {
         CasinoEvolutionBet bet = new CasinoEvolutionBet();
         bet.id = transaction.getId();
@@ -107,6 +115,8 @@ public class CasinoEvolutionBet {
         bet.vendor = transaction.getDetails().getGame().getVendor();
         bet.regDate = transaction.getRegDate();
         bet.regDay = transaction.getRegDate().toLocalDate();
+        bet.regDate2 = Date.from(transaction.getRegDate().atZone(ZoneId.systemDefault()).toInstant());
+        bet.regDay2 = bet.regDate2;
 
         return bet;
     }
@@ -134,6 +144,9 @@ public class CasinoEvolutionBet {
         bet.vendor = transaction.getDetails().getGame().getVendor();
         bet.regDate = transaction.getRegDate();
         bet.regDay = transaction.getRegDate().toLocalDate();
+
+        bet.regDate2 = Date.from(transaction.getRegDate().atZone(ZoneId.systemDefault()).toInstant());
+        bet.regDay2 = bet.regDate2;
 
         return bet;
     }

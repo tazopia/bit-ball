@@ -48,6 +48,7 @@ public class CasinoEvolutionBetService {
         if (StringUtils.empty(userid)) return;
 
         Member member = memberService.getMember(userid);
+        if (member == null) return;
 
         CasinoEvolutionBet bet = CasinoEvolutionBet.bet(transaction, member);
 
@@ -62,6 +63,7 @@ public class CasinoEvolutionBetService {
         if (StringUtils.empty(userid)) return;
 
         Member member = memberService.getMember(userid);
+        if (member == null) return;
 
         CasinoEvolutionBet bet = CasinoEvolutionBet.win(transaction, member);
 

@@ -88,7 +88,7 @@
                 <td class="num" th:text="${tag.num(m.betMoney)}">베팅금</td>
 				<td class="num" th:text="${tag.num(m.winMoney)}">베팅금</td>
                 <td class="num color0" th:text="${m.type}">최종머니</td>
-                <td th:utext="${tag.dayWeekTimes(m.regDate)}"></td>
+                <td th:utext="${tag.dayWeekTimesUTD(m.regDate)}"></td>
                 <td th:text="${m.casinoId}"></td>
             </tr>
             </tbody>

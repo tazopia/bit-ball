@@ -64,7 +64,7 @@
 	</section>
 	<nav>
 		<div class="container">
-			<div class="logo">
+			<div class="logo" style="height: auto">
 				<a th:href="@{|${siteConfig.pathSite}/main|}"><img src="/images/brand.png" alt="" style="height:70px;"/></a>
 			</div>
 			<div class="nav">
@@ -73,8 +73,9 @@
 			</div>
 		</div>
 	</nav>
-	<section class="info">
+	<section class="info" style="z-index: 2">
 		<div class="container">
+			<a th:if="${user.role.group.name() eq 'AGENCY'}" th:href="${@config.pathSeller} + '/sale/daily'" class="btn btn01">파트너 페이지</a>
 			<div class="menu" onclick="showMenu();"></div>
 			<span th:replace="fragments/site :: level(lv=${user.level})"></span>
 			<a th:href="@{|${siteConfig.pathSite}/mypage|}"><span class="userid" th:text="${user.nickname}">함주나</span><span>님</span></a>

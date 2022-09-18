@@ -59,7 +59,8 @@
 		<a th:if="${sysConfig.event.daily}" th:href="@{|${siteConfig.pathSite}/event/daily|}"><img src="/images/m/m-daily.png"/>출석체크</a>
 	</div>
 	<div class="payment">
-		<a href="#" onclick="payment.account();return false;" class="btn payment">입금계좌 요청</a><br/>
+		<a href="#" onclick="payment.account();return false;" class="btn payment">입금계좌 요청</a><br/><br/>
+		<a th:if="${user.role.group.name() eq 'AGENCY'}" th:href="${@config.pathSeller} + '/sale/daily'" class="btn btn02">파트너 페이지</a>
 <!--		<img src="/images/kakao.png" style="margin-top:10px;"/><br/>-->
 <!--		<img src="/images/telegram.png" style="margin-top:10px;"/>-->
 	</div>

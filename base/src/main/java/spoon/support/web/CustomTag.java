@@ -98,6 +98,12 @@ public final class CustomTag {
         return date.format(DateTimeFormatter.ofPattern("MM/dd(E) ")) + "<em class=\"color02\">" + date.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "</em>";
     }
 
+    public static String dayWeekTimesUTD(LocalDateTime date) {
+        if (date == null) return "-";
+        date = date.plusHours(9);
+        return date.format(DateTimeFormatter.ofPattern("MM/dd(E) ")) + "<em class=\"color02\">" + date.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "</em>";
+    }
+
     public static String dayWeek(Date date) {
         if (date == null) return "-";
         return DateUtils.format(date, "MM/dd(E)");

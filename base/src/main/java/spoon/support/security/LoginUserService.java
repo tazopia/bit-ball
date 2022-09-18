@@ -43,17 +43,18 @@ public class LoginUserService implements UserDetailsService {
         switch (member.getRole()) {
             case DUMMY:
             case USER:
-                if (Config.getSiteConfig().isIpUser() && ipAddrService.checkIp("user")) {
-                    throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-                }
-                if (!"".equals(role)) {
-                    throw new UsernameNotFoundException(username + " 정보를 찾을 수 없습니다.");
-                }
-                break;
             case AGENCY1:
             case AGENCY2:
             case AGENCY3:
             case AGENCY4:
+//                if (Config.getSiteConfig().isIpUser() && ipAddrService.checkIp("user")) {
+//                    throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+//                }
+//                if (!"".equals(role) && !"seller".equals(role)) {
+//                    throw new UsernameNotFoundException(username + " 정보를 찾을 수 없습니다.");
+//                }
+//                break;
+
                 if (Config.getSiteConfig().isIpUser() && ipAddrService.checkIp("user")) {
                     throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
                 }

@@ -25,6 +25,7 @@
 				<li th:if="${user.role.name() eq 'AGENCY3'}" th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}">총판 관리</a></li>
 				<li th:if="${user.role.name() eq 'AGENCY4'}" th:class="${gnb eq 'agency'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/agency/joinCode|}">부본사 관리</a></li>
                 <li th:class="${gnb eq 'payment'} ? 'on'"><a th:href="@{|${siteConfig.pathSeller}/payment/withdraw|}">출금 관리</a></li>
+                <li><a th:href="${@config.pathSite} + '/main'">사이트바로가기</a></li>
             </ul>
             <a th:href="@{/logout}" class="btn">로그아웃</a>
         </nav>
