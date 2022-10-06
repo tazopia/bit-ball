@@ -67,12 +67,12 @@ public class PaymentListServiceImpl implements PaymentListService {
             }
         }
 
-        Sort sort;
-        if (StringUtils.empty(command.getCode())) {
-            sort = new Sort(Sort.Direction.DESC, "id");
-        } else {
-            sort = new Sort(Sort.Direction.DESC, "actionId").and(new Sort(Sort.Direction.DESC, "id"));
-        }
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+//        if (StringUtils.empty(command.getCode())) {
+//            sort = new Sort(Sort.Direction.DESC, "id");
+//        } else {
+//            sort = new Sort(Sort.Direction.DESC, "actionId").and(new Sort(Sort.Direction.DESC, "id"));
+//        }
 
         PageRequest pageRequest = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
@@ -168,13 +168,13 @@ public class PaymentListServiceImpl implements PaymentListService {
             }
         }
 
-        Sort sort;
-        if (StringUtils.empty(command.getCode()) || "총판".equals(command.getCode())) {
-            sort = new Sort(Sort.Direction.DESC, "id");
-        } else {
-
-            sort = new Sort(Sort.Direction.DESC, "actionId").and(new Sort(Sort.Direction.DESC, "id"));
-        }
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+//        if (StringUtils.empty(command.getCode()) || "총판".equals(command.getCode())) {
+//            sort = new Sort(Sort.Direction.DESC, "id");
+//        } else {
+//
+//            sort = new Sort(Sort.Direction.DESC, "actionId").and(new Sort(Sort.Direction.DESC, "id"));
+//        }
 
         PageRequest pageRequest = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
